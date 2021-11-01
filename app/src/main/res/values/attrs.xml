@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="FullscreenAttrs">
+        <attr name="fullscreenTextColor" format="color" />
+    </declare-styleable>
+</resources>
