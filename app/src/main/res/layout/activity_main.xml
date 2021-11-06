@@ -7,6 +7,7 @@
     tools:context=".ui.MainActivity">
 
     <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lav_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -15,6 +16,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/loading" />
+        app:lottie_rawRes="@raw/loading"/>
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_info"
+        android:padding="10dp"
+        android:text="@string/app_name"
+        android:textSize="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
