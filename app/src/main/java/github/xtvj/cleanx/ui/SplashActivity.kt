@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.coroutineScope
 import github.xtvj.cleanx.databinding.ActivitySplashBinding
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * 这种启动方式第一次启动时解决黑屏，但当应用被返回键退回后台再启动时，还会进入些页，闪屏一下再进去MainActivity
@@ -25,7 +26,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(binding.root)
         val intent = Intent(this, MainActivity::class.java)
 
-        startLifecycleScope.launchWhenResumed() {
+        startLifecycleScope.launch {
                 delay(200)
                 startActivity(intent)
                 finish()
