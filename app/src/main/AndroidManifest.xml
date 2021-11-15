@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="github.xtvj.cleanx">
 
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+
     <application
         android:name=".CleanXApplication"
         android:allowBackup="false"

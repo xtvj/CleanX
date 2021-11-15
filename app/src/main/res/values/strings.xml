@@ -3,4 +3,5 @@
     <string name="requestrootmessage">本程序主要功能基于Root权限实现，程序代码开源，地址：&lt;a href="https://github.com/xtvj/cleanx">https://github.com/xtvj/cleanx&lt;/a>，授予Root权限？</string>
     <string name="requestrootok">请求Root权限</string>
     <string name="requestrootcancel">放弃Root权限</string>
+    <string name="no_data">未获取到数据</string>
 </resources>
