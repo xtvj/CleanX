@@ -34,7 +34,31 @@ class MainActivity : AppCompatActivity() {
         initApps()
     }
 
-    fun initApps(){
+    private fun initView(){
+        val view = layoutInflater.inflate(R.layout.dialog_request_root,binding.root,false) as LinearLayoutCompat
+        val textView = view.findViewById<MaterialTextView>(R.id.tv_quest_root)
+        textView.text = HtmlCompat.fromHtml(getString(R.string.requestrootmessage),HtmlCompat.FROM_HTML_MODE_LEGACY)
+        textView.movementMethod = LinkMovementMethod.getInstance()
+        dialog = MaterialAlertDialogBuilder(this)
+            .setView(view)
+            .setPositiveButton(getString(R.string.requestrootok),object : DialogInterface.OnClickListener{
+                override fun onClick(dialog: DialogInterface?, which: Int) {
+                    dialog?.dismiss()
+                    lifecycleScope.launch {
+                        mainViewModel.isAppRoot()
+                    }
+
+                }
+            })
+            .setNegativeButton(getString(R.string.requestrootcancel)){
+                    dialog, which ->
+                dialog.dismiss()
+            }.create()
+//        val fragment = ListFragment.create("user")
+    }
+
+
+    private fun initApps(){
         lifecycleScope.launch {
             if (mainViewModel.isAppRoot()){
                 //有root权限-->获取列表
@@ -60,36 +84,13 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-
-    fun getApps(){
-        mainViewModel.getDisabledApps()
-        mainViewModel.disabledapps.observe(this, { t -> binding.tvInfo.text = t.toString() })
+    private fun getApps(){
+        mainViewModel.getUserApps()
+        mainViewModel.userapps.observe(this, { t -> binding.tvInfo.text = t.toString() })
 
     }
 
-    fun initView(){
-        val view = layoutInflater.inflate(R.layout.dialog_request_root,binding.root,false) as LinearLayoutCompat
-        val textView = view.findViewById<MaterialTextView>(R.id.tv_quest_root)
-        textView.text = HtmlCompat.fromHtml(getString(R.string.requestrootmessage),HtmlCompat.FROM_HTML_MODE_LEGACY)
-        textView.movementMethod = LinkMovementMethod.getInstance()
-        dialog = MaterialAlertDialogBuilder(this)
-            .setView(view)
-            .setPositiveButton(getString(R.string.requestrootok),object : DialogInterface.OnClickListener{
-                override fun onClick(dialog: DialogInterface?, which: Int) {
-                    dialog?.dismiss()
-                    lifecycleScope.launch {
-                         mainViewModel.isAppRoot()
-                    }
-
-                }
-            })
-            .setNegativeButton(getString(R.string.requestrootcancel)){
-                    dialog, which ->
-                dialog.dismiss()
-            }.create()
-    }
-
-    fun requestRoot(){
+    private fun requestRoot(){
         dialog.show()
     }
 

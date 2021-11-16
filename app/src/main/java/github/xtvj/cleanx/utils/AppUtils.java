@@ -1,9 +1,9 @@
 package github.xtvj.cleanx.utils;
 
 
-import android.util.Log;
+import static github.xtvj.cleanx.utils.LogExtKt.log;
 
-public final class AppUtils {
+public class AppUtils {
 
     private AppUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
@@ -11,7 +11,7 @@ public final class AppUtils {
 
     public static Boolean isAppRoot() {
         ShellUtils.CommandResult result = ShellUtils.execCmd("echo root", true);
-        Log.d("AppUtils", result.toString());
+        log(result.toString());
         return result.result == 0;
     }
 }

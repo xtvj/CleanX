@@ -8,7 +8,7 @@
         android:width="200dp"
         android:height="200dp"
         android:gravity="center"
-        android:drawable="@drawable/ic_launcher">
+        android:drawable="@drawable/ic_launcher_c">
     </item>
     <item
         android:top="200dp"
