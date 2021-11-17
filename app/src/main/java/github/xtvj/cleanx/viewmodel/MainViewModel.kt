@@ -1,25 +1,19 @@
 package github.xtvj.cleanx.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import github.xtvj.cleanx.dto.AppInfo
 import github.xtvj.cleanx.utils.AppUtils
 import github.xtvj.cleanx.utils.ShellUtils
-import github.xtvj.cleanx.utils.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
 
-    private val runningAppLiveData = MutableLiveData<List<AppInfo>>()
-    val runningLiveData: LiveData<List<AppInfo>> get() = runningAppLiveData
     var userapps:MutableLiveData<List<String>> = MutableLiveData<List<String>>()
     var systemapps:MutableLiveData<List<String>> = MutableLiveData<List<String>>()
     var disabledapps:MutableLiveData<List<String>> = MutableLiveData<List<String>>()
     val root: MutableLiveData<Boolean> = MutableLiveData()
-    private var TAG  = "MainViewModel"
 
     fun isAppRoot() : Boolean {
         viewModelScope.launch(Dispatchers.IO) {
@@ -54,7 +48,7 @@ class MainViewModel : ViewModel() {
         val result : ShellUtils.CommandResult = ShellUtils.execCmd(code, true)
         if (result.result == 0){
             apps.postValue(result.successMsg.split("package:").dropWhile { it.isEmpty() })
-            log(result.toString())
+//            log(result.toString())
         }else{
             apps.postValue(emptyList())
         }

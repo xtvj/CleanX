@@ -12,6 +12,7 @@ import androidx.lifecycle.coroutineScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
 import github.xtvj.cleanx.R
+import github.xtvj.cleanx.adapter.MainViewPageAdapter
 import github.xtvj.cleanx.databinding.ActivityMainBinding
 import github.xtvj.cleanx.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModels()
     val lifecycleScope = lifecycle.coroutineScope
     private lateinit var dialog : AlertDialog
+    private lateinit var adapter: MainViewPageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +56,9 @@ class MainActivity : AppCompatActivity() {
                     dialog, which ->
                 dialog.dismiss()
             }.create()
-//        val fragment = ListFragment.create("user")
+
+        adapter = MainViewPageAdapter(supportFragmentManager,lifecycle)
+        binding.vp2Apps.adapter = adapter
     }
 
 
@@ -86,7 +90,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun getApps(){
         mainViewModel.getUserApps()
-        mainViewModel.userapps.observe(this, { t -> binding.tvInfo.text = t.toString() })
+        mainViewModel.getSystemApps()
+        mainViewModel.getDisabledApps()
+//        mainViewModel.userapps.observe(this, { t -> binding.tvInfo.text = t.toString() })
 
     }
 
