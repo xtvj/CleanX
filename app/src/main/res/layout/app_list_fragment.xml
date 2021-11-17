@@ -5,10 +5,8 @@
     android:layout_height="match_parent"
     tools:context=".ui.AppListFragment">
 
-    <TextView
-        android:id="@+id/tv"
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
-
+        android:id="@+id/rv_app"/>
 </FrameLayout>

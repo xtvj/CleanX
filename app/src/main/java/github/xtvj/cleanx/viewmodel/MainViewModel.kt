@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.xtvj.cleanx.utils.AppUtils
 import github.xtvj.cleanx.utils.ShellUtils
+import github.xtvj.cleanx.utils.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -47,9 +48,9 @@ class MainViewModel : ViewModel() {
         //获取应用列表
         val result : ShellUtils.CommandResult = ShellUtils.execCmd(code, true)
         if (result.result == 0){
-            apps.postValue(result.successMsg.split("package:").dropWhile { it.isEmpty() })
-//            log(result.toString())
+            apps.postValue(result.successMsg.split("package:").dropWhile { it.isEmpty() }.sorted())
         }else{
+            log(result.toString())
             apps.postValue(emptyList())
         }
     }
