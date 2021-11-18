@@ -1,5 +1,6 @@
 package github.xtvj.cleanx.ui
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.ISelectionListener
@@ -20,14 +20,12 @@ import github.xtvj.cleanx.databinding.AppListFragmentBinding
 import github.xtvj.cleanx.utils.log
 import github.xtvj.cleanx.viewmodel.ListViewModel
 import github.xtvj.cleanx.viewmodel.MainViewModel
-import java.util.*
 import kotlin.properties.Delegates
 
 class AppListFragment : Fragment() {
 
     companion object {
         private const val KEY_ITEM_TEXT = "github.xtvj.cleanx.KEY_ITEM_FRAGMENT"
-//        private const val KEY_COUNT = "github.xtvj.cleanx.KEY_COUNT"
         fun create(item: Int) =
             AppListFragment().apply {
                 arguments = Bundle(1).apply {
@@ -43,6 +41,9 @@ class AppListFragment : Fragment() {
     private val itemAdapter = ItemAdapter<SimpleItem>() //create the ItemAdapter holding your Items
     private val fastAdapter = FastAdapter.with(itemAdapter)
     private lateinit var selectExtension: SelectExtension<SimpleItem>
+    private lateinit var pm : PackageManager
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -72,14 +73,14 @@ class AppListFragment : Fragment() {
         return binding.root
     }
 
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        outState.putInt(KEY_COUNT, type)
-//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         type = arguments?.getInt(KEY_ITEM_TEXT)?: throw IllegalStateException()
         log("onCreate: $type")
+
+        pm = requireContext().packageManager
+
         when(type){
             0 ->{
                 observeApps(viewModel.userapps,savedInstanceState)
@@ -93,17 +94,16 @@ class AppListFragment : Fragment() {
         }
     }
 
-    private fun observeApps(apps : MutableLiveData<List<String>>, savedInstanceState: Bundle?){
-        apps.observe(this, Observer {
-                val items = ArrayList<SimpleItem>()
-                for (i in it) {
-                    val item = SimpleItem()
-                    item.withID(i)
-                    items.add(item)
-                }
-                itemAdapter.add(items)
-                //restore selections (this has to be done after the items were added
-                fastAdapter.withSavedInstanceState(savedInstanceState)
+    private fun observeApps(apps : MutableLiveData<List<String>>, savedInstanceState : Bundle?){
+        apps.observe(this, {
+                fragmentViewModel.upData(it,pm)
+
+        })
+
+        fragmentViewModel.list.observe(this,  {
+            itemAdapter.add(it)
+            //restore selections (this has to be done after the items were added
+            fastAdapter.withSavedInstanceState(savedInstanceState)
         })
     }
 

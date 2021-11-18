@@ -10,67 +10,65 @@
         android:id="@+id/iv_icon"
         android:layout_width="58dp"
         android:layout_height="58dp"
-        android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_launcher_c" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <com.google.android.material.textview.MaterialTextView
-        style="@style/MaterialAlertDialog.MaterialComponents.Title.Text"
         android:id="@+id/tv_appName"
+        style="@style/MaterialAlertDialog.MaterialComponents.Title.Text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:ellipsize="end"
         android:gravity="center|start"
         android:lines="1"
-        android:text="@string/app_name"
-        android:layout_marginStart="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/iv_isSystem"
         app:layout_constraintStart_toEndOf="@+id/iv_icon"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
-        style="@style/Widget.MaterialComponents.TextView"
         android:id="@+id/tv_appId"
+        style="@style/Widget.MaterialComponents.TextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:ellipsize="end"
-        android:text="github.xtvj.cleanx"
         android:gravity="center|start"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/iv_isSystem"
         app:layout_constraintStart_toEndOf="@id/iv_icon"
         app:layout_constraintTop_toBottomOf="@id/tv_appName" />
 
 
     <com.google.android.material.textview.MaterialTextView
-        style="@style/Widget.MaterialComponents.TextView"
         android:id="@+id/tv_appVersion"
+        style="@style/Widget.MaterialComponents.TextView"
         android:layout_width="wrap_content"
-        android:layout_marginStart="10dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:ellipsize="end"
         android:lines="1"
-        android:text="1.2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_icon"
         app:layout_constraintTop_toBottomOf="@+id/tv_appId" />
 
-    <com.google.android.material.textview.MaterialTextView
-        style="@style/Widget.MaterialComponents.TextView"
-        android:id="@+id/tv_appSize"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:ellipsize="end"
-        android:text="5MB"
-        app:layout_constraintStart_toEndOf="@+id/tv_appVersion"
-        app:layout_constraintTop_toTopOf="@+id/tv_appVersion" />
+<!--    <com.google.android.material.textview.MaterialTextView-->
+<!--        android:id="@+id/tv_appSize"-->
+<!--        style="@style/Widget.MaterialComponents.TextView"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="10dp"-->
+<!--        android:ellipsize="end"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/tv_appVersion"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/tv_appVersion" />-->
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_isSystem"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
         android:src="@drawable/item_app_list_fragment_circle"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
