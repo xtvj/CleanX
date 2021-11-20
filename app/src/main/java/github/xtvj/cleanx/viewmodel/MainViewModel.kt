@@ -3,7 +3,6 @@ package github.xtvj.cleanx.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import github.xtvj.cleanx.utils.AppUtils
 import github.xtvj.cleanx.utils.ShellUtils
 import github.xtvj.cleanx.utils.log

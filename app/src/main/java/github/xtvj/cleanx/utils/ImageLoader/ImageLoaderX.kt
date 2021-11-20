@@ -15,19 +15,14 @@ import javax.inject.Inject
 class ImageLoaderX @Inject constructor(val pm: PackageManager,val fileCache: FileCache): AutoCloseable {
     private val memoryCache = ImageMemoryCache()
     private val imageViews = Collections.synchronizedMap(WeakHashMap<ImageView, String>())
-    private val executor: ExecutorService  = Executors.newFixedThreadPool(5)
-//    private val shutdownExecutor: Boolean
+    private var executor: ExecutorService  = Executors.newFixedThreadPool(5)
+    private var shutdownExecutor: Boolean = true
     private var isClosed = false
 
-//    constructor() {
-//        executor = Executors.newFixedThreadPool(5)
-//        shutdownExecutor = true
-//    }
-//
-//    constructor(executor: ExecutorService) {
-//        this.executor = executor
-//        shutdownExecutor = false
-//    }
+    constructor(executor: ExecutorService, pm: PackageManager, fileCache: FileCache) : this(pm,fileCache) {
+        this.executor = executor
+        this.shutdownExecutor = false
+    }
 
     fun displayImage(name: String, imageView: ImageView) {
         imageViews[imageView] = name
@@ -44,9 +39,9 @@ class ImageLoaderX @Inject constructor(val pm: PackageManager,val fileCache: Fil
 
     override fun close() {
         isClosed = true
-//        if (shutdownExecutor) {
-//            executor.shutdownNow()
-//        }
+        if (shutdownExecutor) {
+            executor.shutdownNow()
+        }
         memoryCache.clear()
         fileCache.clear()
     }

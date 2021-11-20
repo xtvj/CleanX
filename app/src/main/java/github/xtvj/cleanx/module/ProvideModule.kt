@@ -1,4 +1,4 @@
-package github.xtvj.cleanx.utils.ImageLoader
+package github.xtvj.cleanx.module
 
 import android.content.Context
 import android.content.pm.PackageManager
@@ -7,6 +7,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import github.xtvj.cleanx.utils.ImageLoader.FileCache
+import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import javax.inject.Singleton
 
 @Module
@@ -26,7 +28,7 @@ open class ProvideModule {
 
     @Singleton
     @Provides
-    fun provideImageLoaderX(pm : PackageManager,fileCache: FileCache) : ImageLoaderX{
+    fun provideImageLoaderX(pm : PackageManager,fileCache: FileCache) : ImageLoaderX {
         return ImageLoaderX(pm,fileCache)
     }
 }

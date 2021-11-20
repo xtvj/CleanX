@@ -15,11 +15,11 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class ListViewModel @Inject constructor(val pm: PackageManager,val imageLoaderX: ImageLoaderX) : ViewModel() {
+class ListViewModel @Inject constructor(private val pm: PackageManager, private val imageLoaderX: ImageLoaderX) : ViewModel() {
 
     var list: MutableLiveData<List<SimpleItem>> = MutableLiveData<List<SimpleItem>>()
 
-    fun upData(s : List<String>,pm : PackageManager){
+    fun upData(s : List<String>){
         viewModelScope.launch(Dispatchers.IO) {
             val items = ArrayList<SimpleItem>()
             for (i in s) {

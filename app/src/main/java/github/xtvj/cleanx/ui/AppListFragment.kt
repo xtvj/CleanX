@@ -1,6 +1,5 @@
 package github.xtvj.cleanx.ui
 
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -44,7 +43,6 @@ class AppListFragment : Fragment() {
     private val itemAdapter = ItemAdapter<SimpleItem>() //create the ItemAdapter holding your Items
     private val fastAdapter = FastAdapter.with(itemAdapter)
     private lateinit var selectExtension: SelectExtension<SimpleItem>
-    private lateinit var pm : PackageManager
     val lifecycleScope = lifecycle.coroutineScope
 
 
@@ -82,9 +80,6 @@ class AppListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         type = arguments?.getInt(KEY_ITEM_TEXT)?: throw IllegalStateException()
         log("onCreate: $type")
-
-        pm = requireContext().packageManager
-
         lifecycleScope.launch {
             when(type){
                 0 ->{
@@ -102,7 +97,7 @@ class AppListFragment : Fragment() {
 
     private fun observeApps(apps : MutableLiveData<List<String>>, savedInstanceState : Bundle?){
         apps.observe(this, {
-                fragmentViewModel.upData(it,pm)
+                fragmentViewModel.upData(it)
 
         })
 
@@ -112,5 +107,11 @@ class AppListFragment : Fragment() {
             fastAdapter.withSavedInstanceState(savedInstanceState)
         })
     }
+
+    override fun onPause() {
+        super.onPause()
+
+    }
+
 
 }
