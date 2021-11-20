@@ -7,7 +7,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import github.xtvj.cleanx.utils.ImageLoader.FileCache
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import javax.inject.Singleton
 
@@ -22,13 +21,7 @@ open class ProvideModule {
 
     @Singleton
     @Provides
-    fun provideContext(@ApplicationContext context: Context): FileCache {
-        return FileCache(context)
-    }
-
-    @Singleton
-    @Provides
-    fun provideImageLoaderX(pm : PackageManager,fileCache: FileCache) : ImageLoaderX {
-        return ImageLoaderX(pm,fileCache)
+    fun provideImageLoaderX(pm : PackageManager,@ApplicationContext context: Context) : ImageLoaderX {
+        return ImageLoaderX(pm,context)
     }
 }

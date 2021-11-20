@@ -5,7 +5,6 @@ package github.xtvj.cleanx.utils;
 import static github.xtvj.cleanx.utils.LogExtKt.log;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -96,7 +95,7 @@ public abstract class Runner {
     public static Runner getRootInstance() {
         if (rootShellRunner == null) {
             rootShellRunner = new RootShellRunner();
-            Log.d(TAG, "RootShellRunner");
+            log("RootShellRunner");
         }
         return rootShellRunner;
     }

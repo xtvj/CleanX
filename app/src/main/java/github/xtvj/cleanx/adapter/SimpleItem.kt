@@ -9,7 +9,7 @@ import github.xtvj.cleanx.R
 import github.xtvj.cleanx.databinding.ItemAppListFragmentBinding
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 
-open class SimpleItem constructor(val imageLoaderX: ImageLoaderX): AbstractBindingItem<ItemAppListFragmentBinding>() {
+open class SimpleItem constructor(private val imageLoaderX: ImageLoaderX): AbstractBindingItem<ItemAppListFragmentBinding>() {
     private var id: String? = null
     private var icon: Drawable? = null
     private var name: String? = null

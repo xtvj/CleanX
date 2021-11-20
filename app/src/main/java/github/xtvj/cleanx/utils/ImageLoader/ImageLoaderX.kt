@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package github.xtvj.cleanx.utils.ImageLoader
 
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
@@ -12,14 +13,15 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
-class ImageLoaderX @Inject constructor(val pm: PackageManager,val fileCache: FileCache): AutoCloseable {
+class ImageLoaderX @Inject constructor(val pm: PackageManager,val context: Context): AutoCloseable {
     private val memoryCache = ImageMemoryCache()
     private val imageViews = Collections.synchronizedMap(WeakHashMap<ImageView, String>())
     private var executor: ExecutorService  = Executors.newFixedThreadPool(5)
     private var shutdownExecutor: Boolean = true
     private var isClosed = false
+    private var fileCache : FileCache = FileCache(context)
 
-    constructor(executor: ExecutorService, pm: PackageManager, fileCache: FileCache) : this(pm,fileCache) {
+    constructor(executor: ExecutorService, pm: PackageManager, context: Context) : this(pm,context) {
         this.executor = executor
         this.shutdownExecutor = false
     }
@@ -61,18 +63,18 @@ class ImageLoaderX @Inject constructor(val pm: PackageManager,val fileCache: Fil
         override fun run() {
             if (imageViewReusedOrClosed(queueItem)) return
             var image: Drawable? = null
-            try {
-                image = fileCache.getImage(queueItem.name)
-            } catch (ignored: FileNotFoundException) {
-            }
+                try {
+                    image = fileCache.getImage(queueItem.name)
+                } catch (ignored: FileNotFoundException) {
+                }
             if (image == null) { // Cache miss
                 try {
                     val info = pm.getApplicationInfo(queueItem.name, 0)
                     image = info.loadIcon(queueItem.pm)
-                    try {
-                        fileCache.putImage(queueItem.name, image)
-                    } catch (ignore: IOException) {
-                    }
+                        try {
+                            fileCache.putImage(queueItem.name, image)
+                        } catch (ignore: IOException) {
+                        }
                 } catch (ignored: PackageManager.NameNotFoundException) {
                 }
             }

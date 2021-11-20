@@ -7,9 +7,8 @@ import android.graphics.drawable.Drawable
 import github.xtvj.cleanx.utils.FileUtils
 import github.xtvj.cleanx.utils.log
 import java.io.*
-import javax.inject.Inject
 
-class FileCache @Inject constructor(val context: Context) {
+class FileCache (val context: Context) {
     private var cacheDir: File? = null
     @Throws(IOException::class)
     fun putImage(name: String, drawable: Drawable?) {
@@ -51,11 +50,11 @@ class FileCache @Inject constructor(val context: Context) {
     }
 
     init {
-        cacheDir = if (context.externalCacheDir != null) {
-            File(context.externalCacheDir, "images")
-        } else {
-            File(context.cacheDir, "images")
-        }
+//        cacheDir = if (context.externalCacheDir != null) {
+//            File(context.externalCacheDir, "images")
+//        } else {
+        cacheDir = File(context.cacheDir, "images")
+//        }
         if (!cacheDir!!.exists()) cacheDir!!.mkdirs()
     }
 }
