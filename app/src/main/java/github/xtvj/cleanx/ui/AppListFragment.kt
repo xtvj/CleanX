@@ -16,6 +16,7 @@ import com.mikepenz.fastadapter.ISelectionListener
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.select.SelectExtension
 import com.mikepenz.fastadapter.select.getSelectExtension
+import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.adapter.SimpleItem
 import github.xtvj.cleanx.databinding.AppListFragmentBinding
 import github.xtvj.cleanx.utils.log
@@ -23,7 +24,7 @@ import github.xtvj.cleanx.viewmodel.ListViewModel
 import github.xtvj.cleanx.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
-
+@AndroidEntryPoint
 class AppListFragment : Fragment() {
 
     companion object {

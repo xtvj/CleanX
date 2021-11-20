@@ -11,13 +11,14 @@ import androidx.core.text.HtmlCompat
 import androidx.lifecycle.coroutineScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
+import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.adapter.MainViewPageAdapter
 import github.xtvj.cleanx.databinding.ActivityMainBinding
 import github.xtvj.cleanx.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
 
