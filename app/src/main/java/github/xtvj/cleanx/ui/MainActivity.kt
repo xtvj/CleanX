@@ -92,7 +92,6 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.getUserApps()
         mainViewModel.getSystemApps()
         mainViewModel.getDisabledApps()
-//        mainViewModel.userapps.observe(this, { t -> binding.tvInfo.text = t.toString() })
 
     }
 

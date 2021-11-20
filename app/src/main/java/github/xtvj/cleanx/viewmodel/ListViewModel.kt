@@ -24,6 +24,7 @@ class ListViewModel : ViewModel() {
                     val appInfo = pm.getPackageInfo(i,PackageManager.GET_META_DATA)
                     val name = appInfo.applicationInfo.loadLabel(pm).toString()
                     val icon = appInfo.applicationInfo.loadIcon(pm)
+//                    val icon = null
                     val version = appInfo.versionName
                     val isSystem  = (appInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
                     item.withID(i,name,version,icon,isSystem)

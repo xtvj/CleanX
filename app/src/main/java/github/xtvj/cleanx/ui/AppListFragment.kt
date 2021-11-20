@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.ISelectionListener
@@ -20,6 +21,7 @@ import github.xtvj.cleanx.databinding.AppListFragmentBinding
 import github.xtvj.cleanx.utils.log
 import github.xtvj.cleanx.viewmodel.ListViewModel
 import github.xtvj.cleanx.viewmodel.MainViewModel
+import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
 class AppListFragment : Fragment() {
@@ -42,6 +44,7 @@ class AppListFragment : Fragment() {
     private val fastAdapter = FastAdapter.with(itemAdapter)
     private lateinit var selectExtension: SelectExtension<SimpleItem>
     private lateinit var pm : PackageManager
+    val lifecycleScope = lifecycle.coroutineScope
 
 
     override fun onCreateView(
@@ -81,15 +84,17 @@ class AppListFragment : Fragment() {
 
         pm = requireContext().packageManager
 
-        when(type){
-            0 ->{
-                observeApps(viewModel.userapps,savedInstanceState)
-            }
-            1 ->{
-                observeApps(viewModel.systemapps,savedInstanceState)
-            }
-            else ->{
-                observeApps(viewModel.disabledapps,savedInstanceState)
+        lifecycleScope.launch {
+            when(type){
+                0 ->{
+                    observeApps(viewModel.userapps,savedInstanceState)
+                }
+                1 ->{
+                    observeApps(viewModel.systemapps,savedInstanceState)
+                }
+                else ->{
+                    observeApps(viewModel.disabledapps,savedInstanceState)
+                }
             }
         }
     }

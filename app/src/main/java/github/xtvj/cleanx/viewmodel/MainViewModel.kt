@@ -18,7 +18,7 @@ class MainViewModel : ViewModel() {
 
     fun isAppRoot(): Boolean {
         viewModelScope.launch(Dispatchers.IO) {
-            root.postValue(AppUtils.isAppRoot())
+            root.postValue(AppUtils.isAppRoot)
         }
         return root.value == true
     }
