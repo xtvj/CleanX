@@ -77,6 +77,8 @@ dependencies {
     //adapter
     implementation "com.mikepenz:fastadapter:5.5.1"
     implementation "com.mikepenz:fastadapter-extensions-binding:5.5.1" // view binding helpers
+    implementation "com.mikepenz:fastadapter-extensions-utils:5.5.1"// needs the `expandable`, `drag` and `scroll` extension.
+    implementation "com.mikepenz:fastadapter-extensions-ui:5.5.1"// needs the `expandable`, `drag` and `scroll` extension.
 
     // The core module is used by all other components
     implementation "com.github.topjohnwu.libsu:core:3.1.2"

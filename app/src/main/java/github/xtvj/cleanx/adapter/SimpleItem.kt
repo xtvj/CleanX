@@ -1,20 +1,22 @@
 package github.xtvj.cleanx.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
+import com.mikepenz.fastadapter.ui.utils.FastAdapterUIUtils
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.databinding.ItemAppListFragmentBinding
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 
 open class SimpleItem constructor(private val imageLoaderX: ImageLoaderX): AbstractBindingItem<ItemAppListFragmentBinding>() {
-    private var id: String? = null
-    private var icon: Drawable? = null
-    private var name: String? = null
-    private var version: String? = null
-    private var isSystem: Boolean = false
+    var id: String? = null
+    var icon: Drawable? = null
+    var name: String? = null
+    var version: String? = null
+    var isSystem: Boolean = false
 
     override val type: Int
     get() = R.id.fastadapter_icon_item_id
@@ -25,10 +27,8 @@ open class SimpleItem constructor(private val imageLoaderX: ImageLoaderX): Abstr
         this.version = version
         this.isSystem = isSystem
     }
-//    fun withID(id : String){
-//        this.id = id
-//    }
 
+    @SuppressLint("ResourceAsColor")
     override fun bindView(binding: ItemAppListFragmentBinding, payloads: List<Any>) {
 
             binding.tvAppId.text = id
@@ -41,6 +41,8 @@ open class SimpleItem constructor(private val imageLoaderX: ImageLoaderX): Abstr
             if (!id.isNullOrEmpty()){
                 imageLoaderX.displayImage(id!!,binding.ivIcon)
             }
+
+            binding.root.background = FastAdapterUIUtils.getSelectableBackground(binding.root.context, R.color.purple_200, true)
 
     }
 
