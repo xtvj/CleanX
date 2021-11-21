@@ -12,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.coroutineScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IAdapter
@@ -24,10 +25,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.adapter.SimpleItem
 import github.xtvj.cleanx.databinding.AppListFragmentBinding
+import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import github.xtvj.cleanx.utils.log
 import github.xtvj.cleanx.viewmodel.ListViewModel
 import github.xtvj.cleanx.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.properties.Delegates
 
 @AndroidEntryPoint
@@ -51,7 +54,10 @@ class AppListFragment : Fragment() {
     private val fastAdapter = FastAdapter.with(itemAdapter)
     private lateinit var selectExtension: SelectExtension<SimpleItem>
     private lateinit var mActionModeHelper: ActionModeHelper<SimpleItem>
-    val lifecycleScope = lifecycle.coroutineScope
+    private val lifecycleScope = lifecycle.coroutineScope
+
+    @Inject
+    lateinit var imageLoaderX : ImageLoaderX
 
 
     @SuppressLint("ResourceAsColor")
@@ -169,14 +175,14 @@ class AppListFragment : Fragment() {
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
 
 //            find out the current visible position
-//            var firstVisiblePosition = 0
-//            if (binding.rvApp.layoutManager is LinearLayoutManager) {
-//                firstVisiblePosition =
-//                    (binding.rvApp.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-//            } else if (binding.rvApp.layoutManager is GridLayoutManager) {
-//                firstVisiblePosition =
-//                    (binding.rvApp.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
-//            }
+            var firstVisiblePosition = 0
+            if (binding.rvApp.layoutManager is LinearLayoutManager) {
+                firstVisiblePosition =
+                    (binding.rvApp.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+            } else if (binding.rvApp.layoutManager is GridLayoutManager) {
+                firstVisiblePosition =
+                    (binding.rvApp.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
+            }
 
             when (item.itemId) {
                 android.R.id.home -> {
@@ -191,10 +197,9 @@ class AppListFragment : Fragment() {
                     return true
                 }
                 R.id.item_add -> {
-                    //                val simpleItem = SimpleItem(imageLoaderX)
-                    //                simpleItem.withID("","","",false)
-                    //                itemAdapter.add(firstVisiblePosition + 1, null)
-                    log("add")
+                    val simpleItem = SimpleItem(imageLoaderX)
+                    simpleItem.withID("android","安卓系统","11",false)
+                    itemAdapter.add(firstVisiblePosition + 1, simpleItem)
                     mode.finish()
                     return true
                 }

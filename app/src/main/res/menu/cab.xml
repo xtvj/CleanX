@@ -10,7 +10,7 @@
         app:showAsAction="ifRoom|withText" />
     <item
         android:id="@+id/item_add"
-        android:icon="@android:drawable/ic_menu_delete"
+        android:icon="@android:drawable/ic_menu_add"
         android:title="Add"
         android:titleCondensed="Add"
         app:showAsAction="ifRoom|withText" />
