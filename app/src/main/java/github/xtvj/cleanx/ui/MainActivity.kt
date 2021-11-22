@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-//        moveTaskToBack(false)
+        moveTaskToBack(false)
     }
 
 }

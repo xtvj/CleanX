@@ -1,8 +1,8 @@
 package github.xtvj.cleanx.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -42,10 +42,6 @@ class AppListFragment : Fragment(),ActionMode.Callback {
     private val viewModel: MainViewModel by activityViewModels() //与Activity共用的ViewModel
     private var type by Delegates.notNull<Int>()
     private lateinit var binding: AppListFragmentBinding
-//    private val itemAdapter = ItemAdapter<SimpleItem>() //create the ItemAdapter holding your Items
-//    private val fastAdapter = FastAdapter.with(itemAdapter)
-//    private lateinit var selectExtension: SelectExtension<SimpleItem>
-//    private lateinit var mActionModeHelper: ActionModeHelper<SimpleItem>
     private val lifecycleScope = lifecycle.coroutineScope
 
     private var actionMode : ActionMode? = null
@@ -78,9 +74,12 @@ class AppListFragment : Fragment(),ActionMode.Callback {
             .withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
         adapter.setSelectionTracker(selectionTracker)
         selectionTracker.addObserver(
-            object : SelectionTracker.SelectionObserver<Long?>() {
+            object : SelectionTracker.SelectionObserver<Long>() {
                 override fun onSelectionChanged() {
                     if (selectionTracker.selection.size() > 0) {
+                        if (actionMode == null) {
+                            actionMode = (activity as AppCompatActivity).startSupportActionMode(this@AppListFragment)
+                        }
                         actionMode?.title = selectionTracker.selection.size().toString()
                     } else {
                         actionMode?.finish()
@@ -117,24 +116,6 @@ class AppListFragment : Fragment(),ActionMode.Callback {
             fragmentViewModel.upData(it)
         })
     }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-//        requireActivity().onBackPressedDispatcher.addCallback(onBackPressed)
-    }
-
-//    private val onBackPressed = object : OnBackPressedCallback(true) {
-//        override fun handleOnBackPressed() {
-//            if (isResumed){
-//                log("type: $type launchWhenResumed")
-//                    if (selectionTracker.hasSelection()) {
-//                        selectionTracker.clearSelection()
-//                    } else {
-//                        requireActivity().onBackPressed()
-//                    }
-//            }
-//        }
-//    }
 
 
     override fun onDestroyActionMode(actionMode: ActionMode?) {

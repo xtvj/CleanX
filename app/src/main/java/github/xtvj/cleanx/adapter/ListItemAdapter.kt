@@ -48,23 +48,23 @@ open class ListItemAdapter constructor(private val imageLoaderX: ImageLoaderX):
     }
 
 
-    inner class ItemViewHolder(private val binding: ItemAppListFragmentBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ItemViewHolder(private val holderBinding: ItemAppListFragmentBinding) : RecyclerView.ViewHolder(binding.root) {
         private val details: Details = Details()
 
         fun bind(item : AppItem, position: Int) {
             details.position = position.toLong()
-            binding.tvAppId.text = item.id
-            binding.tvAppName.text = item.name
-            binding.tvAppVersion.text = item.version
-            binding.ivIsSystem.visibility = if (item.isSystem) View.VISIBLE else View.GONE
+            holderBinding.tvAppId.text = item.id
+            holderBinding.tvAppName.text = item.name
+            holderBinding.tvAppVersion.text = item.version
+            holderBinding.ivIsSystem.visibility = if (item.isSystem) View.VISIBLE else View.GONE
             if (!item.id.isNullOrEmpty()){
-                this@ListItemAdapter.imageLoaderX.displayImage(item.id!!,binding.ivIcon)
+                this@ListItemAdapter.imageLoaderX.displayImage(item.id!!,holderBinding.ivIcon)
             }
             bindSelectedState()
         }
 
         private fun bindSelectedState() {
-            binding.cvAppItem.isChecked = this@ListItemAdapter.selectionTracker.isSelected(details.selectionKey)
+            holderBinding.cvAppItem.isChecked = this@ListItemAdapter.selectionTracker.isSelected(details.selectionKey)
         }
 
         fun getItemDetails() : ItemDetailsLookup.ItemDetails<Long> {
