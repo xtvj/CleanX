@@ -11,16 +11,17 @@ import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.RecyclerView
 import github.xtvj.cleanx.databinding.ItemAppListFragmentBinding
+import github.xtvj.cleanx.ui.custom.SheetDialog
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import java.util.*
 
-open class ListItemAdapter constructor(private val imageLoaderX: ImageLoaderX):
+open class ListItemAdapter constructor(private val imageLoaderX: ImageLoaderX) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: List<AppItem> = ArrayList()
     private lateinit var selectionTracker: SelectionTracker<Long>
 
-    private lateinit var binding : ItemAppListFragmentBinding
+    private lateinit var binding: ItemAppListFragmentBinding
 
 
     @SuppressLint("NotifyDataSetChanged")
@@ -29,13 +30,18 @@ open class ListItemAdapter constructor(private val imageLoaderX: ImageLoaderX):
         notifyDataSetChanged()
     }
 
-    open fun setSelectionTracker(selectionTracker : SelectionTracker<Long>) {
+    open fun setSelectionTracker(selectionTracker: SelectionTracker<Long>) {
         this.selectionTracker = selectionTracker
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        binding = ItemAppListFragmentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        binding =
+            ItemAppListFragmentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return 0
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -48,26 +54,31 @@ open class ListItemAdapter constructor(private val imageLoaderX: ImageLoaderX):
     }
 
 
-    inner class ItemViewHolder(private val holderBinding: ItemAppListFragmentBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ItemViewHolder(private val holderBinding: ItemAppListFragmentBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         private val details: Details = Details()
 
-        fun bind(item : AppItem, position: Int) {
+        fun bind(item: AppItem, position: Int) {
             details.position = position.toLong()
             holderBinding.tvAppId.text = item.id
             holderBinding.tvAppName.text = item.name
             holderBinding.tvAppVersion.text = item.version
             holderBinding.ivIsSystem.visibility = if (item.isSystem) View.VISIBLE else View.GONE
-            if (!item.id.isNullOrEmpty()){
-                this@ListItemAdapter.imageLoaderX.displayImage(item.id!!,holderBinding.ivIcon)
+            if (!item.id.isNullOrEmpty()) {
+                this@ListItemAdapter.imageLoaderX.displayImage(item.id!!, holderBinding.ivIcon)
             }
             bindSelectedState()
+            holderBinding.cvAppItem.setOnClickListener {
+                SheetDialog(holderBinding.cvAppItem.context,imageLoaderX,item).show()
+            }
         }
 
         private fun bindSelectedState() {
-            holderBinding.cvAppItem.isChecked = this@ListItemAdapter.selectionTracker.isSelected(details.selectionKey)
+            holderBinding.cvAppItem.isChecked =
+                this@ListItemAdapter.selectionTracker.isSelected(details.selectionKey)
         }
 
-        fun getItemDetails() : ItemDetailsLookup.ItemDetails<Long> {
+        fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> {
             return details
         }
 
@@ -97,16 +108,15 @@ open class ListItemAdapter constructor(private val imageLoaderX: ImageLoaderX):
         ItemDetailsLookup<Long>() {
         override fun getItemDetails(e: MotionEvent): ItemDetails<Long>? {
             val view = recyclerView.findChildViewUnder(e.x, e.y)
-                val viewHolder = view?.let { recyclerView.getChildViewHolder(it)}
-                if (viewHolder is ItemViewHolder) {
-                    return viewHolder.getItemDetails()
-                }
+            val viewHolder = view?.let { recyclerView.getChildViewHolder(it) }
+            if (viewHolder is ItemViewHolder) {
+                return viewHolder.getItemDetails()
+            }
             return null
         }
     }
 
-    class KeyProvider(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) :
-        ItemKeyProvider<Long?>(SCOPE_MAPPED) {
+    class KeyProvider : ItemKeyProvider<Long?>(SCOPE_MAPPED) {
         override fun getKey(position: Int): Long {
             return position.toLong()
         }

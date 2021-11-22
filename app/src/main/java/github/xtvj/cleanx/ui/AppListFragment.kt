@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -68,7 +67,7 @@ class AppListFragment : Fragment(),ActionMode.Callback {
         selectionTracker = SelectionTracker.Builder<Long>(
             "selection",
             binding.rvApp,
-            ListItemAdapter.KeyProvider(adapter),
+            ListItemAdapter.KeyProvider(),
             ListItemAdapter.DetailsLookup(binding.rvApp),
             StorageStrategy.createLongStorage())
             .withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
@@ -86,23 +85,21 @@ class AppListFragment : Fragment(),ActionMode.Callback {
                     }
                 }
             })
-
         binding.rvApp.layoutManager = LinearLayoutManager(context)
-
         lifecycleScope.launch {
             when (type) {
                 0 -> {
-                    observeApps(viewModel.userapps, savedInstanceState)
+                    observeApps(viewModel.userapps)
                 }
                 1 -> {
-                    observeApps(viewModel.systemapps, savedInstanceState)
+                    observeApps(viewModel.systemapps)
                 }
                 else -> {
-                    observeApps(viewModel.disabledapps, savedInstanceState)
+                    observeApps(viewModel.disabledapps)
                 }
             }
 
-            fragmentViewModel.list.observe(viewLifecycleOwner, Observer {
+            fragmentViewModel.list.observe(viewLifecycleOwner, {
                 adapter.setItems(it)
             })
         }
@@ -110,9 +107,9 @@ class AppListFragment : Fragment(),ActionMode.Callback {
     }
 
 
-    private fun observeApps(apps: MutableLiveData<List<String>>, savedInstanceState: Bundle?) {
+    private fun observeApps(apps: MutableLiveData<List<String>>) {
 
-        apps.observe(viewLifecycleOwner, Observer {
+        apps.observe(viewLifecycleOwner, {
             fragmentViewModel.upData(it)
         })
     }

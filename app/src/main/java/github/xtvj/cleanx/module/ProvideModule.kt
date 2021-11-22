@@ -15,8 +15,14 @@ import javax.inject.Singleton
 open class ProvideModule {
     @Singleton
     @Provides
-   fun provideFM(@ApplicationContext context: Context): PackageManager {
+   fun providePM(@ApplicationContext context: Context): PackageManager {
         return context.packageManager
+    }
+
+    @Singleton
+    @Provides
+   fun provideContext(@ApplicationContext context: Context): Context {
+        return context
     }
 
     @Singleton

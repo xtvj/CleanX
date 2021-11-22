@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/item_app_list_fragment"
+        android:id="@+id/layout_dialog"/>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginTop="@dimen/size_16dp"
+        android:orientation="vertical"
+        android:padding="5dp"
+        app:alignContent="center"
+        app:alignItems="center"
+        app:flexWrap="wrap"
+        app:justifyContent="space_between"
+        app:layout_constraintTop_toBottomOf="@id/layout_dialog">
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:id="@+id/tv_open"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawablePadding="5dp"
+            android:focusable="true"
+            android:gravity="center"
+            android:lines="1"
+            android:minWidth="102dp"
+            android:padding="@dimen/size_10dp"
+            android:text="@string/dialog_open"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_16sp"
+            app:drawableTopCompat="@drawable/ic_open"
+            app:layout_flexGrow="1" />
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:id="@+id/tv_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawablePadding="5dp"
+            android:focusable="true"
+            android:gravity="center"
+            android:lines="1"
+            android:minWidth="102dp"
+            android:padding="@dimen/size_10dp"
+            android:text="@string/dialog_share"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_16sp"
+            app:drawableTopCompat="@drawable/ic_share"
+            app:layout_flexGrow="1" />
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:id="@+id/tv_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawablePadding="5dp"
+            android:focusable="true"
+            android:gravity="center"
+            android:lines="1"
+            android:minWidth="102dp"
+            android:padding="@dimen/size_10dp"
+            android:text="@string/dialog_system_info"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_16sp"
+            app:drawableTopCompat="@drawable/ic_sys"
+            app:layout_flexGrow="1" />
+
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:id="@+id/tv_unInstall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawablePadding="5dp"
+            android:focusable="true"
+            android:gravity="center"
+            android:lines="1"
+            android:minWidth="102dp"
+            android:padding="@dimen/size_10dp"
+            android:text="@string/dialog_uninstall"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_16sp"
+            app:drawableTopCompat="@drawable/ic_uninstall"
+            app:layout_flexGrow="1" />
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:id="@+id/tv_freeze"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawablePadding="5dp"
+            android:focusable="true"
+            android:gravity="center"
+            android:lines="1"
+            android:minWidth="102dp"
+            android:padding="@dimen/size_10dp"
+            android:text="@string/dialog_freeze"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_16sp"
+            app:drawableTopCompat="@drawable/ic_freeze"
+            app:layout_flexGrow="1" />
+
+    </com.google.android.flexbox.FlexboxLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

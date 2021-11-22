@@ -4,4 +4,9 @@
     <string name="requestrootok">请求Root权限</string>
     <string name="requestrootcancel">放弃Root权限</string>
     <string name="no_data">未获取到数据</string>
+    <string name="dialog_open">打开</string>
+    <string name="dialog_share">分享</string>
+    <string name="dialog_system_info">系统详情页</string>
+    <string name="dialog_uninstall">卸载</string>
+    <string name="dialog_freeze">冻结/解冻</string>
 </resources>
