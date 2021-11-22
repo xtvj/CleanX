@@ -16,7 +16,8 @@
         android:theme="@style/Theme.CleanX">
         <activity
             android:name=".ui.MainActivity"
-            android:exported="true" >
+            android:exported="true"
+            android:theme="@style/Theme.CleanX">
 
         </activity>
         <activity

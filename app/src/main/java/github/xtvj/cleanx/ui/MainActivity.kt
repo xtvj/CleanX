@@ -101,9 +101,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        //防止闪白屏
-        moveTaskToBack(false)
+        super.onBackPressed()
+//        moveTaskToBack(false)
     }
-
 
 }
