@@ -8,12 +8,16 @@
 
 ### 技术点：
 
+#### 已涉及：
 - Kotlin
 - 协程
 - Hilt
 - ViewModel
-- Startup
-- ~~Lottie~~
-- Flow
 - ViewBinding
+- Startup
+- lifecycle
+
+#### todo:
+- Flow
 - Room
+- Paging 3

@@ -4,11 +4,11 @@ package github.xtvj.cleanx.shell
 import androidx.annotation.WorkerThread
 import com.topjohnwu.superuser.Shell
 
-internal class RootShellRunner : Runner() {
+internal class UserShellRunner : Runner() {
     @WorkerThread
     @Synchronized
     override fun runCommand(): Result {
-        val shell = Shell.su(*commands.toTypedArray())
+        val shell = Shell.sh(*commands.toTypedArray())
         for (input in inputStreams) {
             shell.add(input)
         }

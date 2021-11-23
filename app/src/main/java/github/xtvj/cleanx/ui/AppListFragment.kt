@@ -5,7 +5,6 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.coroutineScope
@@ -15,11 +14,11 @@ import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.adapter.ListItemAdapter
-import github.xtvj.cleanx.databinding.AppListFragmentBinding
+import github.xtvj.cleanx.data.AppItem
+import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import github.xtvj.cleanx.utils.log
 import github.xtvj.cleanx.viewmodel.ListViewModel
-import github.xtvj.cleanx.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -38,17 +37,20 @@ class AppListFragment : Fragment(),ActionMode.Callback {
     }
 
     private val fragmentViewModel: ListViewModel by viewModels() //Fragment自己的ViewModel
-    private val viewModel: MainViewModel by activityViewModels() //与Activity共用的ViewModel
+//    private val viewModel: MainViewModel by activityViewModels() //与Activity共用的ViewModel
     private var type by Delegates.notNull<Int>()
-    private lateinit var binding: AppListFragmentBinding
+    private lateinit var binding: FragmentAppListBinding
     private val lifecycleScope = lifecycle.coroutineScope
 
     private var actionMode : ActionMode? = null
     private lateinit var selectionTracker : SelectionTracker<Long>
-    private lateinit var adapter: ListItemAdapter
+
+    @Inject
+    lateinit var adapter: ListItemAdapter
 
     @Inject
     lateinit var imageLoaderX : ImageLoaderX
+
 
 
     override fun onCreateView(
@@ -59,9 +61,9 @@ class AppListFragment : Fragment(),ActionMode.Callback {
         type = arguments?.getInt(KEY_ITEM_TEXT) ?: throw IllegalStateException()
         log("onCreateView: $type")
 
-        binding = AppListFragmentBinding.inflate(layoutInflater, container, false)
+        binding = FragmentAppListBinding.inflate(layoutInflater, container, false)
 
-        adapter = ListItemAdapter(imageLoaderX)
+//        adapter = ListItemAdapter(imageLoaderX)
         //set our adapters to the RecyclerView
         binding.rvApp.adapter = adapter
         selectionTracker = SelectionTracker.Builder<Long>(
@@ -89,28 +91,26 @@ class AppListFragment : Fragment(),ActionMode.Callback {
         lifecycleScope.launch {
             when (type) {
                 0 -> {
-                    observeApps(viewModel.userapps)
+                    observeApps(fragmentViewModel.listUser)
+                    fragmentViewModel.getUserApps()
                 }
                 1 -> {
-                    observeApps(viewModel.systemapps)
+                    observeApps(fragmentViewModel.listSystem)
+                    fragmentViewModel.getSystemApps()
                 }
                 else -> {
-                    observeApps(viewModel.disabledapps)
+                    observeApps(fragmentViewModel.listDisable)
+                    fragmentViewModel.getDisabledApps()
                 }
             }
-
-            fragmentViewModel.list.observe(viewLifecycleOwner, {
-                adapter.setItems(it)
-            })
         }
         return binding.root
     }
 
 
-    private fun observeApps(apps: MutableLiveData<List<String>>) {
-
+    private fun observeApps(apps: MutableLiveData<List<AppItem>>) {
         apps.observe(viewLifecycleOwner, {
-            fragmentViewModel.upData(it)
+            adapter.setItems(it)
         })
     }
 

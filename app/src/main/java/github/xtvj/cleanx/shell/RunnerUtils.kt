@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package github.xtvj.cleanx.shell
 
+import android.os.Build
 import github.xtvj.cleanx.shell.Runner.Companion.rootInstance
 import java.io.File
 import java.io.IOException
@@ -11,48 +12,27 @@ import java.util.*
 
 object RunnerUtils {
     private const val EMPTY = ""
+    val CMD_PM = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) "cmd package" else "pm"
+    val GETUSER = "$CMD_PM list packages -3"
+    val GETSYS = "$CMD_PM list packages -s"
+    val GETDISABLED = "$CMD_PM list packages -d"
 
-    /**
-     * Translator object for escaping Shell command language.
-     *
-     * @see [Shell Command Language](http://pubs.opengroup.org/onlinepubs/7908799/xcu/chap2.html)
-     */
-    private var ESCAPE_XSI: LookupTranslator? = null
+    private var ESCAPE_XSI: LookupTranslator
 
-    /**
-     *
-     * Escapes the characters in a `String` using XSI rules.
-     *
-     *
-     * **Beware!** In most cases you don't want to escape shell commands but use multi-argument
-     * methods provided by [ProcessBuilder] or [Runtime.exec]
-     * instead.
-     *
-     *
-     * Example:
-     * <pre>
-     * input string: He didn't say, "Stop!"
-     * output string: He\ didn\'t\ say,\ \"Stop!\"
-    </pre> *
-     *
-     * @param input String to escape values in, may be null
-     * @return String with escaped values, `null` if null string input
-     * @see [Shell Command Language](http://pubs.opengroup.org/onlinepubs/7908799/xcu/chap2.html)
-     */
-    fun escape(input: String?): String? {
-        return ESCAPE_XSI!!.translate(input)
+
+    fun escape(input: String): String {
+        return ESCAPE_XSI.translate(input)
     }
 
-    val isRootGiven: Boolean
-        get() {
-            if (isRootAvailable) {
-                val output = Runner.runCommand(rootInstance, "echo AMRootTest").output
-                return output.contains("AMRootTest")
+    fun isRootGiven(): Boolean{
+            if (isRootAvailable()) {
+                val result = Runner.runCommand(rootInstance(), "echo Root")
+                return result.isSuccessful
             }
             return false
         }
-    private val isRootAvailable: Boolean
-        get() {
+
+    fun isRootAvailable(): Boolean {
             val pathEnv = System.getenv("PATH")
             if (pathEnv != null) {
                 for (pathDir in pathEnv.split(":").toTypedArray()) {
@@ -67,13 +47,7 @@ object RunnerUtils {
             return false
         }
 
-    /**
-     * An API for translating text.
-     * Its core use is to escape and unescape text. Because escaping and unescaping
-     * is completely contextual, the API does not present two separate signatures.
-     *
-     * @since 1.0
-     */
+
     class LookupTranslator(lookupMap: Map<CharSequence, CharSequence>?) {
         /**
          * The mapping to be used in translation.
@@ -134,10 +108,8 @@ object RunnerUtils {
          * @param input CharSequence to be translated
          * @return String output of translation
          */
-        fun translate(input: CharSequence?): String? {
-            return if (input == null) {
-                null
-            } else try {
+        fun translate(input: CharSequence): String {
+            return  try {
                 val writer = StringWriter(input.length * 2)
                 translate(input, writer)
                 writer.toString()
@@ -156,10 +128,7 @@ object RunnerUtils {
          * @throws IOException if and only if the Writer produces an IOException
          */
         @Throws(IOException::class)
-        fun translate(input: CharSequence?, out: Writer) {
-            if (input == null) {
-                return
-            }
+        fun translate(input: CharSequence, out: Writer) {
             var pos = 0
             val len = input.length
             while (pos < len) {

@@ -8,5 +8,9 @@
     <string name="dialog_share">分享</string>
     <string name="dialog_system_info">系统详情页</string>
     <string name="dialog_uninstall">卸载</string>
-    <string name="dialog_freeze">冻结/解冻</string>
+    <string name="app_no_intent">该程序无启动页。</string>
+    <string name="disable">禁用</string>
+    <string name="enable">启用</string>
+    <string name="version">版本：</string>
+    <string name="update_time">更新时间：</string>
 </resources>

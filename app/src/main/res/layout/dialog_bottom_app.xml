@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/item_app_list_fragment"
+    <include layout="@layout/item_fragment_app_list"
         android:id="@+id/layout_dialog"/>
 
     <com.google.android.flexbox.FlexboxLayout
@@ -105,7 +105,7 @@
             android:lines="1"
             android:minWidth="102dp"
             android:padding="@dimen/size_10dp"
-            android:text="@string/dialog_freeze"
+            android:text="@string/enable"
             android:textColor="@android:color/black"
             android:textSize="@dimen/text_16sp"
             app:drawableTopCompat="@drawable/ic_freeze"

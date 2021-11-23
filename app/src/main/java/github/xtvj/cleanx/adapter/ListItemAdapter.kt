@@ -1,6 +1,7 @@
 package github.xtvj.cleanx.adapter
 
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -10,18 +11,23 @@ import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.RecyclerView
-import github.xtvj.cleanx.databinding.ItemAppListFragmentBinding
+import github.xtvj.cleanx.R
+import github.xtvj.cleanx.data.AppItem
+import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
 import github.xtvj.cleanx.ui.custom.SheetDialog
+import github.xtvj.cleanx.utils.DateUtil
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import java.util.*
+import javax.inject.Inject
 
-open class ListItemAdapter constructor(private val imageLoaderX: ImageLoaderX) :
+open class ListItemAdapter @Inject constructor(private val imageLoaderX: ImageLoaderX, private val pm: PackageManager,) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: List<AppItem> = ArrayList()
     private lateinit var selectionTracker: SelectionTracker<Long>
 
-    private lateinit var binding: ItemAppListFragmentBinding
+    private lateinit var binding: ItemFragmentAppListBinding
+
 
 
     @SuppressLint("NotifyDataSetChanged")
@@ -36,7 +42,7 @@ open class ListItemAdapter constructor(private val imageLoaderX: ImageLoaderX) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         binding =
-            ItemAppListFragmentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemFragmentAppListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding)
     }
 
@@ -54,22 +60,25 @@ open class ListItemAdapter constructor(private val imageLoaderX: ImageLoaderX) :
     }
 
 
-    inner class ItemViewHolder(private val holderBinding: ItemAppListFragmentBinding) :
+    inner class ItemViewHolder(private val holderBinding: ItemFragmentAppListBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        private val details: Details = Details()
+        private val details: ItemDetails = ItemDetails()
 
+        @SuppressLint("SetTextI18n")
         fun bind(item: AppItem, position: Int) {
             details.position = position.toLong()
             holderBinding.tvAppId.text = item.id
             holderBinding.tvAppName.text = item.name
-            holderBinding.tvAppVersion.text = item.version
-            holderBinding.ivIsSystem.visibility = if (item.isSystem) View.VISIBLE else View.GONE
-            if (!item.id.isNullOrEmpty()) {
-                this@ListItemAdapter.imageLoaderX.displayImage(item.id!!, holderBinding.ivIcon)
-            }
+            holderBinding.tvAppVersion.text =
+                holderBinding.tvAppVersion.context.getString(R.string.version) + item.version
+            holderBinding.ivIsEnable.visibility = if (item.isEnable) View.INVISIBLE else View.VISIBLE
+            holderBinding.tvUpdateTime.text =
+                holderBinding.tvUpdateTime.context.getString(R.string.update_time) + DateUtil.format(item.lastUpdateTime)
+            this@ListItemAdapter.imageLoaderX.displayImage(item.id, holderBinding.ivIcon)
+
             bindSelectedState()
             holderBinding.cvAppItem.setOnClickListener {
-                SheetDialog(holderBinding.cvAppItem.context,imageLoaderX,item).show()
+                SheetDialog(holderBinding.cvAppItem.context,imageLoaderX,pm,item).show()
             }
         }
 
@@ -84,7 +93,7 @@ open class ListItemAdapter constructor(private val imageLoaderX: ImageLoaderX) :
 
     }
 
-    class Details : ItemDetailsLookup.ItemDetails<Long>() {
+    class ItemDetails : ItemDetailsLookup.ItemDetails<Long>() {
         var position: Long = 0
         override fun getPosition(): Int {
             return position.toInt()
@@ -127,4 +136,3 @@ open class ListItemAdapter constructor(private val imageLoaderX: ImageLoaderX) :
     }
 
 }
-

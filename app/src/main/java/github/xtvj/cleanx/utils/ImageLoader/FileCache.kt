@@ -4,7 +4,7 @@ package github.xtvj.cleanx.utils.ImageLoader
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import github.xtvj.cleanx.utils.FileUtils
+import github.xtvj.cleanx.utils.ImageUtils
 import github.xtvj.cleanx.utils.log
 import java.io.*
 
@@ -14,7 +14,7 @@ class FileCache (val context: Context) {
     fun putImage(name: String, drawable: Drawable?) {
         val iconFile = getImageFile(name)
         FileOutputStream(iconFile).use { os ->
-            val bitmap = FileUtils.getBitmapFromDrawable(drawable!!)
+            val bitmap = ImageUtils.getBitmapFromDrawable(drawable!!)
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, os)
             os.flush()
         }
