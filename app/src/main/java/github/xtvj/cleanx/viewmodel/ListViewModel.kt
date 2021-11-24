@@ -1,6 +1,11 @@
 package github.xtvj.cleanx.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.data.repository.AppLocalRepository
@@ -16,17 +21,35 @@ class ListViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    fun getListUser(): Flow<List<AppItem>> {
-        return localRepository.getUser()
-    }
+    val userList: Flow<PagingData<AppItem>> = Pager(
+        config = PagingConfig(
+            pageSize = 12,
+            enablePlaceholders = true,
+            maxSize = 40
+        )
+    ) {
+        localRepository.getUser()
+    }.flow.cachedIn(viewModelScope)
 
-    fun getListSystem(): Flow<List<AppItem>> {
-        return localRepository.getSystem()
-    }
+    val systemList: Flow<PagingData<AppItem>> = Pager(
+        config = PagingConfig(
+            pageSize = 12,
+            enablePlaceholders = true,
+            maxSize = 40
+        )
+    ) {
+        localRepository.getSystem()
+    }.flow.cachedIn(viewModelScope)
 
-    fun getListDisable(): Flow<List<AppItem>> {
-        return localRepository.getDisable()
-    }
+    val disableList: Flow<PagingData<AppItem>> = Pager(
+        config = PagingConfig(
+            pageSize = 12,
+            enablePlaceholders = true,
+            maxSize = 40
+        )
+    ) {
+        localRepository.getDisable()
+    }.flow.cachedIn(viewModelScope)
 
 
     fun getUserApps() {

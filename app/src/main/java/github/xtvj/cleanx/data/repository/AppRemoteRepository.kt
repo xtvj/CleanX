@@ -22,6 +22,7 @@ class AppRemoteRepository @Inject constructor(
      */
     fun getApps(code: String) {
         CoroutineScope(Dispatchers.IO).launch {
+            log("get app list $code")
             //获取应用列表
             val result = Runner.runCommand(code)
             if (result.isSuccessful) {

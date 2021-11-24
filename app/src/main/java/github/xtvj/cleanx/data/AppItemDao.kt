@@ -1,22 +1,22 @@
 package github.xtvj.cleanx.data
 
+import androidx.paging.PagingSource
 import androidx.room.*
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AppItemDao {
 
     @Query("SELECT * FROM appItem")
-    fun getAll(): Flow<List<AppItem>>
+    fun getAll(): PagingSource<Int,AppItem>
 
     @Query("SELECT * FROM appItem WHERE isSystem = 0 ORDER BY id ASC")
-    fun getUser(): Flow<List<AppItem>>
+    fun getUser(): PagingSource<Int,AppItem>
 
     @Query("SELECT * FROM appItem WHERE isSystem = 1 ORDER BY id ASC")
-    fun getSystem(): Flow<List<AppItem>>
+    fun getSystem(): PagingSource<Int,AppItem>
 
     @Query("SELECT * FROM appItem WHERE isEnable = 0 ORDER BY id ASC")
-    fun getDisable(): Flow<List<AppItem>>
+    fun getDisable(): PagingSource<Int,AppItem>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(vararg appItem: AppItem)
@@ -25,7 +25,7 @@ interface AppItemDao {
     suspend fun updateItem(vararg users: AppItem)
 
     @Query("SELECT * FROM appItem WHERE name LIKE :search OR id LIKE :search")
-    fun findWithNameOrId(search: String): Flow<List<AppItem>>
+    fun findWithNameOrId(search: String): PagingSource<Int,AppItem>
 
     @Delete
     suspend fun delete(appItem: AppItem)

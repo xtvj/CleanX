@@ -7,11 +7,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.NonNull
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.AppItem
@@ -25,21 +25,23 @@ import javax.inject.Inject
 open class ListItemAdapter @Inject constructor(
     private val imageLoaderX: ImageLoaderX,
     private val pm: PackageManager,
-) :
-    ListAdapter<AppItem, ListItemAdapter.ItemViewHolder>(DiffCallback) {
+) :PagingDataAdapter<AppItem, ListItemAdapter.ItemViewHolder>(diffCallback) {
 
 
     private lateinit var selectionTracker: SelectionTracker<Long>
 
     private lateinit var binding: ItemFragmentAppListBinding
 
-
     companion object {
-        private val DiffCallback = object : DiffUtil.ItemCallback<AppItem>() {
+        val diffCallback = object : DiffUtil.ItemCallback<AppItem>() {
             override fun areItemsTheSame(oldItem: AppItem, newItem: AppItem): Boolean {
                 return oldItem.id == newItem.id
             }
 
+            /**
+             * Note that in kotlin, == checking on data classes compares all contents, but in Java,
+             * typically you'll implement Object#equals, and use it to compare object contents.
+             */
             override fun areContentsTheSame(oldItem: AppItem, newItem: AppItem): Boolean {
                 return oldItem == newItem
             }
@@ -56,20 +58,18 @@ open class ListItemAdapter @Inject constructor(
         return ItemViewHolder(binding)
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return 0
-    }
-
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.bind(getItem(position), position)
     }
 
-    inner class ItemViewHolder(private val holderBinding: ItemFragmentAppListBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        private val details: ItemDetails = ItemDetails()
+    inner class ItemViewHolder(private val holderBinding: ItemFragmentAppListBinding) : RecyclerView.ViewHolder(binding.root) {
+        private val details = ItemDetails()
 
         @SuppressLint("SetTextI18n")
-        fun bind(item: AppItem, position: Int) {
+        fun bind(item: AppItem?, position: Int) {
+            if (item == null){
+                return
+            }
             details.position = position.toLong()
             holderBinding.tvAppId.text = item.id
             holderBinding.tvAppName.text = item.name
@@ -125,7 +125,7 @@ open class ListItemAdapter @Inject constructor(
         override fun getItemDetails(e: MotionEvent): ItemDetails<Long>? {
             val view = recyclerView.findChildViewUnder(e.x, e.y)
             val viewHolder = view?.let { recyclerView.getChildViewHolder(it) }
-            if (viewHolder is ItemViewHolder) {
+            if (viewHolder is ListItemAdapter.ItemViewHolder) {
                 return viewHolder.getItemDetails()
             }
             return null

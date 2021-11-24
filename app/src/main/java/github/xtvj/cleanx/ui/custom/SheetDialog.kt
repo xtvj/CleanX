@@ -107,7 +107,7 @@ class SheetDialog constructor(
         }
         binding.tvFreeze.setOnClickListener {
 
-            CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                val given = withContext(Dispatchers.IO){
                         RunnerUtils.isRootGiven()
                     }
@@ -141,11 +141,11 @@ class SheetDialog constructor(
                                 }",Toast.LENGTH_SHORT).show()
                         }
                     }
-
                 }else{
-                    initDialog()
-                    rootDialog.show()
-
+                    withContext(Dispatchers.Main){
+                        initDialog()
+                        rootDialog.show()
+                    }
                 }
             }
             //todo 更新数据到主ui

@@ -7,6 +7,7 @@ import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.coroutineScope
+import androidx.paging.PagingData
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
@@ -19,7 +20,7 @@ import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import github.xtvj.cleanx.utils.log
 import github.xtvj.cleanx.viewmodel.ListViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -89,27 +90,34 @@ class AppListFragment : Fragment(),ActionMode.Callback {
                 }
             })
         binding.rvApp.layoutManager = LinearLayoutManager(context)
-        when (type) {
-            0 -> {
-                fragmentViewModel.getUserApps()
-                observeApps(fragmentViewModel.getListUser())
+
+        lifecycleScope.launch {
+            log("fragment get list type: $type")
+            //todo 解决卡顿
+            when (type) {
+                0 -> {
+                    fragmentViewModel.getUserApps()
+                    observeApps(fragmentViewModel.userList)
+                }
+                1 -> {
+                    fragmentViewModel.getSystemApps()
+                    observeApps(fragmentViewModel.systemList)
+                }
+                else -> {
+                    fragmentViewModel.getDisabledApps()
+                    observeApps(fragmentViewModel.disableList)
+                }
             }
-            1 -> {
-                fragmentViewModel.getSystemApps()
-                observeApps(fragmentViewModel.getListSystem())
-            }
-            else -> {
-                fragmentViewModel.getDisabledApps()
-                observeApps(fragmentViewModel.getListDisable())
-            }
+
         }
         return binding.root
     }
 
-    private fun observeApps(apps: Flow<List<AppItem>>) {
+
+    private fun observeApps(apps: Flow<PagingData<AppItem>>) {
         lifecycleScope.launch{
-            apps.collect {
-                adapter.submitList(it)
+            apps.collectLatest {
+                adapter.submitData(it)
             }
         }
     }

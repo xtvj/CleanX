@@ -1,24 +1,24 @@
 package github.xtvj.cleanx.data.repository
 
+import androidx.paging.PagingSource
 import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.data.AppItemDao
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AppLocalRepository @Inject constructor(private var itemDao: AppItemDao) {
 
-    fun getAll() : Flow<List<AppItem>> {
+    fun getAll() : PagingSource<Int,AppItem> {
         return itemDao.getAll()
     }
 
-    fun getUser() : Flow<List<AppItem>>{
+    fun getUser() : PagingSource<Int,AppItem>{
         return itemDao.getUser()
     }
 
-    fun getSystem() : Flow<List<AppItem>>{
+    fun getSystem() : PagingSource<Int,AppItem> {
         return itemDao.getSystem()
     }
-    fun getDisable() : Flow<List<AppItem>>{
+    fun getDisable() : PagingSource<Int,AppItem>{
         return itemDao.getDisable()
     }
 
