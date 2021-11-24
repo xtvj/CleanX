@@ -10,7 +10,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import github.xtvj.cleanx.data.AppDatabase
 import github.xtvj.cleanx.data.AppItemDao
-import github.xtvj.cleanx.data.repository.AppRepository
+import github.xtvj.cleanx.data.repository.AppLocalRepository
+import github.xtvj.cleanx.data.repository.AppRemoteRepository
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import javax.inject.Singleton
 
@@ -53,7 +54,13 @@ open class ProvideModule {
 
     @Singleton
     @Provides
-    fun provideAppRepository(appItemDao: AppItemDao) : AppRepository{
-        return AppRepository(appItemDao)
+    fun provideAppLocalRepository(appItemDao: AppItemDao) : AppLocalRepository{
+        return AppLocalRepository(appItemDao)
+    }
+
+    @Singleton
+    @Provides
+    fun provideAppRemoteRepository(pm: PackageManager,localRepository: AppLocalRepository) : AppRemoteRepository{
+        return AppRemoteRepository(pm,localRepository)
     }
 }

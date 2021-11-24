@@ -10,6 +10,8 @@ import androidx.annotation.NonNull
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.selection.SelectionTracker
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.AppItem
@@ -20,25 +22,35 @@ import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import java.util.*
 import javax.inject.Inject
 
-open class ListItemAdapter @Inject constructor(private val imageLoaderX: ImageLoaderX, private val pm: PackageManager,) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+open class ListItemAdapter @Inject constructor(
+    private val imageLoaderX: ImageLoaderX,
+    private val pm: PackageManager,
+) :
+    ListAdapter<AppItem, ListItemAdapter.ItemViewHolder>(DiffCallback) {
 
-    private var items: List<AppItem> = emptyList()
+
     private lateinit var selectionTracker: SelectionTracker<Long>
 
     private lateinit var binding: ItemFragmentAppListBinding
 
-    @SuppressLint("NotifyDataSetChanged")
-    open fun setItems(items: List<AppItem>) {
-        this.items = items
-        notifyDataSetChanged()
+
+    companion object {
+        private val DiffCallback = object : DiffUtil.ItemCallback<AppItem>() {
+            override fun areItemsTheSame(oldItem: AppItem, newItem: AppItem): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: AppItem, newItem: AppItem): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 
     open fun setSelectionTracker(selectionTracker: SelectionTracker<Long>) {
         this.selectionTracker = selectionTracker
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         binding =
             ItemFragmentAppListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding)
@@ -48,15 +60,9 @@ open class ListItemAdapter @Inject constructor(private val imageLoaderX: ImageLo
         return 0
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item: AppItem = items[position]
-        (holder as ItemViewHolder).bind(item, position)
+    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+        holder.bind(getItem(position), position)
     }
-
-    override fun getItemCount(): Int {
-        return items.size
-    }
-
 
     inner class ItemViewHolder(private val holderBinding: ItemFragmentAppListBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -69,14 +75,17 @@ open class ListItemAdapter @Inject constructor(private val imageLoaderX: ImageLo
             holderBinding.tvAppName.text = item.name
             holderBinding.tvAppVersion.text =
                 holderBinding.tvAppVersion.context.getString(R.string.version) + item.version
-            holderBinding.ivIsEnable.visibility = if (item.isEnable) View.INVISIBLE else View.VISIBLE
+            holderBinding.ivIsEnable.visibility =
+                if (item.isEnable) View.INVISIBLE else View.VISIBLE
             holderBinding.tvUpdateTime.text =
-                holderBinding.tvUpdateTime.context.getString(R.string.update_time) + DateUtil.format(item.lastUpdateTime)
+                holderBinding.tvUpdateTime.context.getString(R.string.update_time) + DateUtil.format(
+                    item.lastUpdateTime
+                )
             this@ListItemAdapter.imageLoaderX.displayImage(item.id, holderBinding.ivIcon)
 
             bindSelectedState()
             holderBinding.cvAppItem.setOnClickListener {
-                SheetDialog(holderBinding.cvAppItem.context,imageLoaderX,pm,item).show()
+                SheetDialog(holderBinding.cvAppItem.context, imageLoaderX, pm, item).show()
             }
         }
 

@@ -2,10 +2,14 @@ package github.xtvj.cleanx.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.adapter.MainViewPageAdapter
+import github.xtvj.cleanx.data.repository.AppLocalRepository
 import github.xtvj.cleanx.databinding.ActivityMainBinding
-import github.xtvj.cleanx.ui.custom.SheetDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -16,6 +20,8 @@ class MainActivity : AppCompatActivity() {
 //    val lifecycleScope = lifecycle.coroutineScope
 //    private lateinit var dialog : AlertDialog
     private lateinit var adapter: MainViewPageAdapter
+    @Inject
+    lateinit var localRepository: AppLocalRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +52,9 @@ class MainActivity : AppCompatActivity() {
 //                dialog.dismiss()
 //            }.create()
 
+        lifecycleScope.launch(Dispatchers.IO){
+            localRepository.deleteAll()
+        }
         adapter = MainViewPageAdapter(supportFragmentManager,lifecycle)
         binding.vp2Apps.adapter = adapter
     }

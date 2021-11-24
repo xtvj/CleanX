@@ -2,26 +2,31 @@ package github.xtvj.cleanx.data.repository
 
 import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.data.AppItemDao
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class AppRepository @Inject constructor(private var itemDao: AppItemDao) {
+class AppLocalRepository @Inject constructor(private var itemDao: AppItemDao) {
 
-    suspend fun getAll() : List<AppItem> {
+    fun getAll() : Flow<List<AppItem>> {
         return itemDao.getAll()
     }
 
-    suspend fun getUser() : List<AppItem>{
+    fun getUser() : Flow<List<AppItem>>{
         return itemDao.getUser()
     }
 
-    suspend fun getSystem() : List<AppItem>{
+    fun getSystem() : Flow<List<AppItem>>{
         return itemDao.getSystem()
     }
-    suspend fun getDisable() : List<AppItem>{
+    fun getDisable() : Flow<List<AppItem>>{
         return itemDao.getDisable()
     }
 
     suspend fun insertAll(appItem: AppItem){
         itemDao.insertAll(appItem)
+    }
+
+    suspend fun deleteAll(){
+        itemDao.deleteAll()
     }
 }

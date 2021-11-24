@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -19,6 +18,8 @@ import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import github.xtvj.cleanx.utils.log
 import github.xtvj.cleanx.viewmodel.ListViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -88,29 +89,29 @@ class AppListFragment : Fragment(),ActionMode.Callback {
                 }
             })
         binding.rvApp.layoutManager = LinearLayoutManager(context)
-        lifecycleScope.launch {
-            when (type) {
-                0 -> {
-                    fragmentViewModel.getUserApps()
-                    observeApps(fragmentViewModel.listUser)
-                }
-                1 -> {
-                    fragmentViewModel.getSystemApps()
-                    observeApps(fragmentViewModel.listSystem)
-                }
-                else -> {
-                    fragmentViewModel.getDisabledApps()
-                    observeApps(fragmentViewModel.listDisable)
-                }
+        when (type) {
+            0 -> {
+                fragmentViewModel.getUserApps()
+                observeApps(fragmentViewModel.getListUser())
+            }
+            1 -> {
+                fragmentViewModel.getSystemApps()
+                observeApps(fragmentViewModel.getListSystem())
+            }
+            else -> {
+                fragmentViewModel.getDisabledApps()
+                observeApps(fragmentViewModel.getListDisable())
             }
         }
         return binding.root
     }
 
-    private fun observeApps(apps: MutableLiveData<List<AppItem>>) {
-        apps.observe(viewLifecycleOwner, {
-            adapter.setItems(it)
-        })
+    private fun observeApps(apps: Flow<List<AppItem>>) {
+        lifecycleScope.launch{
+            apps.collect {
+                adapter.submitList(it)
+            }
+        }
     }
 
     override fun onDestroyActionMode(actionMode: ActionMode?) {
