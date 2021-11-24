@@ -23,12 +23,10 @@ import javax.inject.Inject
 open class ListItemAdapter @Inject constructor(private val imageLoaderX: ImageLoaderX, private val pm: PackageManager,) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var items: List<AppItem> = ArrayList()
+    private var items: List<AppItem> = emptyList()
     private lateinit var selectionTracker: SelectionTracker<Long>
 
     private lateinit var binding: ItemFragmentAppListBinding
-
-
 
     @SuppressLint("NotifyDataSetChanged")
     open fun setItems(items: List<AppItem>) {

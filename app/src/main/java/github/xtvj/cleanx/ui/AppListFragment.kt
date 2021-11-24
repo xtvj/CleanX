@@ -91,29 +91,27 @@ class AppListFragment : Fragment(),ActionMode.Callback {
         lifecycleScope.launch {
             when (type) {
                 0 -> {
-                    observeApps(fragmentViewModel.listUser)
                     fragmentViewModel.getUserApps()
+                    observeApps(fragmentViewModel.listUser)
                 }
                 1 -> {
-                    observeApps(fragmentViewModel.listSystem)
                     fragmentViewModel.getSystemApps()
+                    observeApps(fragmentViewModel.listSystem)
                 }
                 else -> {
-                    observeApps(fragmentViewModel.listDisable)
                     fragmentViewModel.getDisabledApps()
+                    observeApps(fragmentViewModel.listDisable)
                 }
             }
         }
         return binding.root
     }
 
-
     private fun observeApps(apps: MutableLiveData<List<AppItem>>) {
         apps.observe(viewLifecycleOwner, {
             adapter.setItems(it)
         })
     }
-
 
     override fun onDestroyActionMode(actionMode: ActionMode?) {
         selectionTracker.clearSelection()

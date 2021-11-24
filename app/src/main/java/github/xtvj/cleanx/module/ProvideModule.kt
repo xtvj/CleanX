@@ -2,11 +2,15 @@ package github.xtvj.cleanx.module
 
 import android.content.Context
 import android.content.pm.PackageManager
+import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import github.xtvj.cleanx.data.AppDatabase
+import github.xtvj.cleanx.data.AppItemDao
+import github.xtvj.cleanx.data.repository.AppRepository
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import javax.inject.Singleton
 
@@ -29,5 +33,27 @@ open class ProvideModule {
     @Provides
     fun provideImageLoaderX(pm : PackageManager,@ApplicationContext context: Context) : ImageLoaderX {
         return ImageLoaderX(pm,context)
+    }
+
+
+    @Singleton // Tell Dagger-Hilt to create a singleton accessible everywhere in ApplicationCompenent (i.e. everywhere in the application)
+    @Provides
+    fun provideDatabase(
+        @ApplicationContext context: Context
+    ) = Room.databaseBuilder(
+        context,
+        AppDatabase::class.java,
+        "cleanx"
+    ).build() // The reason we can construct a database for the repo
+
+    @Singleton
+    @Provides
+    fun provideAppItemDao(db: AppDatabase) = db.appItemDao() // The reason we can implement a Dao for the database
+
+
+    @Singleton
+    @Provides
+    fun provideAppRepository(appItemDao: AppItemDao) : AppRepository{
+        return AppRepository(appItemDao)
     }
 }

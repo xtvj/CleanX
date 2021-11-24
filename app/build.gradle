@@ -29,10 +29,8 @@ android {
     buildFeatures {
         viewBinding true
     }
-    compileOptions {
-        // This library uses Java 8 features, this is required
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 
 }
@@ -74,6 +72,17 @@ dependencies {
     // Saved state module for ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.4.0")
 
+    //Room
+    implementation "androidx.room:room-runtime:2.3.0"
+    annotationProcessor "androidx.room:room-compiler:2.3.0"
+    // To use Kotlin annotation processing tool (kapt)
+    kapt("androidx.room:room-compiler:2.3.0")
+//    // To use Kotlin Symbolic Processing (KSP)
+//    ksp("androidx.room:room-compiler:2.3.0")
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation("androidx.room:room-ktx:2.3.0")
+    // optional - Paging 3 Integration
+    implementation "androidx.room:room-paging:2.4.0-beta02"
 
 //    //splashscreen
 //    implementation 'androidx.core:core-splashscreen:1.0.0-alpha02'

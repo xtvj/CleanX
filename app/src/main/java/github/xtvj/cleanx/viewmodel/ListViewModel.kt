@@ -7,55 +7,51 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.xtvj.cleanx.data.AppItem
+import github.xtvj.cleanx.data.repository.AppRepository
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.utils.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class ListViewModel @Inject constructor(private val pm: PackageManager) : ViewModel() {
+class ListViewModel @Inject constructor(private val pm: PackageManager,private val repository: AppRepository) : ViewModel() {
+
 
     var listUser: MutableLiveData<List<AppItem>> = MutableLiveData<List<AppItem>>()
     var listSystem: MutableLiveData<List<AppItem>> = MutableLiveData<List<AppItem>>()
     var listDisable: MutableLiveData<List<AppItem>> = MutableLiveData<List<AppItem>>()
-    private var userapps: MutableLiveData<List<String>> = MutableLiveData<List<String>>()
-    private var systemapps: MutableLiveData<List<String>> = MutableLiveData<List<String>>()
-    private var disabledapps: MutableLiveData<List<String>> = MutableLiveData<List<String>>()
 
     fun getUserApps() {
         viewModelScope.launch(Dispatchers.IO) {
-            getApps(RunnerUtils.GETUSER, userapps, listUser)
+            getApps(RunnerUtils.GETUSER)
+            listUser.postValue(repository.getUser())
         }
     }
 
     fun getSystemApps() {
         viewModelScope.launch(Dispatchers.IO) {
-            getApps(RunnerUtils.GETSYS, systemapps, listSystem)
+            getApps(RunnerUtils.GETSYS)
+            listSystem.postValue(repository.getSystem())
         }
     }
 
     fun getDisabledApps() {
         viewModelScope.launch(Dispatchers.IO) {
-            getApps(RunnerUtils.GETDISABLED, disabledapps, listDisable)
+            getApps(RunnerUtils.GETDISABLED)
+            listDisable.postValue(repository.getDisable())
         }
 
     }
 
-    private fun getApps(
-        code: String,
-        apps: MutableLiveData<List<String>>,
-        update: MutableLiveData<List<AppItem>>
-    ) {
+    private suspend fun getApps(code: String) {
         //获取应用列表
         val result = Runner.runCommand(code)
         if (result.isSuccessful) {
            val temp =  result.getOutputAsList(0).map { s ->
                 s.substring(8)
             }.sorted()
-            val items = ArrayList<AppItem>()
             for (i in temp) {
                 try {
                     val appInfo = pm.getPackageInfo(i, PackageManager.GET_META_DATA)
@@ -84,15 +80,13 @@ class ListViewModel @Inject constructor(private val pm: PackageManager) : ViewMo
                         deviceProtectedDataDir,
                         publicSourceDir
                     )
-                    items.add(item)
+                    repository.insertAll(item)
                 } catch (e: PackageManager.NameNotFoundException) {
                     log(e.toString())
                 }
             }
-            update.postValue(items)
         } else {
             log(result.toString())
-            update.postValue(emptyList())
         }
     }
 }
