@@ -4,14 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/item_fragment_app_list"
-        android:id="@+id/layout_dialog"/>
+    <include
+        android:id="@+id/layout_dialog"
+        layout="@layout/item_fragment_app_list" />
 
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:layout_marginTop="@dimen/size_16dp"
+        android:background="@color/white"
         android:orientation="vertical"
         android:padding="5dp"
         app:alignContent="center"
@@ -21,93 +22,83 @@
         app:layout_constraintTop_toBottomOf="@id/layout_dialog">
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:id="@+id/tv_open"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:clickable="true"
-            android:drawablePadding="5dp"
             android:focusable="true"
-            android:gravity="center"
-            android:lines="1"
-            android:minWidth="102dp"
-            android:padding="@dimen/size_10dp"
+            android:paddingTop="@dimen/size_10dp"
+            android:paddingBottom="@dimen/size_10dp"
             android:text="@string/dialog_open"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/text_16sp"
             app:drawableTopCompat="@drawable/ic_open"
             app:layout_flexGrow="1" />
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:id="@+id/tv_share"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:clickable="true"
-            android:drawablePadding="5dp"
             android:focusable="true"
-            android:gravity="center"
-            android:lines="1"
-            android:minWidth="102dp"
-            android:padding="@dimen/size_10dp"
+            android:paddingTop="@dimen/size_10dp"
+            android:paddingBottom="@dimen/size_10dp"
             android:text="@string/dialog_share"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/text_16sp"
             app:drawableTopCompat="@drawable/ic_share"
             app:layout_flexGrow="1" />
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:id="@+id/tv_detail"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:clickable="true"
-            android:drawablePadding="5dp"
             android:focusable="true"
-            android:gravity="center"
-            android:lines="1"
-            android:minWidth="102dp"
-            android:padding="@dimen/size_10dp"
+            android:paddingTop="@dimen/size_10dp"
+            android:paddingBottom="@dimen/size_10dp"
             android:text="@string/dialog_system_info"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/text_16sp"
             app:drawableTopCompat="@drawable/ic_sys"
             app:layout_flexGrow="1" />
 
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:id="@+id/tv_unInstall"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:clickable="true"
-            android:drawablePadding="5dp"
             android:focusable="true"
-            android:gravity="center"
-            android:lines="1"
-            android:minWidth="102dp"
-            android:padding="@dimen/size_10dp"
+            android:paddingTop="@dimen/size_10dp"
+            android:paddingBottom="@dimen/size_10dp"
             android:text="@string/dialog_uninstall"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/text_16sp"
             app:drawableTopCompat="@drawable/ic_uninstall"
             app:layout_flexGrow="1" />
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:id="@+id/tv_freeze"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:clickable="true"
-            android:drawablePadding="5dp"
             android:focusable="true"
-            android:gravity="center"
-            android:lines="1"
-            android:minWidth="102dp"
-            android:padding="@dimen/size_10dp"
+            android:paddingTop="@dimen/size_10dp"
+            android:paddingBottom="@dimen/size_10dp"
             android:text="@string/enable"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/text_16sp"
             app:drawableTopCompat="@drawable/ic_freeze"
             app:layout_flexGrow="1" />
 

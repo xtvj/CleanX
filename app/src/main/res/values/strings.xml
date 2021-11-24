@@ -1,16 +1,20 @@
 <resources>
     <string name="app_name">CleanX</string>
     <string name="requestrootmessage">本程序主要功能基于Root权限实现，程序代码开源，地址：&lt;a href="https://github.com/xtvj/cleanx">https://github.com/xtvj/cleanx&lt;/a>，授予Root权限？</string>
-    <string name="requestrootok">请求Root权限</string>
-    <string name="requestrootcancel">放弃Root权限</string>
+    <string name="requestrootok">手动设置Root权限</string>
+    <string name="requestrootcancel">取消操作</string>
     <string name="no_data">未获取到数据</string>
     <string name="dialog_open">打开</string>
-    <string name="dialog_share">分享</string>
+    <string name="dialog_share">提取安装包</string>
     <string name="dialog_system_info">系统详情页</string>
     <string name="dialog_uninstall">卸载</string>
-    <string name="app_no_intent">该程序无启动页。</string>
+    <string name="app_no_intent">该程序无启动项。</string>
     <string name="disable">禁用</string>
     <string name="enable">启用</string>
+    <string name="success">成功</string>
+    <string name="fail">失败</string>
     <string name="version">版本：</string>
     <string name="update_time">更新时间：</string>
+    <string name="share_apk">分享APP安装包</string>
+    <string name="need_to_open_root">需要您手动打开Root管理程序设置。</string>
 </resources>

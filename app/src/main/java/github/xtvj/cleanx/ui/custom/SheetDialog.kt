@@ -6,15 +6,30 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.text.HtmlCompat
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textview.MaterialTextView
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.databinding.DialogBottomAppBinding
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
+import github.xtvj.cleanx.shell.Runner
+import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.utils.DateUtil
+import github.xtvj.cleanx.utils.FileUtils
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
+import github.xtvj.cleanx.utils.ShareContentType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
 
 
 @SuppressLint("SetTextI18n")
@@ -28,17 +43,20 @@ class SheetDialog constructor(
     private var binding: DialogBottomAppBinding =
         DialogBottomAppBinding.inflate(layoutInflater)
     private var layoutBinding: ItemFragmentAppListBinding = binding.layoutDialog
-
+    private lateinit var rootDialog: AlertDialog
 
     init {
         layoutBinding.root.isClickable = false
         layoutBinding.tvAppId.text = item.id
         layoutBinding.tvAppName.text = item.name
         layoutBinding.tvAppVersion.text = context.getString(R.string.version) + item.version
-        layoutBinding.tvUpdateTime.text = context.getString(R.string.update_time) + DateUtil.format(item.lastUpdateTime)
+        layoutBinding.tvUpdateTime.text =
+            context.getString(R.string.update_time) + DateUtil.format(item.lastUpdateTime)
 
         imageLoaderX.displayImage(item.id, layoutBinding.ivIcon)
         layoutBinding.ivIsEnable.visibility = if (item.isEnable) View.INVISIBLE else View.VISIBLE
+        binding.tvUnInstall.visibility = if (item.isSystem) View.GONE else View.VISIBLE
+        binding.tvFreeze.visibility = if (RunnerUtils.isRootAvailable()) View.VISIBLE else View.GONE
 
         binding.tvFreeze.text =
             if (item.isEnable) context.getString(R.string.disable) else context.getString(
@@ -59,11 +77,18 @@ class SheetDialog constructor(
             dismiss()
         }
         binding.tvShare.setOnClickListener {
-            Toast.makeText(
-                context,
-                "tvShare id: ${item.id}  name: ${item.name}",
-                Toast.LENGTH_SHORT
-            ).show()
+            val file = File(item.sourceDir)
+            val uri: Uri? = FileUtils.getFileUri(context, ShareContentType.FILE, file)
+            val shareIntent = Intent()
+            shareIntent.action = Intent.ACTION_SEND
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
+            shareIntent.type = "*/*"
+            context.startActivity(
+                Intent.createChooser(
+                    shareIntent,
+                    context.resources.getString(R.string.share_apk)
+                )
+            )
             dismiss()
         }
         binding.tvDetail.setOnClickListener {
@@ -81,27 +106,74 @@ class SheetDialog constructor(
             dismiss()
         }
         binding.tvFreeze.setOnClickListener {
-            if (item.isEnable){
-                //pm disable package
-            }else{
-                //pm enable package
+
+            CoroutineScope(Dispatchers.Main).launch {
+               val given = withContext(Dispatchers.IO){
+                        RunnerUtils.isRootGiven()
+                    }
+                if (given){
+                    if (item.isEnable) {
+                        //pm disable package
+                        val result = Runner.needRoot().runCommand(RunnerUtils.CMD_PM + " disable " + item.id)
+                        if (result.isSuccessful){
+                            Toast.makeText(context,
+                                "${context.getString(R.string.disable)}${item.name}${
+                                    context.getString(R.string.success)
+                                }",Toast.LENGTH_SHORT).show()
+                        }else{
+                            Toast.makeText(context,
+                                "${context.getString(R.string.disable)}${item.name}${
+                                    context.getString(R.string.fail)
+                                }",Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        val result = Runner.needRoot().runCommand(RunnerUtils.CMD_PM + " enable " + item.id)
+                        //pm enable package
+                        if (result.isSuccessful){
+                            Toast.makeText(context,
+                                "${context.getString(R.string.enable)}${item.name}${
+                                    context.getString(R.string.success)
+                                }",Toast.LENGTH_SHORT).show()
+                        }else{
+                            Toast.makeText(context,
+                                "${context.getString(R.string.enable)}${item.name}${
+                                    context.getString(R.string.fail)
+                                }",Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                }else{
+                    initDialog()
+                    rootDialog.show()
+
+                }
             }
-            //更新数据到主ui
+            //todo 更新数据到主ui
             dismiss()
         }
         setContentView(binding.root)
 
     }
 
+    private fun initDialog() {
+        val view =
+            layoutInflater.inflate(R.layout.dialog_request_root, null, false) as LinearLayoutCompat
+        val textView = view.findViewById<MaterialTextView>(R.id.tv_quest_root)
+        textView.text = HtmlCompat.fromHtml(
+            context.getString(R.string.requestrootmessage),
+            HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
+        textView.movementMethod = LinkMovementMethod.getInstance()
+        rootDialog = MaterialAlertDialogBuilder(context)
+            .setView(view)
+            .setPositiveButton(context.getString(R.string.requestrootok)) { dialog, _ ->
+                Toast.makeText(context,context.getString(R.string.need_to_open_root),Toast.LENGTH_LONG).show()
+                dialog.dismiss()
+            }
+            .setNegativeButton(context.getString(R.string.requestrootcancel)) { dialog, _ ->
+                dialog.dismiss()
+            }.create()
+    }
 
-//    companion object {
-//        class SheetFactory @Inject constructor(
-//            private val context: Context,
-//            private val imageLoaderX: ImageLoaderX,
-//            private val pm: PackageManager
-//        ) {
-//            fun create(appItem: AppItem) = SheetDialog(context, imageLoaderX, pm, appItem)
-//        }
-//    }
 
 }

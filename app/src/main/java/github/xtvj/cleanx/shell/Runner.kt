@@ -58,20 +58,26 @@ abstract class Runner protected constructor() {
         return runCommand()
     }
 
-    companion object {
+
+    companion object{
         private var rootShellRunner: RootShellRunner? = null
         private var userShellRunner: UserShellRunner? = null
 
-        private val instance = userInstance() //todo switch user or root
+        private var instance = userInstance()
 
-        fun rootInstance(): Runner{
+        fun needRoot() : Companion {
+            instance = rootInstance()
+            return this
+        }
+
+        private fun rootInstance(): Runner{
                 if (rootShellRunner == null) {
                     rootShellRunner = RootShellRunner()
                     log("RootShellRunner")
                 }
                 return rootShellRunner!!
             }
-        fun userInstance(): Runner{
+        private fun userInstance(): Runner{
                 if (userShellRunner == null) {
                     userShellRunner = UserShellRunner()
                     log("RootShellRunner")

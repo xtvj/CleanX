@@ -2,7 +2,6 @@
 package github.xtvj.cleanx.shell
 
 import android.os.Build
-import github.xtvj.cleanx.shell.Runner.Companion.rootInstance
 import java.io.File
 import java.io.IOException
 import java.io.StringWriter
@@ -26,7 +25,7 @@ object RunnerUtils {
 
     fun isRootGiven(): Boolean{
             if (isRootAvailable()) {
-                val result = Runner.runCommand(rootInstance(), "echo Root")
+                val result = Runner.needRoot().runCommand( "echo Root")
                 return result.isSuccessful
             }
             return false
