@@ -17,6 +17,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.AppItem
+import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.databinding.DialogBottomAppBinding
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
 import github.xtvj.cleanx.shell.Runner
@@ -37,7 +38,8 @@ class SheetDialog constructor(
     context: Context,
     imageLoaderX: ImageLoaderX,
     pm: PackageManager,
-    item: AppItem
+    item: AppItem,
+    appItemDao: AppItemDao
 ) : BottomSheetDialog(context, R.style.ThemeOverlay_MaterialComponents_BottomSheetDialog) {
 
     private var binding: DialogBottomAppBinding =
@@ -116,29 +118,65 @@ class SheetDialog constructor(
                         //pm disable package
                         val result = Runner.needRoot().runCommand(RunnerUtils.CMD_PM + " disable " + item.id)
                         if (result.isSuccessful){
-                            Toast.makeText(context,
-                                "${context.getString(R.string.disable)}${item.name}${
-                                    context.getString(R.string.success)
-                                }",Toast.LENGTH_SHORT).show()
+                            val newItem = AppItem(
+                                item.id,
+                                item.name,
+                                item.version,
+                                item.isSystem,
+                                false,
+                                item.firstInstallTime,
+                                item.lastUpdateTime,
+                                item.dataDir,
+                                item.sourceDir,
+                                item.deviceProtectedDataDir,
+                                item.publicSourceDir
+                            )
+                            appItemDao.updateItem(newItem)
+                            withContext(Dispatchers.Main){
+                                Toast.makeText(context,
+                                    "${context.getString(R.string.disable)}${item.name}${
+                                        context.getString(R.string.success)
+                                    }",Toast.LENGTH_SHORT).show()
+                            }
                         }else{
-                            Toast.makeText(context,
-                                "${context.getString(R.string.disable)}${item.name}${
-                                    context.getString(R.string.fail)
-                                }",Toast.LENGTH_SHORT).show()
+                            withContext(Dispatchers.Main){
+                                Toast.makeText(context,
+                                    "${context.getString(R.string.disable)}${item.name}${
+                                        context.getString(R.string.fail)
+                                    }",Toast.LENGTH_SHORT).show()
+                            }
                         }
                     } else {
                         val result = Runner.needRoot().runCommand(RunnerUtils.CMD_PM + " enable " + item.id)
                         //pm enable package
                         if (result.isSuccessful){
-                            Toast.makeText(context,
-                                "${context.getString(R.string.enable)}${item.name}${
-                                    context.getString(R.string.success)
-                                }",Toast.LENGTH_SHORT).show()
+                            val newItem = AppItem(
+                                item.id,
+                                item.name,
+                                item.version,
+                                item.isSystem,
+                                true,
+                                item.firstInstallTime,
+                                item.lastUpdateTime,
+                                item.dataDir,
+                                item.sourceDir,
+                                item.deviceProtectedDataDir,
+                                item.publicSourceDir
+                            )
+                            appItemDao.updateItem(newItem)
+                            withContext(Dispatchers.Main){
+                                Toast.makeText(context,
+                                    "${context.getString(R.string.enable)}${item.name}${
+                                        context.getString(R.string.success)
+                                    }",Toast.LENGTH_SHORT).show()
+                            }
                         }else{
-                            Toast.makeText(context,
-                                "${context.getString(R.string.enable)}${item.name}${
-                                    context.getString(R.string.fail)
-                                }",Toast.LENGTH_SHORT).show()
+                            withContext(Dispatchers.Main){
+                                Toast.makeText(context,
+                                    "${context.getString(R.string.enable)}${item.name}${
+                                        context.getString(R.string.fail)
+                                    }",Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 }else{
@@ -148,7 +186,6 @@ class SheetDialog constructor(
                     }
                 }
             }
-            //todo 更新数据到主ui
             dismiss()
         }
         setContentView(binding.root)

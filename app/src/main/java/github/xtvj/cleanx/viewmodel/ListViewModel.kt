@@ -24,7 +24,6 @@ class ListViewModel @Inject constructor(
     ) {
         //https://issuetracker.google.com/issues/175139766
         appItemDao.getUser()
-
     }.flow
         .cachedIn(viewModelScope)
 

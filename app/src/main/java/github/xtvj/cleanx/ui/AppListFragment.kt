@@ -7,6 +7,7 @@ import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.whenResumed
 import androidx.paging.PagingData
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -93,37 +94,40 @@ class AppListFragment : Fragment(),ActionMode.Callback {
             })
         binding.rvApp.layoutManager = LinearLayoutManager(context)
 
-        if (needLoadData){
-            when (type) {
-                0 -> {
-                    fragmentViewModel.getUserApps()
-                }
-                1 -> {
-                    fragmentViewModel.getSystemApps()
-                }
-                else -> {
-                    fragmentViewModel.getDisabledApps()
+       lifecycleScope.launch{
+           lifecycle.whenResumed {
+            fragmentViewModel.run {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    when (type) {
+                        0 -> {
+                            if (needLoadData){
+                                getUserApps()
+                                needLoadData = false
+                            }
+                            observeApps(userList)
+                        }
+                        1 -> {
+                            if (needLoadData){
+                                getSystemApps()
+                                needLoadData = false
+                            }
+                            observeApps(systemList)
+                        }
+                        else -> {
+                            if (needLoadData){
+                                getUserApps()
+                                needLoadData = false
+                            }
+                            observeApps(disableList)
+                        }
+                    }
                 }
             }
-            needLoadData = false
-        }
-        lifecycleScope.launch(Dispatchers.IO) {
-            when (type) {
-                0 -> {
-                    observeApps(fragmentViewModel.userList)
-                }
-                1 -> {
+           }
+       }
 
-                    observeApps(fragmentViewModel.systemList)
-                }
-                else -> {
-                    observeApps(fragmentViewModel.disableList)
-                }
-            }
-        }
         return binding.root
     }
-
 
     private fun observeApps(apps: Flow<PagingData<AppItem>>) {
         lifecycleScope.launch(Dispatchers.Main){

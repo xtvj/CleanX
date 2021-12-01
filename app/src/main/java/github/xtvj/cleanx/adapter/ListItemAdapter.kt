@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.AppItem
+import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
 import github.xtvj.cleanx.ui.custom.SheetDialog
 import github.xtvj.cleanx.utils.DateUtil
@@ -25,6 +26,7 @@ import javax.inject.Inject
 open class ListItemAdapter @Inject constructor(
     private val imageLoaderX: ImageLoaderX,
     private val pm: PackageManager,
+    private val appItemDao: AppItemDao
 ) :PagingDataAdapter<AppItem, ListItemAdapter.ItemViewHolder>(diffCallback) {
 
 
@@ -58,6 +60,27 @@ open class ListItemAdapter @Inject constructor(
         return ItemViewHolder(binding)
     }
 
+
+
+//    override fun onBindViewHolder(
+//        holder: ItemViewHolder,
+//        position: Int,
+//        payloads: MutableList<Any>
+//    ) {
+//        if (payloads.isEmpty()) {
+//            onBindViewHolder(holder, position);
+//        } else {
+//            onBindItemHolder(holder, position);
+//        }
+//    }
+//
+//    private fun onBindItemHolder(holder: ItemViewHolder, position: Int) {
+//        val viewType = getItemViewType(position)
+//        if (viewType == 0) {
+//            (holder).bind(getItem(position),position)
+//        }
+//    }
+
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.bind(getItem(position), position)
     }
@@ -85,7 +108,7 @@ open class ListItemAdapter @Inject constructor(
 
             bindSelectedState()
             holderBinding.cvAppItem.setOnClickListener {
-                SheetDialog(holderBinding.cvAppItem.context, imageLoaderX, pm, item).show()
+                SheetDialog(holderBinding.cvAppItem.context, imageLoaderX, pm, item,appItemDao).show()
             }
         }
 
