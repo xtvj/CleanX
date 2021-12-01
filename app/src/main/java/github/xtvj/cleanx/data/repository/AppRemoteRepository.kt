@@ -3,25 +3,24 @@ package github.xtvj.cleanx.data.repository
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import github.xtvj.cleanx.data.AppItem
+import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.utils.log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AppRemoteRepository @Inject constructor(
     private val pm: PackageManager,
-    private var localRepository: AppLocalRepository
+    private val itemDao: AppItemDao
 ) {
 
+
     /*
+    val GETAll = "$CMD_PM list packages"
     val GETUSER = "$CMD_PM list packages -3"
     val GETSYS = "$CMD_PM list packages -s"
     val GETDISABLED = "$CMD_PM list packages -d"
      */
-    fun getApps(code: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+    suspend fun getApps(code: String) {
             log("get app list $code")
             //获取应用列表
             val result = Runner.runCommand(code)
@@ -57,7 +56,7 @@ class AppRemoteRepository @Inject constructor(
                             deviceProtectedDataDir,
                             publicSourceDir
                         )
-                        localRepository.insertAll(item)
+                        itemDao.insertAll(item)
                     } catch (e: PackageManager.NameNotFoundException) {
                         log(e.toString())
                     }
@@ -65,6 +64,5 @@ class AppRemoteRepository @Inject constructor(
             } else {
                 log(result.toString())
             }
-        }
     }
 }

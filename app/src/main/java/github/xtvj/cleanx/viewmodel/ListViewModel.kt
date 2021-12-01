@@ -4,63 +4,61 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import github.xtvj.cleanx.data.AppItem
-import github.xtvj.cleanx.data.repository.AppLocalRepository
+import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.data.repository.AppRemoteRepository
 import github.xtvj.cleanx.shell.RunnerUtils
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ListViewModel @Inject constructor(
     private val remoteRepository: AppRemoteRepository,
-    private val localRepository: AppLocalRepository
+    private val appItemDao: AppItemDao
 ) : ViewModel() {
 
-
-    val userList: Flow<PagingData<AppItem>> = Pager(
-        config = PagingConfig(
-            pageSize = 12,
-            enablePlaceholders = true,
-            maxSize = 40
-        )
+    val userList = Pager(
+        PagingConfig(pageSize = 15)
     ) {
-        localRepository.getUser()
-    }.flow.cachedIn(viewModelScope)
+        //https://issuetracker.google.com/issues/175139766
+        appItemDao.getUser()
 
-    val systemList: Flow<PagingData<AppItem>> = Pager(
-        config = PagingConfig(
-            pageSize = 12,
-            enablePlaceholders = true,
-            maxSize = 40
-        )
-    ) {
-        localRepository.getSystem()
-    }.flow.cachedIn(viewModelScope)
+    }.flow
+        .cachedIn(viewModelScope)
 
-    val disableList: Flow<PagingData<AppItem>> = Pager(
-        config = PagingConfig(
-            pageSize = 12,
-            enablePlaceholders = true,
-            maxSize = 40
-        )
+    val systemList = Pager(
+        PagingConfig(pageSize = 15)
     ) {
-        localRepository.getDisable()
-    }.flow.cachedIn(viewModelScope)
+        appItemDao.getSystem()
+    }.flow
+        .cachedIn(viewModelScope)
+
+    val disableList = Pager(
+        PagingConfig(pageSize = 15)
+    ) {
+        appItemDao.getDisable()
+    }.flow
+        .cachedIn(viewModelScope)
+
 
 
     fun getUserApps() {
-        remoteRepository.getApps(RunnerUtils.GETUSER)
+        viewModelScope.launch(Dispatchers.IO) {
+            remoteRepository.getApps(RunnerUtils.GETUSER)
+        }
     }
 
     fun getSystemApps() {
-        remoteRepository.getApps(RunnerUtils.GETSYS)
+        viewModelScope.launch(Dispatchers.IO) {
+            remoteRepository.getApps(RunnerUtils.GETSYS)
+        }
     }
 
     fun getDisabledApps() {
-        remoteRepository.getApps(RunnerUtils.GETDISABLED)
+        viewModelScope.launch(Dispatchers.IO) {
+            remoteRepository.getApps(RunnerUtils.GETDISABLED)
+        }
     }
 }

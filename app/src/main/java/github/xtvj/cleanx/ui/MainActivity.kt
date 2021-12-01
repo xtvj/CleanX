@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.adapter.MainViewPageAdapter
-import github.xtvj.cleanx.data.repository.AppLocalRepository
+import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 //    private lateinit var dialog : AlertDialog
     private lateinit var adapter: MainViewPageAdapter
     @Inject
-    lateinit var localRepository: AppLocalRepository
+    lateinit var appItemDao: AppItemDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 //            }.create()
 
         lifecycleScope.launch(Dispatchers.IO){
-            localRepository.deleteAll()
+            appItemDao.deleteAll()
         }
         adapter = MainViewPageAdapter(supportFragmentManager,lifecycle)
         binding.vp2Apps.adapter = adapter

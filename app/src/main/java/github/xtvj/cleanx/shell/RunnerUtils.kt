@@ -12,6 +12,7 @@ import java.util.*
 object RunnerUtils {
     private const val EMPTY = ""
     val CMD_PM = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) "cmd package" else "pm"
+    val GETAll = "$CMD_PM list packages"
     val GETUSER = "$CMD_PM list packages -3"
     val GETSYS = "$CMD_PM list packages -s"
     val GETDISABLED = "$CMD_PM list packages -d"

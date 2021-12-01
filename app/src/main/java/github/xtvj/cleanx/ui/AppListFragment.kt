@@ -19,6 +19,7 @@ import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import github.xtvj.cleanx.utils.log
 import github.xtvj.cleanx.viewmodel.ListViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -46,6 +47,7 @@ class AppListFragment : Fragment(),ActionMode.Callback {
 
     private var actionMode : ActionMode? = null
     private lateinit var selectionTracker : SelectionTracker<Long>
+    private var needLoadData = true
 
     @Inject
     lateinit var adapter: ListItemAdapter
@@ -91,31 +93,40 @@ class AppListFragment : Fragment(),ActionMode.Callback {
             })
         binding.rvApp.layoutManager = LinearLayoutManager(context)
 
-        lifecycleScope.launch {
-            log("fragment get list type: $type")
-            //todo 解决卡顿
+        if (needLoadData){
             when (type) {
                 0 -> {
                     fragmentViewModel.getUserApps()
-                    observeApps(fragmentViewModel.userList)
                 }
                 1 -> {
                     fragmentViewModel.getSystemApps()
-                    observeApps(fragmentViewModel.systemList)
                 }
                 else -> {
                     fragmentViewModel.getDisabledApps()
+                }
+            }
+            needLoadData = false
+        }
+        lifecycleScope.launch(Dispatchers.IO) {
+            when (type) {
+                0 -> {
+                    observeApps(fragmentViewModel.userList)
+                }
+                1 -> {
+
+                    observeApps(fragmentViewModel.systemList)
+                }
+                else -> {
                     observeApps(fragmentViewModel.disableList)
                 }
             }
-
         }
         return binding.root
     }
 
 
     private fun observeApps(apps: Flow<PagingData<AppItem>>) {
-        lifecycleScope.launch{
+        lifecycleScope.launch(Dispatchers.Main){
             apps.collectLatest {
                 adapter.submitData(it)
             }
