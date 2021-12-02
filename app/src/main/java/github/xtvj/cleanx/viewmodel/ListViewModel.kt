@@ -7,7 +7,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.xtvj.cleanx.data.AppItemDao
-import github.xtvj.cleanx.data.repository.AppRemoteRepository
+import github.xtvj.cleanx.data.repository.AppRepository
 import github.xtvj.cleanx.shell.RunnerUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListViewModel @Inject constructor(
-    private val remoteRepository: AppRemoteRepository,
+    private val repository: AppRepository,
     private val appItemDao: AppItemDao
 ) : ViewModel() {
 
@@ -45,19 +45,19 @@ class ListViewModel @Inject constructor(
 
     fun getUserApps() {
         viewModelScope.launch(Dispatchers.IO) {
-            remoteRepository.getApps(RunnerUtils.GETUSER)
+            repository.getApps(RunnerUtils.GETUSER)
         }
     }
 
     fun getSystemApps() {
         viewModelScope.launch(Dispatchers.IO) {
-            remoteRepository.getApps(RunnerUtils.GETSYS)
+            repository.getApps(RunnerUtils.GETSYS)
         }
     }
 
     fun getDisabledApps() {
         viewModelScope.launch(Dispatchers.IO) {
-            remoteRepository.getApps(RunnerUtils.GETDISABLED)
+            repository.getApps(RunnerUtils.GETDISABLED)
         }
     }
 }

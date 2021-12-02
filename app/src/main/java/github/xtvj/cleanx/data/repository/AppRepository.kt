@@ -8,7 +8,7 @@ import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.utils.log
 import javax.inject.Inject
 
-class AppRemoteRepository @Inject constructor(
+class AppRepository @Inject constructor(
     private val pm: PackageManager,
     private val itemDao: AppItemDao
 ) {

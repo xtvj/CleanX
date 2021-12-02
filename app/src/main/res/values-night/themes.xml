@@ -13,4 +13,19 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+
+    <style name="Theme.CleanX.Fullscreen" parent="Theme.CleanX">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@drawable/background_splash_night</item>
+        <item name="actionBarStyle">@null</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.CleanX.NoActionBar" parent="Theme.CleanX">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionModeOverlay">true</item>
+    </style>
 </resources>

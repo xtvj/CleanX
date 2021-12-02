@@ -17,4 +17,7 @@
     <string name="update_time">更新时间：</string>
     <string name="share_apk">分享APP安装包</string>
     <string name="need_to_open_root">需要您手动打开Root管理程序设置。</string>
+    <string name="user_app">用户应用</string>
+    <string name="system_app">系统应用</string>
+    <string name="disabled_app">已禁用</string>
 </resources>

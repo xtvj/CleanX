@@ -18,7 +18,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.CleanX">
+            android:theme="@style/Theme.CleanX.NoActionBar">
 
         </activity>
         <activity

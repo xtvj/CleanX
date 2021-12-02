@@ -6,27 +6,46 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
-<!--    <com.airbnb.lottie.LottieAnimationView-->
-<!--        android:id="@+id/lav_loading"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:lottie_autoPlay="true"-->
-<!--        app:lottie_loop="true"-->
-<!--        app:lottie_rawRes="@raw/loading"/>-->
-<!--    <com.google.android.material.textview.MaterialTextView-->
-<!--        android:id="@+id/tv_info"-->
-<!--        android:padding="10dp"-->
-<!--        android:text="@string/no_data"-->
-<!--        android:textSize="20sp"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"/>-->
-    <androidx.viewpager2.widget.ViewPager2
+    <!--    <com.airbnb.lottie.LottieAnimationView-->
+    <!--        android:id="@+id/lav_loading"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:lottie_autoPlay="true"-->
+    <!--        app:lottie_loop="true"-->
+    <!--        app:lottie_rawRes="@raw/loading"/>-->
+    <!--    <com.google.android.material.textview.MaterialTextView-->
+    <!--        android:id="@+id/tv_info"-->
+    <!--        android:padding="10dp"-->
+    <!--        android:text="@string/no_data"-->
+    <!--        android:textSize="20sp"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"/>-->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/vp2_apps"/>
+        android:layout_height="wrap_content"
+        android:id="@+id/abl_main"
+        app:layout_constraintTop_toTopOf="parent">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/tb_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tl_main"
+            android:layout_width="match_parent"
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp2_apps"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/abl_main" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

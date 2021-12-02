@@ -107,8 +107,8 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
     //PermissionsDispatcher
-    implementation "com.github.permissions-dispatcher:permissionsdispatcher:4.9.1"
-    kapt "com.github.permissions-dispatcher:permissionsdispatcher-processor:4.9.1"
+//    implementation "com.github.permissions-dispatcher:permissionsdispatcher:4.9.1"
+//    kapt "com.github.permissions-dispatcher:permissionsdispatcher-processor:4.9.1"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

@@ -1,9 +1,12 @@
 package github.xtvj.cleanx.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import github.xtvj.cleanx.R
 import github.xtvj.cleanx.adapter.MainViewPageAdapter
 import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.databinding.ActivityMainBinding
@@ -16,10 +19,12 @@ class MainActivity : AppCompatActivity() {
 
 
     private lateinit var binding: ActivityMainBinding
-//    private val mainViewModel: MainViewModel by viewModels()
+
+    //    private val mainViewModel: MainViewModel by viewModels()
 //    val lifecycleScope = lifecycle.coroutineScope
 //    private lateinit var dialog : AlertDialog
     private lateinit var adapter: MainViewPageAdapter
+
     @Inject
     lateinit var appItemDao: AppItemDao
 
@@ -32,7 +37,8 @@ class MainActivity : AppCompatActivity() {
 //        checkRoot()
     }
 
-    private fun initView(){
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun initView() {
 //        val view = layoutInflater.inflate(R.layout.dialog_request_root,binding.root,false) as LinearLayoutCompat
 //        val textView = view.findViewById<MaterialTextView>(R.id.tv_quest_root)
 //        textView.text = HtmlCompat.fromHtml(getString(R.string.requestrootmessage),HtmlCompat.FROM_HTML_MODE_LEGACY)
@@ -51,12 +57,32 @@ class MainActivity : AppCompatActivity() {
 //                    dialog, which ->
 //                dialog.dismiss()
 //            }.create()
-
-        lifecycleScope.launch(Dispatchers.IO){
+        setSupportActionBar(binding.tbMain)
+        supportActionBar?.hide()
+        lifecycleScope.launch(Dispatchers.IO) {
             appItemDao.deleteAll()
         }
-        adapter = MainViewPageAdapter(supportFragmentManager,lifecycle)
+        adapter = MainViewPageAdapter(supportFragmentManager, lifecycle)
         binding.vp2Apps.adapter = adapter
+        TabLayoutMediator(
+            binding.tlMain,
+            binding.vp2Apps
+        ) { tab, position ->
+            when (position) {
+                0 -> {
+                    tab.icon = getDrawable(R.drawable.ic_user)
+                    tab.contentDescription = getString(R.string.user_app)
+                }
+                1 -> {
+                    tab.icon = getDrawable(R.drawable.ic_sys)
+                    tab.contentDescription = getString(R.string.system_app)
+                }
+                2 -> {
+                    tab.icon = getDrawable(R.drawable.ic_disable)
+                    tab.contentDescription = getString(R.string.disabled_app)
+                }
+            }
+        }.attach()
     }
 
 

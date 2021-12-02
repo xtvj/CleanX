@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/item_delete"
-        android:icon="@android:drawable/ic_menu_delete"
-        android:title="Delete"
-        android:titleCondensed="Delete"
+        android:id="@+id/item_enable"
+        android:icon="@android:drawable/checkbox_on_background"
+        android:title="@string/enable"
+        android:titleCondensed="@string/enable"
         app:showAsAction="ifRoom|withText" />
     <item
-        android:id="@+id/item_add"
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="Add"
-        android:titleCondensed="Add"
+        android:id="@+id/item_disable"
+        android:icon="@android:drawable/ic_lock_power_off"
+        android:title="@string/disable"
+        android:titleCondensed="@string/disable"
         app:showAsAction="ifRoom|withText" />
 
 </menu>

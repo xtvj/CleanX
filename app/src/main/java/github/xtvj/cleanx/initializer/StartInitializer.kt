@@ -1,6 +1,7 @@
 package github.xtvj.cleanx.initializer
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.startup.Initializer
 import github.xtvj.cleanx.utils.initLog
 
@@ -10,8 +11,8 @@ class StartInitializer : Initializer<Unit> {
 
         //初始化log工具
         initLog()
-
-        //TODO("添加夜间模式切换操作")
+        //"添加夜间模式
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {

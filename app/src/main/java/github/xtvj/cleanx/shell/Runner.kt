@@ -60,6 +60,7 @@ abstract class Runner protected constructor() {
 
 
     companion object{
+        //todo 处理刚打开应用就需要root权限的问题
         private var rootShellRunner: RootShellRunner? = null
         private var userShellRunner: UserShellRunner? = null
 
