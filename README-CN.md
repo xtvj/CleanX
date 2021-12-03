@@ -1,23 +1,30 @@
-[Englisth](https://github.com/xtvj/CleanX/blob/master/README.md) | [Chinese](https://github.com/xtvj/CleanX/blob/master/README-CN.md)
+<h1 align="center">CleanX</h1>
 
-### 项目目的：
+<div align="center">
+  <sub>README:</sub>
+  <a href="README-CN.md#readme">
+    <span>:cn:</span>
+  </a>
+  <a href="README.md#readme">
+    <span>:us:</span>
+  </a>
+</div>
 
-自用APP，功能简单就自己写一个。
+## 项目目的：
 
-练手，尽量使用最新的技术
+- 练手：尽量使用最新的技术。
 
-### 技术点：
+- 自用APP：功能简单、速度快、不附带杂七杂八的功能、不频繁升级。
 
-#### 已涉及：
+## 技术点：
+
 - Kotlin
-- 协程
+- Coroutines
 - Hilt
 - ViewModel
 - ViewBinding
 - Startup
-- lifecycle
-
-#### todo:
+- Lifecycle
 - Flow
 - Room
 - Paging 3

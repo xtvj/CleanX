@@ -2,8 +2,12 @@ package github.xtvj.cleanx.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
@@ -58,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 //                dialog.dismiss()
 //            }.create()
         setSupportActionBar(binding.tbMain)
-        supportActionBar?.hide()
+//        supportActionBar?.hide()
         lifecycleScope.launch(Dispatchers.IO) {
             appItemDao.deleteAll()
         }
@@ -83,6 +87,23 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }.attach()
+
+        binding.vp2Apps.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                when (position) {
+                    0 -> {
+                        title = getString(R.string.user_app)
+                    }
+                    1 -> {
+                        title = getString(R.string.system_app)
+                    }
+                    2 -> {
+                        title = getString(R.string.disabled_app)
+                    }
+                }
+                super.onPageSelected(position)
+            }
+        })
     }
 
 
@@ -101,6 +122,20 @@ class MainActivity : AppCompatActivity() {
 //
 //        })
 //    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.item_setting ->{
+                Toast.makeText(this,"点击设置",Toast.LENGTH_SHORT).show()
+            }
+        }
+        return true
+    }
 
     override fun onBackPressed() {
         super.onBackPressed()

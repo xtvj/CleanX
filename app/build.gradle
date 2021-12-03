@@ -57,6 +57,9 @@ dependencies {
     // For control over item selection of both touch and mouse driven selection
     implementation "androidx.recyclerview:recyclerview-selection:1.1.0"
 
+    //swiperefreshlayout
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
     //Hilt
     implementation 'com.google.dagger:hilt-android:2.40.3'
     kapt 'com.google.dagger:hilt-android-compiler:2.40.3'
@@ -105,6 +108,9 @@ dependencies {
 
     // debugImplementation because LeakCanary should only run in debug builds.
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+
+    // recyclerview animators
+    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
 
     //PermissionsDispatcher
 //    implementation "com.github.permissions-dispatcher:permissionsdispatcher:4.9.1"

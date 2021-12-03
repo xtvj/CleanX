@@ -14,23 +14,28 @@ import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.adapter.ListItemAdapter
 import github.xtvj.cleanx.data.AppItem
+import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import github.xtvj.cleanx.utils.log
 import github.xtvj.cleanx.viewmodel.ListViewModel
+import jp.wasabeef.recyclerview.animators.SlideInDownAnimator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
+
 @AndroidEntryPoint
-class AppListFragment : Fragment(), ActionMode.Callback {
+class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
         private const val KEY_ITEM_TEXT = "github.xtvj.cleanx.KEY_ITEM_FRAGMENT"
@@ -44,7 +49,7 @@ class AppListFragment : Fragment(), ActionMode.Callback {
 
     private val fragmentViewModel: ListViewModel by viewModels() //Fragment自己的ViewModel
 
-    //    private val viewModel: MainViewModel by activityViewModels() //与Activity共用的ViewModel
+    //private val viewModel: MainViewModel by activityViewModels() //与Activity共用的ViewModel
     private var type by Delegates.notNull<Int>()
     private lateinit var binding: FragmentAppListBinding
     private val lifecycleScope = lifecycle.coroutineScope
@@ -59,6 +64,9 @@ class AppListFragment : Fragment(), ActionMode.Callback {
     @Inject
     lateinit var imageLoaderX: ImageLoaderX
 
+    @Inject
+    lateinit var itemDao: AppItemDao
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,9 +77,6 @@ class AppListFragment : Fragment(), ActionMode.Callback {
         log("onCreateView: $type")
 
         binding = FragmentAppListBinding.inflate(layoutInflater, container, false)
-
-//        adapter = ListItemAdapter(imageLoaderX)
-        //set our adapters to the RecyclerView
         binding.rvApp.adapter = adapter
         selectionTracker = SelectionTracker.Builder<Long>(
             "selection",
@@ -97,7 +102,13 @@ class AppListFragment : Fragment(), ActionMode.Callback {
                 }
             })
         binding.rvApp.layoutManager = LinearLayoutManager(context)
+        binding.rvApp.itemAnimator = SlideInDownAnimator()
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launch {
             lifecycle.whenResumed {
                 //viewModel是懒加载，必需在主线程中创建
@@ -106,16 +117,16 @@ class AppListFragment : Fragment(), ActionMode.Callback {
                         if (needLoadData) {
                             when (type) {
                                 0 -> {
-                                    getUserApps()
                                     observeApps(userList)
+                                    getUserApps()
                                 }
                                 1 -> {
-                                    getSystemApps()
                                     observeApps(systemList)
+                                    getSystemApps()
                                 }
                                 else -> {
-                                    getUserApps()
                                     observeApps(disableList)
+                                    getDisabledApps()
                                 }
                             }
                         }
@@ -124,8 +135,7 @@ class AppListFragment : Fragment(), ActionMode.Callback {
                 }
             }
         }
-
-        return binding.root
+        binding.srlFragmentList.setOnRefreshListener(this)
     }
 
     private fun observeApps(apps: Flow<PagingData<AppItem>>) {
@@ -142,7 +152,7 @@ class AppListFragment : Fragment(), ActionMode.Callback {
     }
 
     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        mode?.menuInflater?.inflate(R.menu.cab,menu)
+        mode?.menuInflater?.inflate(R.menu.cab, menu)
         return true
     }
 
@@ -151,17 +161,51 @@ class AppListFragment : Fragment(), ActionMode.Callback {
     }
 
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-        when(item?.itemId){
-            R.id.item_disable ->{
+        when (item?.itemId) {
+            R.id.item_disable -> {
                 //todo
-                Toast.makeText(context,"禁用：" + selectionTracker.selection.size() + "个",Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "禁用：" + selectionTracker.selection.size() + "个",
+                    Toast.LENGTH_SHORT
+                ).show()
                 mode?.finish()
             }
-            R.id.item_enable ->{
-                Toast.makeText(context,"启用：" + selectionTracker.selection.size() + "个",Toast.LENGTH_SHORT).show()
+            R.id.item_enable -> {
+                Toast.makeText(
+                    context,
+                    "启用：" + selectionTracker.selection.size() + "个",
+                    Toast.LENGTH_SHORT
+                ).show()
                 mode?.finish()
             }
         }
         return false
     }
+
+    override fun onRefresh() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val isFresh = when (type) {
+                0 -> {
+                    itemDao.deleteAllUser()
+                    !fragmentViewModel.getUserApps()
+                }
+                1 -> {
+                    itemDao.deleteAllSystem()
+                    !fragmentViewModel.getSystemApps()
+                }
+                else -> {
+                    itemDao.deleteAllDisable()
+                    !fragmentViewModel.getDisabledApps()
+                }
+            }
+            withContext(Dispatchers.Main){
+                if (!isFresh){
+                    binding.srlFragmentList.isRefreshing = false
+                }
+            }
+        }
+    }
+
+
 }

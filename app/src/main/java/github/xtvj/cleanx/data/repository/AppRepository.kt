@@ -20,7 +20,7 @@ class AppRepository @Inject constructor(
     val GETSYS = "$CMD_PM list packages -s"
     val GETDISABLED = "$CMD_PM list packages -d"
      */
-    suspend fun getApps(code: String) {
+    suspend fun getApps(code: String) : Boolean {
             log("get app list $code")
             //获取应用列表
             val result = Runner.runCommand(code)
@@ -64,5 +64,6 @@ class AppRepository @Inject constructor(
             } else {
                 log(result.toString())
             }
+            return true
     }
 }

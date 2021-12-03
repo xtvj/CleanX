@@ -4,13 +4,13 @@
 
     <item
         android:id="@+id/item_enable"
-        android:icon="@android:drawable/checkbox_on_background"
+        android:icon="@drawable/ic_menu_enable"
         android:title="@string/enable"
         android:titleCondensed="@string/enable"
         app:showAsAction="ifRoom|withText" />
     <item
         android:id="@+id/item_disable"
-        android:icon="@android:drawable/ic_lock_power_off"
+        android:icon="@drawable/ic_menu_disable"
         android:title="@string/disable"
         android:titleCondensed="@string/disable"
         app:showAsAction="ifRoom|withText" />

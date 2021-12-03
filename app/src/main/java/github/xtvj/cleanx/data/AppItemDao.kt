@@ -33,4 +33,13 @@ interface AppItemDao {
     @Query("DELETE FROM appItem")
     suspend fun deleteAll()
 
+    @Query("DELETE FROM appItem WHERE isSystem = 0")
+    suspend fun deleteAllUser()
+
+    @Query("DELETE FROM appItem WHERE isSystem = 1")
+    suspend fun deleteAllSystem()
+
+    @Query("DELETE FROM appItem WHERE isEnable = 0")
+    suspend fun deleteAllDisable()
+
 }

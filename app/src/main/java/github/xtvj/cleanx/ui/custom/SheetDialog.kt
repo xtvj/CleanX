@@ -66,15 +66,19 @@ class SheetDialog constructor(
             )
 
         binding.tvOpen.setOnClickListener {
-            val intent = pm.getLaunchIntentForPackage(item.id)
-            if (intent != null) {
-                context.startActivity(intent)
-            } else {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.app_no_intent),
-                    Toast.LENGTH_SHORT
-                ).show()
+            if (item.isEnable){
+                val intent = pm.getLaunchIntentForPackage(item.id)
+                if (intent != null) {
+                    context.startActivity(intent)
+                } else {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.app_no_intent),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }else{
+                Toast.makeText(context,item.name + "被禁用，无法打",Toast.LENGTH_SHORT).show()
             }
             dismiss()
         }
@@ -197,17 +201,17 @@ class SheetDialog constructor(
             layoutInflater.inflate(R.layout.dialog_request_root, null, false) as LinearLayoutCompat
         val textView = view.findViewById<MaterialTextView>(R.id.tv_quest_root)
         textView.text = HtmlCompat.fromHtml(
-            context.getString(R.string.requestrootmessage),
+            context.getString(R.string.request_root_message),
             HtmlCompat.FROM_HTML_MODE_LEGACY
         )
         textView.movementMethod = LinkMovementMethod.getInstance()
         rootDialog = MaterialAlertDialogBuilder(context)
             .setView(view)
-            .setPositiveButton(context.getString(R.string.requestrootok)) { dialog, _ ->
+            .setPositiveButton(context.getString(R.string.request_root_ok)) { dialog, _ ->
                 Toast.makeText(context,context.getString(R.string.need_to_open_root),Toast.LENGTH_LONG).show()
                 dialog.dismiss()
             }
-            .setNegativeButton(context.getString(R.string.requestrootcancel)) { dialog, _ ->
+            .setNegativeButton(context.getString(R.string.request_root_cancel)) { dialog, _ ->
                 dialog.dismiss()
             }.create()
     }

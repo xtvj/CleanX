@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CleanX</string>
     <string name="request_root_message">本程序主要功能基于Root权限实现，程序代码开源，地址：&lt;a href="https://github.com/xtvj/cleanx">https://github.com/xtvj/cleanx&lt;/a>，授予Root权限？</string>

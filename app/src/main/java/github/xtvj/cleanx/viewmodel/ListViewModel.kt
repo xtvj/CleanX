@@ -10,7 +10,7 @@ import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.data.repository.AppRepository
 import github.xtvj.cleanx.shell.RunnerUtils
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,21 +43,26 @@ class ListViewModel @Inject constructor(
 
 
 
-    fun getUserApps() {
-        viewModelScope.launch(Dispatchers.IO) {
+    suspend fun getUserApps() : Boolean{
+      return withContext(Dispatchers.IO){
             repository.getApps(RunnerUtils.GETUSER)
         }
     }
 
-    fun getSystemApps() {
-        viewModelScope.launch(Dispatchers.IO) {
+    suspend fun getSystemApps() : Boolean{
+        return withContext(Dispatchers.IO){
             repository.getApps(RunnerUtils.GETSYS)
         }
     }
 
-    fun getDisabledApps() {
-        viewModelScope.launch(Dispatchers.IO) {
+    suspend fun getDisabledApps() : Boolean{
+        return withContext(Dispatchers.IO){
             repository.getApps(RunnerUtils.GETDISABLED)
+        }
+    }
+    suspend fun getAllApps() : Boolean{
+        return withContext(Dispatchers.IO){
+            repository.getApps(RunnerUtils.GETAll)
         }
     }
 }
