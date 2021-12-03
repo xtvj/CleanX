@@ -1,5 +1,6 @@
 package github.xtvj.cleanx.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -10,6 +11,7 @@ import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.data.repository.AppRepository
 import github.xtvj.cleanx.shell.RunnerUtils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -41,28 +43,62 @@ class ListViewModel @Inject constructor(
     }.flow
         .cachedIn(viewModelScope)
 
+    var userReload = MutableLiveData(false)
+    var systemReload = MutableLiveData(false)
+    var disableReload = MutableLiveData(false)
 
 
-    suspend fun getUserApps() : Boolean{
-      return withContext(Dispatchers.IO){
+    suspend fun getUserApps() {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.getApps(RunnerUtils.GETUSER)
         }
     }
 
-    suspend fun getSystemApps() : Boolean{
-        return withContext(Dispatchers.IO){
+    suspend fun getSystemApps() {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.getApps(RunnerUtils.GETSYS)
         }
     }
 
-    suspend fun getDisabledApps() : Boolean{
-        return withContext(Dispatchers.IO){
+    suspend fun getDisabledApps() {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.getApps(RunnerUtils.GETDISABLED)
         }
     }
-    suspend fun getAllApps() : Boolean{
-        return withContext(Dispatchers.IO){
+
+    suspend fun getAllApps() {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.getApps(RunnerUtils.GETAll)
         }
     }
+
+    fun reFresh(type: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            when (type) {
+                0 -> {
+                    userReload.postValue(true)
+                    userReload.postValue(withContext(Dispatchers.IO){
+                        appItemDao.deleteAllUser()
+                        !repository.getApps(RunnerUtils.GETUSER)
+                    })
+                }
+                1 -> {
+                    systemReload.postValue(true)
+                    systemReload.postValue(withContext(Dispatchers.IO){
+                        appItemDao.deleteAllSystem()
+                        !repository.getApps(RunnerUtils.GETSYS)
+                    })
+                }
+                else -> {
+                    disableReload.postValue(true)
+                    disableReload.postValue(withContext(Dispatchers.IO){
+                        appItemDao.deleteAllDisable()
+                        !repository.getApps(RunnerUtils.GETDISABLED)
+                    })
+                }
+            }
+        }
+
+    }
+
 }

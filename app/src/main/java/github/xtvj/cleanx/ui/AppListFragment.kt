@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.whenResumed
 import androidx.paging.PagingData
@@ -29,7 +30,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -118,14 +118,17 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                             when (type) {
                                 0 -> {
                                     observeApps(userList)
+                                    observeReload(userReload)
                                     getUserApps()
                                 }
                                 1 -> {
                                     observeApps(systemList)
+                                    observeReload(systemReload)
                                     getSystemApps()
                                 }
                                 else -> {
                                     observeApps(disableList)
+                                    observeReload(disableReload)
                                     getDisabledApps()
                                 }
                             }
@@ -145,6 +148,15 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
             }
         }
     }
+
+    private fun observeReload(reload : MutableLiveData<Boolean>){
+        lifecycleScope.launch(Dispatchers.Main) {
+            reload.observe(viewLifecycleOwner, {
+                binding.srlFragmentList.isRefreshing = it
+            })
+        }
+    }
+
 
     override fun onDestroyActionMode(actionMode: ActionMode?) {
         selectionTracker.clearSelection()
@@ -184,27 +196,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     }
 
     override fun onRefresh() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            val isFresh = when (type) {
-                0 -> {
-                    itemDao.deleteAllUser()
-                    !fragmentViewModel.getUserApps()
-                }
-                1 -> {
-                    itemDao.deleteAllSystem()
-                    !fragmentViewModel.getSystemApps()
-                }
-                else -> {
-                    itemDao.deleteAllDisable()
-                    !fragmentViewModel.getDisabledApps()
-                }
-            }
-            withContext(Dispatchers.Main){
-                if (!isFresh){
-                    binding.srlFragmentList.isRefreshing = false
-                }
-            }
-        }
+        fragmentViewModel.reFresh(type)
     }
 
 
