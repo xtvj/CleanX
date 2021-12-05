@@ -2,7 +2,6 @@ package github.xtvj.cleanx.ui
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.Fragment
@@ -20,7 +19,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.adapter.ListItemAdapter
 import github.xtvj.cleanx.data.AppItem
-import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import github.xtvj.cleanx.utils.log
@@ -63,10 +61,6 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
     @Inject
     lateinit var imageLoaderX: ImageLoaderX
-
-    @Inject
-    lateinit var itemDao: AppItemDao
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -175,20 +169,11 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.item_disable -> {
-                //todo
-                Toast.makeText(
-                    context,
-                    "禁用：" + selectionTracker.selection.size() + "个",
-                    Toast.LENGTH_SHORT
-                ).show()
+                fragmentViewModel.setApps("disable",adapter.getSelectItems())
                 mode?.finish()
             }
             R.id.item_enable -> {
-                Toast.makeText(
-                    context,
-                    "启用：" + selectionTracker.selection.size() + "个",
-                    Toast.LENGTH_SHORT
-                ).show()
+                fragmentViewModel.setApps("enable",adapter.getSelectItems())
                 mode?.finish()
             }
         }

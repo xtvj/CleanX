@@ -23,7 +23,7 @@ class AppRepository @Inject constructor(
     suspend fun getApps(code: String) : Boolean {
             log("get app list $code")
             //获取应用列表
-            val result = Runner.runCommand(code)
+            val result = Runner.noRoot().runCommand(code)
             if (result.isSuccessful) {
                 val temp = result.getOutputAsList(0).map { s ->
                     s.substring(8)

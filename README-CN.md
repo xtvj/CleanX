@@ -1,14 +1,9 @@
-<h1 align="center">CleanX</h1>
-
-<div align="center">
-  <sub>README:</sub>
-  <a href="README-CN.md#readme">
-    <span>:cn:</span>
-  </a>
-  <a href="README.md#readme">
-    <span>:us:</span>
-  </a>
-</div>
+<h2 align="center">CleanX</h2>
+  <p align="center">
+       <a href="README-CN.md">简体中文</a>
+    ·
+    <a href="README.md">English</a>
+  </p>
 
 ## 项目目的：
 
@@ -18,7 +13,6 @@
 
 ## 技术点：
 
-- Kotlin
 - Coroutines
 - Hilt
 - ViewModel

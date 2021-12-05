@@ -60,29 +60,17 @@ open class ListItemAdapter @Inject constructor(
         return ItemViewHolder(binding)
     }
 
-
-
-//    override fun onBindViewHolder(
-//        holder: ItemViewHolder,
-//        position: Int,
-//        payloads: MutableList<Any>
-//    ) {
-//        if (payloads.isEmpty()) {
-//            onBindViewHolder(holder, position);
-//        } else {
-//            onBindItemHolder(holder, position);
-//        }
-//    }
-//
-//    private fun onBindItemHolder(holder: ItemViewHolder, position: Int) {
-//        val viewType = getItemViewType(position)
-//        if (viewType == 0) {
-//            (holder).bind(getItem(position),position)
-//        }
-//    }
-
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.bind(getItem(position), position)
+    }
+
+    fun getSelectItems(): List<AppItem> {
+        val list = mutableListOf<AppItem>()
+        for (position in selectionTracker.selection){
+            val item = getItem(position.toInt())
+            list.add(item!!)
+        }
+        return list
     }
 
     inner class ItemViewHolder(private val holderBinding: ItemFragmentAppListBinding) : RecyclerView.ViewHolder(binding.root) {

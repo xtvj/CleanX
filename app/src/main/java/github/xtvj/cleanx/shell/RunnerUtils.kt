@@ -24,28 +24,28 @@ object RunnerUtils {
         return ESCAPE_XSI.translate(input)
     }
 
-    fun isRootGiven(): Boolean{
-            if (isRootAvailable()) {
-                val result = Runner.needRoot().runCommand( "echo Root")
-                return result.isSuccessful
-            }
-            return false
+    fun isRootGiven(): Boolean {
+        if (isRootAvailable()) {
+            val result = Runner.needRoot().runCommand("echo Root")
+            return result.isSuccessful
         }
+        return false
+    }
 
     fun isRootAvailable(): Boolean {
-            val pathEnv = System.getenv("PATH")
-            if (pathEnv != null) {
-                for (pathDir in pathEnv.split(":").toTypedArray()) {
-                    try {
-                        if (File(pathDir, "su").exists()) {
-                            return true
-                        }
-                    } catch (ignore: NullPointerException) {
+        val pathEnv = System.getenv("PATH")
+        if (pathEnv != null) {
+            for (pathDir in pathEnv.split(":").toTypedArray()) {
+                try {
+                    if (File(pathDir, "su").exists()) {
+                        return true
                     }
+                } catch (ignore: NullPointerException) {
                 }
             }
-            return false
         }
+        return false
+    }
 
 
     class LookupTranslator(lookupMap: Map<CharSequence, CharSequence>?) {
@@ -84,7 +84,7 @@ object RunnerUtils {
         @Throws(IOException::class)
         fun translate(input: CharSequence, index: Int, out: Writer): Int {
             // check if translation exists for the input at position index
-            if (prefixSet[input[index].toInt()]) {
+            if (prefixSet[input[index].code]) {
                 var max = longest
                 if (index + longest > input.length) {
                     max = input.length - index
@@ -109,7 +109,7 @@ object RunnerUtils {
          * @return String output of translation
          */
         fun translate(input: CharSequence): String {
-            return  try {
+            return try {
                 val writer = StringWriter(input.length * 2)
                 translate(input, writer)
                 writer.toString()
@@ -137,12 +137,12 @@ object RunnerUtils {
                     // inlined implementation of Character.toChars(Character.codePointAt(input, pos))
                     // avoids allocating temp char arrays and duplicate checks
                     val c1 = input[pos]
-                    out.write(c1.toInt())
+                    out.write(c1.code)
                     pos++
                     if (Character.isHighSurrogate(c1) && pos < len) {
                         val c2 = input[pos]
                         if (Character.isLowSurrogate(c2)) {
-                            out.write(c2.toInt())
+                            out.write(c2.code)
                             pos++
                         }
                     }
@@ -165,7 +165,7 @@ object RunnerUtils {
          * to support hashCode and equals(Object), allowing it to be the key for a
          * HashMap. See LANG-882.
          *
-         * @param lookupMap Map&lt;CharSequence, CharSequence&gt; table of translator
+         * lookupMap Map&lt;CharSequence, CharSequence&gt; table of translator
          * mappings
          */
         init {
@@ -178,7 +178,7 @@ object RunnerUtils {
             var currentLongest = 0
             for ((key, value) in lookupMap) {
                 this.lookupMap[key.toString()] = value.toString()
-                prefixSet.set(key[0].toInt())
+                prefixSet.set(key[0].code)
                 val sz = key.length
                 if (sz < currentShortest) {
                     currentShortest = sz
@@ -193,7 +193,7 @@ object RunnerUtils {
     }
 
     init {
-        val escapeXsiMap: Map<CharSequence, CharSequence> = HashMap()
+        val escapeXsiMap = mutableMapOf<CharSequence, CharSequence>()
         escapeXsiMap.plus(Pair("|", "\\|"))
         escapeXsiMap.plus(Pair("&", "\\&"))
         escapeXsiMap.plus(Pair(";", "\\;"))
@@ -217,7 +217,7 @@ object RunnerUtils {
         escapeXsiMap.plus(Pair("~", "\\~"))
         escapeXsiMap.plus(Pair("=", "\\="))
         escapeXsiMap.plus(Pair("%", "\\%"))
-        ESCAPE_XSI =
+         ESCAPE_XSI =
             LookupTranslator(Collections.unmodifiableMap(escapeXsiMap))
     }
 }

@@ -7,13 +7,17 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
+import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.data.repository.AppRepository
+import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.shell.RunnerUtils
+import github.xtvj.cleanx.utils.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+
 
 @HiltViewModel
 class ListViewModel @Inject constructor(
@@ -95,6 +99,37 @@ class ListViewModel @Inject constructor(
                         appItemDao.deleteAllDisable()
                         !repository.getApps(RunnerUtils.GETDISABLED)
                     })
+                }
+            }
+        }
+
+    }
+
+    fun setApps(s: String,list : List<AppItem>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            //可以添加弹窗提示正在执行中。由于执行时间过于短暂，暂时不添加
+            when(s){
+                "disable" ->{
+                    val builder = StringBuilder()
+                    for (item in list){
+                        builder.append(RunnerUtils.CMD_PM + " disable " + item.id + "\n")
+                    }
+                    val result = Runner.needRoot().runCommand(builder.toString())
+                    log(result.output)
+                    for (item in list){
+                        appItemDao.update(item.id,false)
+                    }
+                }
+                "enable" ->{
+                    val builder = StringBuilder()
+                    for (item in list){
+                        builder.append(RunnerUtils.CMD_PM + " enable " + item.id + "\n")
+                    }
+                    val result = Runner.needRoot().runCommand(builder.toString())
+                    log(result.output)
+                    for (item in list){
+                        appItemDao.update(item.id,true)
+                    }
                 }
             }
         }

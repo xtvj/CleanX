@@ -71,6 +71,11 @@ abstract class Runner protected constructor() {
             return this
         }
 
+        fun noRoot() : Companion{
+            instance = userInstance()
+            return this
+        }
+
         private fun rootInstance(): Runner{
                 if (rootShellRunner == null) {
                     rootShellRunner = RootShellRunner()
