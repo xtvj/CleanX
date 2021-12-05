@@ -116,8 +116,10 @@ class ListViewModel @Inject constructor(
                     }
                     val result = Runner.needRoot().runCommand(builder.toString())
                     log(result.output)
-                    for (item in list){
-                        appItemDao.update(item.id,false)
+                    if (result.isSuccessful){
+                        for (item in list){
+                            appItemDao.update(item.id,false)
+                        }
                     }
                 }
                 "enable" ->{
@@ -127,8 +129,10 @@ class ListViewModel @Inject constructor(
                     }
                     val result = Runner.needRoot().runCommand(builder.toString())
                     log(result.output)
-                    for (item in list){
-                        appItemDao.update(item.id,true)
+                    if (result.isSuccessful){
+                        for (item in list){
+                            appItemDao.update(item.id,true)
+                        }
                     }
                 }
             }

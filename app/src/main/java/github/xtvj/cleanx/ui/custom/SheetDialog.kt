@@ -122,20 +122,7 @@ class SheetDialog constructor(
                         //pm disable package
                         val result = Runner.needRoot().runCommand(RunnerUtils.CMD_PM + " disable " + item.id)
                         if (result.isSuccessful){
-                            val newItem = AppItem(
-                                item.id,
-                                item.name,
-                                item.version,
-                                item.isSystem,
-                                false,
-                                item.firstInstallTime,
-                                item.lastUpdateTime,
-                                item.dataDir,
-                                item.sourceDir,
-                                item.deviceProtectedDataDir,
-                                item.publicSourceDir
-                            )
-                            appItemDao.updateItem(newItem)
+                            appItemDao.update(item.id,false)
                             withContext(Dispatchers.Main){
                                 Toast.makeText(context,
                                     "${context.getString(R.string.disable)}${item.name}${
@@ -154,20 +141,7 @@ class SheetDialog constructor(
                         val result = Runner.needRoot().runCommand(RunnerUtils.CMD_PM + " enable " + item.id)
                         //pm enable package
                         if (result.isSuccessful){
-                            val newItem = AppItem(
-                                item.id,
-                                item.name,
-                                item.version,
-                                item.isSystem,
-                                true,
-                                item.firstInstallTime,
-                                item.lastUpdateTime,
-                                item.dataDir,
-                                item.sourceDir,
-                                item.deviceProtectedDataDir,
-                                item.publicSourceDir
-                            )
-                            appItemDao.updateItem(newItem)
+                            appItemDao.update(item.id,true)
                             withContext(Dispatchers.Main){
                                 Toast.makeText(context,
                                     "${context.getString(R.string.enable)}${item.name}${
