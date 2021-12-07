@@ -101,8 +101,7 @@ open class ListItemAdapter @Inject constructor(
         }
 
         private fun bindSelectedState() {
-            holderBinding.cvAppItem.isChecked =
-                this@ListItemAdapter.selectionTracker.isSelected(details.selectionKey)
+            holderBinding.cvAppItem.isChecked = this@ListItemAdapter.selectionTracker.isSelected(details.selectionKey)
         }
 
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> {

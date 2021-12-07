@@ -6,9 +6,9 @@
     <color name="textColorPrimary">@android:color/white</color>
     <color name="textColorSecondary">#FFBEBEBE</color>
 
-    <color name="white">#ffffff</color>
 
-    <color name="sand_shadow">#c89666</color>
     <color name="splash_color">#FFDADA</color>
+    <color name="card_View_selected">#6ACFEE</color>
+    <color name="card_View_no_selected">@color/colorPrimary</color>
 
 </resources>
