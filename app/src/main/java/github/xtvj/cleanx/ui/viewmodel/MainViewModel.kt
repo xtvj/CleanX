@@ -1,4 +1,4 @@
-package github.xtvj.cleanx.viewmodel
+package github.xtvj.cleanx.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 

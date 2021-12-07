@@ -1,25 +1,26 @@
 package github.xtvj.cleanx.ui
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
-import github.xtvj.cleanx.adapter.MainViewPageAdapter
 import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.databinding.ActivityMainBinding
+import github.xtvj.cleanx.ui.adapter.MainViewPageAdapter
+import github.xtvj.cleanx.ui.base.BaseActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
 
     private lateinit var binding: ActivityMainBinding
@@ -131,7 +132,10 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.item_setting ->{
-                Toast.makeText(this,"点击设置",Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this,SettingsActivity::class.java))
+            }
+            R.id.item_search ->{
+                Toast.makeText(this,"功能未完成",Toast.LENGTH_SHORT).show()
             }
         }
         return true

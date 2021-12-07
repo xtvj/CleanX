@@ -17,13 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
-import github.xtvj.cleanx.adapter.ListItemAdapter
 import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.databinding.FragmentAppListBinding
+import github.xtvj.cleanx.ui.adapter.ListItemAdapter
+import github.xtvj.cleanx.ui.viewmodel.ListViewModel
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import github.xtvj.cleanx.utils.log
-import github.xtvj.cleanx.viewmodel.ListViewModel
-import jp.wasabeef.recyclerview.animators.SlideInDownAnimator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -96,7 +95,6 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                 }
             })
         binding.rvApp.layoutManager = LinearLayoutManager(context)
-        binding.rvApp.itemAnimator = SlideInDownAnimator()
 
         return binding.root
     }

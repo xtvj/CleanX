@@ -1,4 +1,4 @@
-package github.xtvj.cleanx.adapter
+package github.xtvj.cleanx.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager

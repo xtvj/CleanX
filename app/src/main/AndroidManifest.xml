@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="github.xtvj.cleanx">
 
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
 
@@ -16,13 +17,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CleanX">
         <activity
+            android:name=".ui.base.BaseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="false"
+            android:label="设置" />
+        <activity
             android:name=".ui.MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
             android:label="@string/app_name"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/Theme.CleanX.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.CleanX" />
         <activity
             android:name=".ui.SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -31,9 +37,11 @@
             android:theme="@style/Theme.CleanX.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"

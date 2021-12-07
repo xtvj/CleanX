@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:fitsSystemWindows="false"
     tools:context=".ui.MainActivity">
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -16,11 +16,11 @@
             android:id="@+id/tb_main"
             android:layout_width="match_parent"
             app:layout_scrollFlags="scroll|enterAlways"
-            android:layout_height="wrap_content"/>
+            android:layout_height="?android:actionBarSize"/>
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tl_main"
+            style="@style/Widget.MaterialComponents.TabLayout.Colored"
             android:layout_width="match_parent"
-            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
             android:layout_height="wrap_content" />
     </com.google.android.material.appbar.AppBarLayout>
 

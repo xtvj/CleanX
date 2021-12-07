@@ -57,7 +57,7 @@ dependencies {
     // For control over item selection of both touch and mouse driven selection
     implementation "androidx.recyclerview:recyclerview-selection:1.1.0"
 
-    //swiperefreshlayout
+    //swipe refresh layout
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
     //Hilt
@@ -80,16 +80,14 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.4.0")
 
     //Room
-    implementation 'androidx.room:room-runtime:2.4.0-beta02'
-    annotationProcessor 'androidx.room:room-compiler:2.4.0-beta02'
+    implementation 'androidx.room:room-runtime:2.4.0-rc01'
+    annotationProcessor 'androidx.room:room-compiler:2.4.0-rc01'
     // To use Kotlin annotation processing tool (kapt)
-    kapt('androidx.room:room-compiler:2.4.0-beta02')
-//    // To use Kotlin Symbolic Processing (KSP)
-//    ksp("androidx.room:room-compiler:2.3.0")
+    kapt('androidx.room:room-compiler:2.4.0-rc01')
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation('androidx.room:room-ktx:2.4.0-beta02')
+    implementation('androidx.room:room-ktx:2.4.0-rc01')
     // optional - Paging 3 Integration
-    implementation "androidx.room:room-paging:2.4.0-beta02"
+    implementation "androidx.room:room-paging:2.4.0-rc01"
 
     //Paging 3
     implementation "androidx.paging:paging-runtime-ktx:3.1.0"
@@ -110,11 +108,14 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
     // recyclerview animators
-    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
+//    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
 
     //PermissionsDispatcher
 //    implementation "com.github.permissions-dispatcher:permissionsdispatcher:4.9.1"
 //    kapt "com.github.permissions-dispatcher:permissionsdispatcher-processor:4.9.1"
+
+    //setting preference
+    implementation 'androidx.preference:preference-ktx:1.1.1'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

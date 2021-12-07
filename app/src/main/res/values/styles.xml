@@ -1,3 +1,102 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.CleanX" parent="Theme.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorOnSurface">@color/textColorPrimary</item>
+        <item name="android:colorBackground">@color/colorPrimaryDark</item>
+        <item name="android:colorControlActivated">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:textColorSecondary">@color/textColorSecondary</item>
+        <item name="appBarLayoutStyle">@style/Theme.AppBarLayout</item>
+        <item name="materialAlertDialogTheme">@style/Theme.AlertDialog</item>
+        <item name="bottomSheetDialogTheme">@style/Theme.BottomSheetDialog</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <!-- Status bar color. -->
+        <!--        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>-->
+        <!--        &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+        <!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
+        <!--        <item name="android:windowLightStatusBar">true</item>-->
+    </style>
+
+    <style name="Theme.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+    </style>
+
+
+    <style name="Theme.AppBarLayout" parent="Widget.MaterialComponents.AppBarLayout.Primary">
+    </style>
+
+
+    <style name="Theme.AlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorOnPrimary">@color/colorPrimary</item>
+        <item name="colorOnSurface">@color/colorPrimaryDark</item>
+        <item name="shapeAppearanceOverlay">@style/Theme.AlertDialog.Rounded</item>
+        <item name="android:checkedTextViewStyle">@style/Theme.AlertDialog.CheckedTextView</item>
+        <item name="checkedTextViewStyle">@style/Theme.AlertDialog.CheckedTextView</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/Theme.AlertDialog.Title.Text</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/Theme.AlertDialog.Body.Text</item>
+        <item name="materialAlertDialogTitlePanelStyle">@style/Theme.AlertDialog.Title.Panel</item>
+    </style>
+
+    <style name="Theme.AlertDialog.Rounded" parent="MaterialAlertDialog.MaterialComponents.Title.Panel">
+        <item name="cornerSize">@dimen/padding_medium</item>
+    </style>
+
+
+    <style name="Theme.AlertDialog.CheckedTextView" parent="Widget.MaterialComponents.CheckedTextView">
+        <item name="android:textSize">@dimen/font_size_larger</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="Theme.AlertDialog.Title.Text" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/font_size_larger</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+
+    <style name="Theme.AlertDialog.Body.Text" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
+        <item name="android:textSize">@dimen/font_size_large</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+
+    <style name="Theme.AlertDialog.Title.Panel" parent="MaterialAlertDialog.MaterialComponents.Title.Panel">
+        <item name="android:paddingTop">@dimen/padding_medium</item>
+        <item name="android:paddingBottom">@dimen/padding_small</item>
+        <item name="android:paddingLeft">@dimen/padding_medium</item>
+        <item name="android:paddingRight">@dimen/padding_medium</item>
+    </style>
+
+
+
+    <style name="Theme.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="bottomSheetStyle">@style/Theme.BottomSheetModal</item>
+    </style>
+
+    <style name="Theme.BottomSheetModal" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="android:paddingTop">@dimen/padding_large</item>
+        <item name="android:background">@drawable/rounded_top_small</item>
+        <item name="shapeAppearance">@null</item>
+        <item name="shapeAppearanceOverlay">@null</item>
+    </style>
+
+
+    <style name="Theme.CleanX.Fullscreen" parent="Theme.CleanX">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@drawable/background_splash</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
 
 </resources>

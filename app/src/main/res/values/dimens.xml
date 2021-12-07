@@ -6,11 +6,14 @@
     <dimen name="size_30dp">30dp</dimen>
     <dimen name="size_48dp">48dp</dimen>
     <dimen name="size_50dp">50dp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_large">24dp</dimen>
 
     <dimen name="text_16sp">16sp</dimen>
     <dimen name="text_18sp">18sp</dimen>
     <dimen name="text_20sp">20sp</dimen>
-
-
+    <dimen name="font_size_larger">16sp</dimen>
+    <dimen name="font_size_large">14sp</dimen>
 
 </resources>

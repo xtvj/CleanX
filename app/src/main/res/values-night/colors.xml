@@ -1,0 +1,14 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <color name="colorPrimary">#484444</color>
+    <color name="colorPrimaryDark">#484444</color>
+    <color name="colorAccent">@color/sand_shadow</color>
+    <color name="textColorPrimary">@android:color/white</color>
+    <color name="textColorSecondary">#FFBEBEBE</color>
+
+    <color name="white">#ffffff</color>
+
+    <color name="sand_shadow">#c89666</color>
+    <color name="splash_color">#FFDADA</color>
+
+</resources>

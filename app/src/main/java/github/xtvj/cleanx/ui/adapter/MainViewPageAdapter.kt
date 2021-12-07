@@ -1,4 +1,4 @@
-package github.xtvj.cleanx.adapter
+package github.xtvj.cleanx.ui.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
