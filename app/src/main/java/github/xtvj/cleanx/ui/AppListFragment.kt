@@ -70,6 +70,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         log("onCreateView: $type")
 
         binding = FragmentAppListBinding.inflate(layoutInflater, container, false)
+        adapter.setAdapterType(type)
         binding.rvApp.adapter = adapter
         selectionTracker = SelectionTracker.Builder<Long>(
             "selection",

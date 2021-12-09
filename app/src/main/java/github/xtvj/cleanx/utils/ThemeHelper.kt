@@ -2,18 +2,15 @@ package github.xtvj.cleanx.utils
 
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
+import github.xtvj.cleanx.data.DarkModel
 
 object ThemeHelper {
-    private const val LIGHT_MODE = "light"
-    private const val DARK_MODE = "dark"
-    private const val DEFAULT_MODE = "default"
-    fun applyTheme(themePref: String) {
-        log("theme: $themePref")
-        when (themePref) {
-            LIGHT_MODE -> {
+    fun applyTheme(darkModel: DarkModel) {
+        when (darkModel) {
+            DarkModel.LIGHT -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
-            DARK_MODE -> {
+            DarkModel.NIGHT -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
             else -> {

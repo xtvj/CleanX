@@ -3,6 +3,7 @@ package github.xtvj.cleanx.ui
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.ui.base.BaseActivity
 
@@ -11,21 +12,21 @@ import github.xtvj.cleanx.ui.base.BaseActivity
  * 也就是还会出现闪白屏情况
  */
 @SuppressLint("CustomSplashScreen")
+@AndroidEntryPoint
 class SplashActivity : BaseActivity() {
 
-//    val startLifecycleScope = lifecycle.coroutineScope
-
-//    private lateinit var binding: ActivitySplashBinding
+//    @Inject
+//    lateinit var dataStoreManager : DataStoreManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        binding = ActivitySplashBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
         setContentView(R.layout.activity_splash)
-//        startLifecycleScope.launch {
-//                delay(200)
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
+
+//        lifecycleScope.launch {
+//            ThemeHelper.applyTheme(dataStoreManager.fetchInitialPreferences().darkModel)
 //        }
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
+
 }

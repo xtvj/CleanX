@@ -22,17 +22,20 @@ import github.xtvj.cleanx.utils.DateUtil
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import java.util.*
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 open class ListItemAdapter @Inject constructor(
     private val imageLoaderX: ImageLoaderX,
     private val pm: PackageManager,
     private val appItemDao: AppItemDao
-) :PagingDataAdapter<AppItem, ListItemAdapter.ItemViewHolder>(diffCallback) {
+) : PagingDataAdapter<AppItem, ListItemAdapter.ItemViewHolder>(diffCallback) {
 
 
     private lateinit var selectionTracker: SelectionTracker<Long>
 
     private lateinit var binding: ItemFragmentAppListBinding
+
+    private var type by Delegates.notNull<Int>()
 
     companion object {
         val diffCallback = object : DiffUtil.ItemCallback<AppItem>() {
@@ -61,33 +64,36 @@ open class ListItemAdapter @Inject constructor(
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(getItem(position), position)
+        holder.bind(getItem(position)!!, position)
     }
 
     fun getSelectItems(): List<AppItem> {
         val list = mutableListOf<AppItem>()
-        for (position in selectionTracker.selection){
+        for (position in selectionTracker.selection) {
             val item = getItem(position.toInt())
             list.add(item!!)
         }
         return list
     }
 
-    inner class ItemViewHolder(private val holderBinding: ItemFragmentAppListBinding) : RecyclerView.ViewHolder(binding.root) {
+    fun setAdapterType(type: Int) {
+        this.type = type
+    }
+
+    inner class ItemViewHolder(private val holderBinding: ItemFragmentAppListBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         private val details = ItemDetails()
 
         @SuppressLint("SetTextI18n")
-        fun bind(item: AppItem?, position: Int) {
-            if (item == null){
-                return
-            }
+        fun bind(item: AppItem, position: Int) {
             details.position = position.toLong()
             holderBinding.tvAppId.text = item.id
             holderBinding.tvAppName.text = item.name
             holderBinding.tvAppVersion.text =
                 holderBinding.tvAppVersion.context.getString(R.string.version) + item.version
+
             holderBinding.ivIsEnable.visibility =
-                if (item.isEnable) View.INVISIBLE else View.VISIBLE
+                if (type == 2 || item.isEnable) View.INVISIBLE else View.VISIBLE
             holderBinding.tvUpdateTime.text =
                 holderBinding.tvUpdateTime.context.getString(R.string.update_time) + DateUtil.format(
                     item.lastUpdateTime
@@ -96,12 +102,19 @@ open class ListItemAdapter @Inject constructor(
 
             bindSelectedState()
             holderBinding.cvAppItem.setOnClickListener {
-                SheetDialog(holderBinding.cvAppItem.context, imageLoaderX, pm, item,appItemDao).show()
+                SheetDialog(
+                    holderBinding.cvAppItem.context,
+                    imageLoaderX,
+                    pm,
+                    item,
+                    appItemDao
+                ).show()
             }
         }
 
         private fun bindSelectedState() {
-            holderBinding.cvAppItem.isChecked = this@ListItemAdapter.selectionTracker.isSelected(details.selectionKey)
+            holderBinding.cvAppItem.isChecked =
+                this@ListItemAdapter.selectionTracker.isSelected(details.selectionKey)
         }
 
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> {
