@@ -15,7 +15,6 @@ private val Context.dataStore by preferencesDataStore("settings")
 enum class SortOrder {
     BY_ID,
     BY_NAME,
-    BY_DATE,
     BY_UPDATE_TIME
 }
 

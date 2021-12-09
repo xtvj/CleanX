@@ -8,6 +8,7 @@
     app:cardBackgroundColor="@color/selector_card_view_background"
     app:checkedIconTint="@color/colorAccent"
     app:cardCornerRadius="0dp"
+    app:cardElevation="0dp"
     android:checkable="true"
     android:clickable="true"
     android:focusable="true"
