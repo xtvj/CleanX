@@ -64,7 +64,10 @@ open class ListItemAdapter @Inject constructor(
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(getItem(position)!!, position)
+        val item = getItem(position)
+        if (item != null){
+            holder.bind(item,position)
+        }
     }
 
     fun getSelectItems(): List<AppItem> {

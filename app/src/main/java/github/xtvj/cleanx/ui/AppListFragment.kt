@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.whenResumed
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -18,14 +19,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.AppItem
+import github.xtvj.cleanx.data.DataStoreManager
+import github.xtvj.cleanx.data.SortOrder
 import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.ui.adapter.ListItemAdapter
 import github.xtvj.cleanx.ui.viewmodel.ListViewModel
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import github.xtvj.cleanx.utils.log
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -60,6 +62,9 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
     @Inject
     lateinit var imageLoaderX: ImageLoaderX
+
+    @Inject
+    lateinit var dataStoreManager: DataStoreManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -96,7 +101,6 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                 }
             })
         binding.rvApp.layoutManager = LinearLayoutManager(context)
-
         return binding.root
     }
 
@@ -104,30 +108,55 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launch {
             lifecycle.whenResumed {
+
                 //viewModel是懒加载，必需在主线程中创建
                 fragmentViewModel.run {
                     lifecycleScope.launch(Dispatchers.IO) {
                         if (needLoadData) {
                             when (type) {
                                 0 -> {
-                                    observeApps(userList)
-                                    observeReload(userReload)
                                     getUserApps()
+                                    observeReload(userReload)
                                 }
                                 1 -> {
-                                    observeApps(systemList)
-                                    observeReload(systemReload)
                                     getSystemApps()
+                                    observeReload(systemReload)
                                 }
                                 else -> {
-                                    observeApps(disableList)
-                                    observeReload(disableReload)
                                     getDisabledApps()
+                                    observeReload(disableReload)
                                 }
                             }
                         }
                         needLoadData = false
+
+                        dataStoreManager.userPreferencesFlow.collectLatest {
+                            log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
+                            when (it.sortOrder) {
+                                SortOrder.BY_ID -> {
+                                    sortByColumn.postValue("id")
+                                }
+                                SortOrder.BY_NAME -> {
+                                    sortByColumn.postValue("name")
+                                }
+                                SortOrder.BY_UPDATE_TIME -> {
+                                    sortByColumn.postValue("lastUpdateTime")
+                                }
+                            }
+                            when (type) {
+                                0 -> {
+                                    observeApps(userList())
+                                }
+                                1 -> {
+                                    observeApps(systemList())
+                                }
+                                else -> {
+                                    observeApps(disableList())
+                                }
+                            }
+                        }
                     }
+
                 }
             }
         }
@@ -137,12 +166,23 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     private fun observeApps(apps: Flow<PagingData<AppItem>>) {
         lifecycleScope.launch(Dispatchers.Main) {
             apps.collectLatest {
-                adapter.submitData(it)
+                adapter.submitData(lifecycle,it)
             }
+        }
+        //todo 滑动到顶部
+        lifecycleScope.launch{
+            adapter.loadStateFlow
+                .distinctUntilChanged { old, new ->
+                    (old.mediator?.prepend?.endOfPaginationReached == true) ==
+                            (new.mediator?.prepend?.endOfPaginationReached == true) }
+                .filter { it.refresh is LoadState.NotLoading && it.prepend.endOfPaginationReached && !it.append.endOfPaginationReached}
+                .collectLatest {
+                    binding.rvApp.scrollTo(0,0)
+                }
         }
     }
 
-    private fun observeReload(reload : MutableLiveData<Boolean>){
+    private fun observeReload(reload: MutableLiveData<Boolean>) {
         lifecycleScope.launch(Dispatchers.Main) {
             reload.observe(viewLifecycleOwner, {
                 binding.srlFragmentList.isRefreshing = it
@@ -168,11 +208,11 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.item_disable -> {
-                fragmentViewModel.setApps("disable",adapter.getSelectItems())
+                fragmentViewModel.setApps("disable", adapter.getSelectItems())
                 mode?.finish()
             }
             R.id.item_enable -> {
-                fragmentViewModel.setApps("enable",adapter.getSelectItems())
+                fragmentViewModel.setApps("enable", adapter.getSelectItems())
                 mode?.finish()
             }
         }

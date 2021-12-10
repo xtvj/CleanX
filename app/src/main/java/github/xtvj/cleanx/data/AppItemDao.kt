@@ -9,14 +9,14 @@ interface AppItemDao {
     @Query("SELECT * FROM appItem")
     fun getAll(): PagingSource<Int,AppItem>
 
-    @Query("SELECT * FROM appItem WHERE isSystem = 0 ORDER BY id ASC")
-    fun getUser(): PagingSource<Int,AppItem>
+    @Query("SELECT * FROM appItem WHERE isSystem = 0 ORDER BY CASE WHEN :sortByColumn = 'id' AND :sortDirection = 1 THEN id END ASC,CASE WHEN :sortByColumn = 'id' AND :sortDirection = 0 THEN id END DESC,CASE WHEN :sortByColumn = 'name' AND :sortDirection = 1 THEN name COLLATE NOCASE END ASC,CASE WHEN :sortByColumn = 'name' AND :sortDirection = 0 THEN name COLLATE NOCASE END DESC,CASE WHEN :sortByColumn = 'lastUpdateTime' AND :sortDirection = 1 THEN lastUpdateTime END ASC,CASE WHEN :sortByColumn = 'lastUpdateTime' AND :sortDirection = 0 THEN lastUpdateTime END DESC")
+    fun getUser(sortByColumn: String, sortDirection: Boolean): PagingSource<Int, AppItem>
 
-    @Query("SELECT * FROM appItem WHERE isSystem = 1 ORDER BY id ASC")
-    fun getSystem(): PagingSource<Int,AppItem>
+    @Query("SELECT * FROM appItem WHERE isSystem = 1 ORDER BY CASE WHEN :sortByColumn = 'id' AND :sortDirection = 1 THEN id END ASC,CASE WHEN :sortByColumn = 'id' AND :sortDirection = 0 THEN id END DESC,CASE WHEN :sortByColumn = 'name' AND :sortDirection = 1 THEN name COLLATE NOCASE END ASC,CASE WHEN :sortByColumn = 'name' AND :sortDirection = 0 THEN name COLLATE NOCASE END DESC,CASE WHEN :sortByColumn = 'lastUpdateTime' AND :sortDirection = 1 THEN lastUpdateTime END ASC,CASE WHEN :sortByColumn = 'lastUpdateTime' AND :sortDirection = 0 THEN lastUpdateTime END DESC")
+    fun getSystem(sortByColumn: String, sortDirection: Boolean): PagingSource<Int,AppItem>
 
-    @Query("SELECT * FROM appItem WHERE isEnable = 0 ORDER BY id ASC")
-    fun getDisable(): PagingSource<Int,AppItem>
+    @Query("SELECT * FROM appItem WHERE isEnable = 0 ORDER BY CASE WHEN :sortByColumn = 'id' AND :sortDirection = 1 THEN id END ASC,CASE WHEN :sortByColumn = 'id' AND :sortDirection = 0 THEN id END DESC,CASE WHEN :sortByColumn = 'name' AND :sortDirection = 1 THEN name COLLATE NOCASE END ASC,CASE WHEN :sortByColumn = 'name' AND :sortDirection = 0 THEN name COLLATE NOCASE END DESC,CASE WHEN :sortByColumn = 'lastUpdateTime' AND :sortDirection = 1 THEN lastUpdateTime END ASC,CASE WHEN :sortByColumn = 'lastUpdateTime' AND :sortDirection = 0 THEN lastUpdateTime END DESC")
+    fun getDisable(sortByColumn: String, sortDirection: Boolean): PagingSource<Int,AppItem>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(vararg appItem: AppItem)

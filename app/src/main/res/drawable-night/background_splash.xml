@@ -3,7 +3,7 @@
     android:opacity="opaque">
     <item android:gravity="fill">
         <shape android:shape="rectangle">
-            <solid android:color="#ffffff" />
+            <solid android:color="#484444" />
         </shape>
     </item>
     <item

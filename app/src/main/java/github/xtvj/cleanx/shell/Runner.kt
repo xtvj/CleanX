@@ -86,7 +86,7 @@ abstract class Runner protected constructor() {
         private fun userInstance(): Runner{
                 if (userShellRunner == null) {
                     userShellRunner = UserShellRunner()
-                    log("RootShellRunner")
+                    log("userInstance")
                 }
                 return userShellRunner!!
             }

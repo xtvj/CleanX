@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.xtvj.cleanx.data.AppItem
@@ -14,6 +15,7 @@ import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.utils.log
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -24,28 +26,36 @@ class ListViewModel @Inject constructor(
     private val repository: AppRepository,
     private val appItemDao: AppItemDao
 ) : ViewModel() {
+    var sortByColumn = MutableLiveData("id")
+    var sortDirection = MutableLiveData(true)
 
-    val userList = Pager(
+    fun userList() : Flow<PagingData<AppItem>> {
+        log("ViewModel: ${sortByColumn.value}")
+      return Pager(
         PagingConfig(pageSize = 15)
     ) {
         //https://issuetracker.google.com/issues/175139766
-        appItemDao.getUser()
+        appItemDao.getUser(sortByColumn.value!!, sortDirection.value == true)
     }.flow
         .cachedIn(viewModelScope)
+    }
 
-    val systemList = Pager(
+    fun systemList() : Flow<PagingData<AppItem>> {
+        return Pager(
         PagingConfig(pageSize = 15)
     ) {
-        appItemDao.getSystem()
+        appItemDao.getSystem(sortByColumn.value!!, sortDirection.value == true)
     }.flow
-        .cachedIn(viewModelScope)
+        .cachedIn(viewModelScope)}
 
-    val disableList = Pager(
-        PagingConfig(pageSize = 15)
-    ) {
-        appItemDao.getDisable()
-    }.flow
-        .cachedIn(viewModelScope)
+    fun disableList() : Flow<PagingData<AppItem>> {
+        return Pager(
+            PagingConfig(pageSize = 15)
+        ) {
+            appItemDao.getDisable(sortByColumn.value!!, sortDirection.value == true)
+        }.flow
+            .cachedIn(viewModelScope)
+    }
 
     var userReload = MutableLiveData(false)
     var systemReload = MutableLiveData(false)
@@ -74,6 +84,10 @@ class ListViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             repository.getApps(RunnerUtils.GETAll)
         }
+    }
+
+    fun setName(){
+        sortByColumn.postValue("name")
     }
 
     fun reFresh(type: Int) {

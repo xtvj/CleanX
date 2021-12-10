@@ -21,7 +21,9 @@
             android:exported="false" />
         <activity
             android:name=".ui.SettingsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
+            android:theme="@style/Theme.CleanX"
             android:label="设置" />
         <activity
             android:name=".ui.MainActivity"
@@ -34,7 +36,8 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.CleanX.Fullscreen">
+            android:theme="@style/Theme.CleanX.Fullscreen"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -3,7 +3,6 @@ package github.xtvj.cleanx.ui
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.ui.base.BaseActivity
 
@@ -12,7 +11,9 @@ import github.xtvj.cleanx.ui.base.BaseActivity
  * 也就是还会出现闪白屏情况
  */
 @SuppressLint("CustomSplashScreen")
-@AndroidEntryPoint
+//@AndroidEntryPoint
+//初始页面的windowsBackground不适用于DarkModel,只有当系统设置为深色模式时才起作用
+//app内部设置为深色模式时，背景色不会改变
 class SplashActivity : BaseActivity() {
 
 //    @Inject
@@ -22,9 +23,6 @@ class SplashActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-//        lifecycleScope.launch {
-//            ThemeHelper.applyTheme(dataStoreManager.fetchInitialPreferences().darkModel)
-//        }
         startActivity(Intent(this, MainActivity::class.java))
         finish()
     }

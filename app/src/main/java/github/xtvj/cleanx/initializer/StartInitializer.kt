@@ -13,13 +13,15 @@ class StartInitializer : Initializer<Unit> {
     override fun create(context: Context) {
         //初始化操作
 
-        //初始化log工具
-        initLog()
-
+        //
         CoroutineScope(Dispatchers.IO).launch{
             val dataStoreManager = DataStoreManager(context)
             ThemeHelper.applyTheme(dataStoreManager.fetchInitialPreferences().darkModel)
         }
+
+        //初始化log工具
+        initLog()
+
 
     }
 

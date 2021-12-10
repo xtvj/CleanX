@@ -7,7 +7,6 @@
     <color name="textColorSecondary">#FFBEBEBE</color>
 
 
-    <color name="splash_color">#FFDADA</color>
     <color name="card_View_selected">#6ACFEE</color>
     <color name="card_View_no_selected">@color/colorPrimary</color>
     <color name="bottom_sheet">@color/colorPrimary</color>

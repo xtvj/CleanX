@@ -9,6 +9,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.DarkModel
 import github.xtvj.cleanx.data.DataStoreManager
+import github.xtvj.cleanx.data.SortOrder
 import github.xtvj.cleanx.ui.base.BaseActivity
 import github.xtvj.cleanx.utils.ThemeHelper
 import kotlinx.coroutines.Dispatchers
@@ -40,9 +41,11 @@ class SettingsActivity : BaseActivity() {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
             val themePreference = findPreference<ListPreference>("themeMode")
+            val sortPreference = findPreference<ListPreference>("sortMode")
 
             lifecycleScope.launch(Dispatchers.IO){
-                when(dataStoreManager.fetchInitialPreferences().darkModel){
+               val preferences =  dataStoreManager.fetchInitialPreferences()
+                when(preferences.darkModel){
                     DarkModel.AUTO -> {
                         themePreference?.setDefaultValue("default")
                     }
@@ -51,6 +54,17 @@ class SettingsActivity : BaseActivity() {
                     }
                     DarkModel.LIGHT ->{
                         themePreference?.setDefaultValue("light")
+                    }
+                }
+                when(preferences.sortOrder){
+                    SortOrder.BY_ID ->{
+                        sortPreference?.setDefaultValue("id")
+                    }
+                    SortOrder.BY_NAME ->{
+                        sortPreference?.setDefaultValue("name")
+                    }
+                    SortOrder.BY_UPDATE_TIME ->{
+                        sortPreference?.setDefaultValue("update_time")
                     }
                 }
             }
@@ -69,6 +83,21 @@ class SettingsActivity : BaseActivity() {
                     }
                     ThemeHelper.applyTheme(darkModel)
 
+                    true
+                }
+            sortPreference?.onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _, newValue ->
+//                    <item>id</item>
+//                    <item>name</item>
+//                    <item>update_time</item>
+                    val sortModel = when(newValue){
+                        "id" -> SortOrder.BY_ID
+                        "name" -> SortOrder.BY_NAME
+                        else -> SortOrder.BY_UPDATE_TIME
+                    }
+                    lifecycleScope.launch(Dispatchers.IO){
+                        dataStoreManager.updateSortOrder(sortModel)
+                    }
                     true
                 }
         }
