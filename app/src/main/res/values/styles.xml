@@ -60,6 +60,7 @@
         <item name="materialAlertDialogBodyTextStyle">@style/Theme.AlertDialog.Body.Text</item>
         <item name="materialAlertDialogTitlePanelStyle">@style/Theme.AlertDialog.Title.Panel</item>
         <item name="shapeAppearanceOverlay">@style/DialogCorners</item>
+        <item name="android:background">@color/colorPrimary</item>
     </style>
 
     <style name="DialogCorners">
