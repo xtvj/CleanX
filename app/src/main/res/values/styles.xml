@@ -11,7 +11,7 @@
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="android:textColorSecondary">@color/textColorSecondary</item>
         <item name="appBarLayoutStyle">@style/Theme.AppBarLayout</item>
-        <item name="materialAlertDialogTheme">@style/Theme.AlertDialog</item>
+        <item name="materialAlertDialogTheme">@style/Theme.MaterialAlertDialog</item>
         <item name="alertDialogTheme">@style/Theme.AlertDialog</item>
         <item name="bottomSheetDialogTheme">@style/Theme.BottomSheetDialog</item>
         <item name="android:windowContentTransitions">true</item>
@@ -49,6 +49,22 @@
         <item name="materialAlertDialogBodyTextStyle">@style/Theme.AlertDialog.Body.Text</item>
         <item name="materialAlertDialogTitlePanelStyle">@style/Theme.AlertDialog.Title.Panel</item>
         <item name="android:windowBackground">@drawable/rounded_all_small</item>
+    </style>
+
+    <style name="Theme.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorOnPrimary">@color/colorPrimary</item>
+        <item name="colorOnSurface">@color/colorPrimaryDark</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/Theme.AlertDialog.Title.Text</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/Theme.AlertDialog.Body.Text</item>
+        <item name="materialAlertDialogTitlePanelStyle">@style/Theme.AlertDialog.Title.Panel</item>
+        <item name="shapeAppearanceOverlay">@style/DialogCorners</item>
+    </style>
+
+    <style name="DialogCorners">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
     </style>
 
 

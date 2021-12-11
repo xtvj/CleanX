@@ -170,9 +170,10 @@ class SheetDialog constructor(
 
     }
 
+    @SuppressLint("InflateParams")
     private fun initDialog() {
         val view =
-            layoutInflater.inflate(R.layout.dialog_request_root, null, false) as LinearLayoutCompat
+            layoutInflater.inflate(R.layout.dialog_request_root,null) as LinearLayoutCompat
         val textView = view.findViewById<MaterialTextView>(R.id.tv_quest_root)
         textView.text = HtmlCompat.fromHtml(
             context.getString(R.string.request_root_message),
