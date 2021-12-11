@@ -9,7 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.whenResumed
-import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -27,12 +26,14 @@ import github.xtvj.cleanx.ui.viewmodel.ListViewModel
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import github.xtvj.cleanx.utils.log
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRefreshListener {
 
@@ -104,6 +105,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launch {
@@ -116,14 +118,17 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                             when (type) {
                                 0 -> {
                                     getUserApps()
+                                    observeApps(userList)
                                     observeReload(userReload)
                                 }
                                 1 -> {
                                     getSystemApps()
+                                    observeApps(systemList)
                                     observeReload(systemReload)
                                 }
                                 else -> {
                                     getDisabledApps()
+                                    observeApps(disableList)
                                     observeReload(disableReload)
                                 }
                             }
@@ -134,26 +139,16 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                             log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
                             when (it.sortOrder) {
                                 SortOrder.BY_ID -> {
-                                    sortByColumn.postValue("id")
+                                    sortByColumnFlow.update { "id" }
                                 }
                                 SortOrder.BY_NAME -> {
-                                    sortByColumn.postValue("name")
+                                    sortByColumnFlow.update { "name" }
                                 }
                                 SortOrder.BY_UPDATE_TIME -> {
-                                    sortByColumn.postValue("lastUpdateTime")
+                                    sortByColumnFlow.update { "lastUpdateTime" }
                                 }
                             }
-                            when (type) {
-                                0 -> {
-                                    observeApps(userList())
-                                }
-                                1 -> {
-                                    observeApps(systemList())
-                                }
-                                else -> {
-                                    observeApps(disableList())
-                                }
-                            }
+
                         }
                     }
 
@@ -162,23 +157,11 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         }
         binding.srlFragmentList.setOnRefreshListener(this)
     }
-
     private fun observeApps(apps: Flow<PagingData<AppItem>>) {
         lifecycleScope.launch(Dispatchers.Main) {
             apps.collectLatest {
                 adapter.submitData(lifecycle,it)
             }
-        }
-        //todo 滑动到顶部
-        lifecycleScope.launch{
-            adapter.loadStateFlow
-                .distinctUntilChanged { old, new ->
-                    (old.mediator?.prepend?.endOfPaginationReached == true) ==
-                            (new.mediator?.prepend?.endOfPaginationReached == true) }
-                .filter { it.refresh is LoadState.NotLoading && it.prepend.endOfPaginationReached && !it.append.endOfPaginationReached}
-                .collectLatest {
-                    binding.rvApp.scrollTo(0,0)
-                }
         }
     }
 

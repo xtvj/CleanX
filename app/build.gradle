@@ -77,8 +77,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
     // Saved state module for ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.4.0")
-
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.4.0"
     //Room
     implementation 'androidx.room:room-runtime:2.4.0-rc01'
     annotationProcessor 'androidx.room:room-compiler:2.4.0-rc01'
