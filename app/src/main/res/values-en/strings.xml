@@ -22,4 +22,5 @@
     <string name="system_app">系统应用</string>
     <string name="disabled_app">已禁用</string>
     <string name="dark_model">深色模式</string>
+    <string name="geted_root">获取Root权限成功</string>
 </resources>

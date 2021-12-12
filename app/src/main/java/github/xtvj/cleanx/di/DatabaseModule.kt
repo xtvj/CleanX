@@ -42,4 +42,12 @@ open class DatabaseModule {
     fun provideAppRemoteRepository(pm: PackageManager,appItemDao: AppItemDao) : AppRepository{
         return AppRepository(pm,appItemDao)
     }
+
+    @Singleton
+    @Provides
+    fun provideContext(@ApplicationContext context: Context) : Context{
+        return context
+    }
+
+
 }

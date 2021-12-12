@@ -12,7 +12,6 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_app"
-            android:layoutAnimation="@anim/layout_animation_right_to_left"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

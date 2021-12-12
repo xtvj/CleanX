@@ -120,7 +120,7 @@ class ListViewModel @Inject constructor(
                     for (item in list){
                         builder.append(RunnerUtils.CMD_PM + " disable " + item.id + "\n")
                     }
-                    val result = Runner.needRoot().runCommand(builder.toString())
+                    val result = Runner.runCommand(Runner.rootInstance(),builder.toString())
                     log(result.output)
                     if (result.isSuccessful){
                         for (item in list){
@@ -133,7 +133,7 @@ class ListViewModel @Inject constructor(
                     for (item in list){
                         builder.append(RunnerUtils.CMD_PM + " enable " + item.id + "\n")
                     }
-                    val result = Runner.needRoot().runCommand(builder.toString())
+                    val result = Runner.runCommand(Runner.rootInstance(),builder.toString())
                     log(result.output)
                     if (result.isSuccessful){
                         for (item in list){

@@ -27,10 +27,12 @@ class ImageLoaderX @Inject constructor(val pm: PackageManager,val context: Conte
     }
 
     fun displayImage(name: String, imageView: ImageView) {
-        imageViews[imageView] = name
-        val image = memoryCache[name]
-        if (image != null) imageView.setImageDrawable(image) else {
-            queueImage(name, imageView)
+        if (name.isNotBlank()){
+            imageViews[imageView] = name
+            val image = memoryCache[name]
+            if (image != null) imageView.setImageDrawable(image) else {
+                queueImage(name, imageView)
+            }
         }
     }
 

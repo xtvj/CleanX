@@ -1,7 +1,6 @@
 package github.xtvj.cleanx.ui.adapter
 
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -15,9 +14,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.AppItem
-import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
-import github.xtvj.cleanx.ui.custom.SheetDialog
 import github.xtvj.cleanx.utils.DateUtil
 import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import java.util.*
@@ -26,8 +23,6 @@ import kotlin.properties.Delegates
 
 open class ListItemAdapter @Inject constructor(
     private val imageLoaderX: ImageLoaderX,
-    private val pm: PackageManager,
-    private val appItemDao: AppItemDao
 ) : PagingDataAdapter<AppItem, ListItemAdapter.ItemViewHolder>(diffCallback) {
 
 
@@ -36,6 +31,8 @@ open class ListItemAdapter @Inject constructor(
     private lateinit var binding: ItemFragmentAppListBinding
 
     private var type by Delegates.notNull<Int>()
+
+    var itemClickListener: ((appItem: AppItem) -> Unit)? = null
 
     companion object {
         val diffCallback = object : DiffUtil.ItemCallback<AppItem>() {
@@ -83,6 +80,8 @@ open class ListItemAdapter @Inject constructor(
         this.type = type
     }
 
+
+
     inner class ItemViewHolder(private val holderBinding: ItemFragmentAppListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         private val details = ItemDetails()
@@ -105,13 +104,7 @@ open class ListItemAdapter @Inject constructor(
 
             bindSelectedState()
             holderBinding.cvAppItem.setOnClickListener {
-                SheetDialog(
-                    holderBinding.cvAppItem.context,
-                    imageLoaderX,
-                    pm,
-                    item,
-                    appItemDao
-                ).show()
+                itemClickListener?.invoke(item)
             }
         }
 

@@ -26,8 +26,8 @@ object RunnerUtils {
 
     fun isRootGiven(): Boolean {
         if (isRootAvailable()) {
-            val result = Runner.needRoot().runCommand("echo Root")
-            return result.isSuccessful
+            val output = Runner.runCommand(Runner.rootInstance(), "echo CleanXRoot").output
+            return output.contains("CleanXRoot")
         }
         return false
     }

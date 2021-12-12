@@ -8,7 +8,11 @@ import java.io.InputStream
 import java.util.*
 
 abstract class Runner protected constructor() {
-    class Result(private val outputAsList: List<String>, stderr: List<String>, private val exitCode: Int) {
+    class Result(
+        private val outputAsList: List<String>,
+        stderr: List<String>,
+        private val exitCode: Int
+    ) {
 
 
         constructor(exitCode: Int = 1) : this(emptyList<String>(), emptyList<String>(), exitCode) {
@@ -59,56 +63,25 @@ abstract class Runner protected constructor() {
     }
 
 
-    companion object{
+    companion object {
         //todo 处理刚打开应用就需要root权限的问题
         private var rootShellRunner: RootShellRunner? = null
         private var userShellRunner: UserShellRunner? = null
 
-        private var instance = userInstance()
-
-        fun needRoot() : Companion {
-            instance = rootInstance()
-            return this
-        }
-
-        fun noRoot() : Companion{
-            instance = userInstance()
-            return this
-        }
-
-        private fun rootInstance(): Runner{
-                if (rootShellRunner == null) {
-                    rootShellRunner = RootShellRunner()
-                    log("RootShellRunner")
-                }
-                return rootShellRunner!!
+        fun rootInstance(): Runner {
+            if (rootShellRunner == null) {
+                rootShellRunner = RootShellRunner()
             }
-        private fun userInstance(): Runner{
-                if (userShellRunner == null) {
-                    userShellRunner = UserShellRunner()
-                    log("userInstance")
-                }
-                return userShellRunner!!
+            log("RootShellRunner")
+            return rootShellRunner!!
+        }
+
+        fun userInstance(): Runner {
+            if (userShellRunner == null) {
+                userShellRunner = UserShellRunner()
+                log("userInstance")
             }
-
-        @Synchronized
-        fun runCommand(command: String): Result {
-            return runCommand(instance, command, null)
-        }
-
-        @Synchronized
-        fun runCommand(command: Array<String>): Result {
-            return runCommand(instance, command, null)
-        }
-
-        @Synchronized
-        fun runCommand(command: String, inputStream: InputStream?): Result {
-            return runCommand(instance, command, inputStream)
-        }
-
-        @Synchronized
-        fun runCommand(command: Array<String>, inputStream: InputStream?): Result {
-            return runCommand(instance, command, inputStream)
+            return userShellRunner!!
         }
 
         @Synchronized

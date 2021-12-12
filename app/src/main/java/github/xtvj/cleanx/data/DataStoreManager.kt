@@ -30,7 +30,7 @@ enum class DarkModel {
 data class UserPreferences(
     val sortOrder: SortOrder,
     val darkModel: DarkModel,
-    val asc : Boolean//正反排序
+    val asc : Boolean,//正反排序
 )
 
 @Singleton
@@ -83,18 +83,20 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
 
     private fun mapUserPreferences(preferences: Preferences): UserPreferences {
         // Get the sort order from preferences and convert it to a [SortOrder] object
+        //默认包名排序
         val sortOrder =
             SortOrder.valueOf(
                 preferences[PreferencesKeys.SORT_ORDER] ?: SortOrder.BY_ID.name
             )
 
+        //默认自动
         val darkModel =
             DarkModel.valueOf(
                 preferences[PreferencesKeys.DARK_MODEL] ?: DarkModel.AUTO.name
             )
 
+        //默认正序
         val asc = preferences[PreferencesKeys.ASC_MODEL] ?: true
-
 
         return UserPreferences(sortOrder,darkModel,asc)
     }
