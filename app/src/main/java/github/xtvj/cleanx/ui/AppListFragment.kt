@@ -41,7 +41,6 @@ import javax.inject.Inject
 import kotlin.properties.Delegates
 
 
-@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRefreshListener {
 
@@ -87,6 +86,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     }
 
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter.setAdapterType(type)
