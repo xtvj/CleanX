@@ -13,10 +13,10 @@ import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
+import github.xtvj.cleanx.utils.loadImage
 import java.util.*
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -99,9 +99,9 @@ open class ListItemAdapter @Inject constructor() :
 
             if (item.icon != 0) {
                 val uri = Uri.parse("android.resource://" + item.id + "/" + item.icon)
-                holderBinding.ivIcon.load(uri)
+                holderBinding.ivIcon.loadImage(uri)
             } else {
-                holderBinding.ivIcon.load(R.drawable.ic_default_round)
+                holderBinding.ivIcon.loadImage(R.drawable.ic_default_round)
             }
 
             bindSelectedState()

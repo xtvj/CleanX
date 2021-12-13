@@ -12,6 +12,8 @@ import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.data.repository.AppRepository
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.shell.RunnerUtils
+import github.xtvj.cleanx.utils.APPS_BY_ID
+import github.xtvj.cleanx.utils.APPS_BY_LAST_UPDATE_TIME
 import github.xtvj.cleanx.utils.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,27 +32,45 @@ class ListViewModel @Inject constructor(
 
 //    var sortDirection = MutableLiveData(true)
 
-    var sortByColumnFlow = MutableStateFlow("id")
+    var sortByColumnFlow = MutableStateFlow(APPS_BY_ID)
 
     @ExperimentalCoroutinesApi
     val userList = sortByColumnFlow.flatMapLatest { query ->
-        Pager(PagingConfig(pageSize = 15)) {
-            appItemDao.getUser(query, true)
-        }.flow.cachedIn(viewModelScope)
+        if(query == APPS_BY_LAST_UPDATE_TIME){
+            Pager(PagingConfig(pageSize = 15)) {
+                appItemDao.getUser(query, false)
+            }.flow.cachedIn(viewModelScope)
+        }else{
+            Pager(PagingConfig(pageSize = 15)) {
+                appItemDao.getUser(query, true)
+            }.flow.cachedIn(viewModelScope)
+        }
     }
 
     @ExperimentalCoroutinesApi
     val systemList = sortByColumnFlow.flatMapLatest { query ->
-        Pager(PagingConfig(pageSize = 15)) {
-            appItemDao.getSystem(query, true)
-        }.flow.cachedIn(viewModelScope)
+        if(query == APPS_BY_LAST_UPDATE_TIME){
+            Pager(PagingConfig(pageSize = 15)) {
+                appItemDao.getSystem(query, false)
+            }.flow.cachedIn(viewModelScope)
+        }else{
+            Pager(PagingConfig(pageSize = 15)) {
+                appItemDao.getSystem(query, true)
+            }.flow.cachedIn(viewModelScope)
+        }
     }
 
     @ExperimentalCoroutinesApi
     val disableList = sortByColumnFlow.flatMapLatest { query ->
-        Pager(PagingConfig(pageSize = 15)) {
-            appItemDao.getDisable(query, true)
-        }.flow.cachedIn(viewModelScope)
+        if(query == APPS_BY_LAST_UPDATE_TIME){
+            Pager(PagingConfig(pageSize = 15)) {
+                appItemDao.getDisable(query, false)
+            }.flow.cachedIn(viewModelScope)
+        }else{
+            Pager(PagingConfig(pageSize = 15)) {
+                appItemDao.getDisable(query, true)
+            }.flow.cachedIn(viewModelScope)
+        }
     }
 
     var userReload = MutableLiveData(false)

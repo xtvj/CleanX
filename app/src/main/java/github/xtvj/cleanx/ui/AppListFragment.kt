@@ -29,8 +29,10 @@ import github.xtvj.cleanx.data.SortOrder
 import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.ui.adapter.ListItemAdapter
-import github.xtvj.cleanx.ui.custom.SheetDialog
 import github.xtvj.cleanx.ui.viewmodel.ListViewModel
+import github.xtvj.cleanx.utils.APPS_BY_ID
+import github.xtvj.cleanx.utils.APPS_BY_LAST_UPDATE_TIME
+import github.xtvj.cleanx.utils.APPS_BY_NAME
 import github.xtvj.cleanx.utils.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -157,13 +159,13 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                             log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
                             when (it.sortOrder) {
                                 SortOrder.BY_ID -> {
-                                    sortByColumnFlow.update { "id" }
+                                    sortByColumnFlow.update { APPS_BY_ID }
                                 }
                                 SortOrder.BY_NAME -> {
-                                    sortByColumnFlow.update { "name" }
+                                    sortByColumnFlow.update { APPS_BY_NAME }
                                 }
                                 SortOrder.BY_UPDATE_TIME -> {
-                                    sortByColumnFlow.update { "lastUpdateTime" }
+                                    sortByColumnFlow.update { APPS_BY_LAST_UPDATE_TIME }
                                 }
                             }
 

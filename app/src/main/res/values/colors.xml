@@ -16,5 +16,6 @@
     <color name="bottom_sheet">#ffffff</color>
     <color name="bottom_sheet_text">#000000</color>
 
+    <color name="imageBackgroundTint">#C3C3C3</color>
 
 </resources>

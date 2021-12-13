@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,7 +18,9 @@ import github.xtvj.cleanx.ui.adapter.MainViewPageAdapter
 import github.xtvj.cleanx.ui.base.BaseActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.reflect.Field
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
@@ -105,6 +108,24 @@ class MainActivity : BaseActivity() {
                 super.onPageSelected(position)
             }
         })
+
+
+        //https://stackoverflow.com/a/61774223/7772501
+        try {
+            val recyclerViewField: Field = ViewPager2::class.java.getDeclaredField("mRecyclerView")
+            recyclerViewField.isAccessible = true
+            val recyclerView = recyclerViewField.get(binding.vp2Apps)
+            val touchSlopField: Field = RecyclerView::class.java.getDeclaredField("mTouchSlop")
+            val num = touchSlopField.get(recyclerView) as Int
+            touchSlopField.run {
+                isAccessible = true
+                set(
+                    recyclerView,
+                    num * 6
+                )
+            }
+        } catch (ignore: Exception) {
+        }
     }
 
 
@@ -125,17 +146,17 @@ class MainActivity : BaseActivity() {
 //    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main,menu)
+        menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.item_setting ->{
-                startActivity(Intent(this,SettingsActivity::class.java))
+        when (item.itemId) {
+            R.id.item_setting -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
             }
-            R.id.item_search ->{
-                Toast.makeText(this,"功能未完成",Toast.LENGTH_SHORT).show()
+            R.id.item_search -> {
+                Toast.makeText(this, "功能未完成", Toast.LENGTH_SHORT).show()
             }
         }
         return true

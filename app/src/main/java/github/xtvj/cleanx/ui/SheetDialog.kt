@@ -1,4 +1,4 @@
-package github.xtvj.cleanx.ui.custom
+package github.xtvj.cleanx.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import coil.load
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
@@ -23,6 +22,7 @@ import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.utils.FileUtils
 import github.xtvj.cleanx.utils.ShareContentType
+import github.xtvj.cleanx.utils.loadImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -90,9 +90,9 @@ class SheetDialog : BottomSheetDialogFragment() {
 
         if (item.icon != 0){
             val uri = Uri.parse("android.resource://" + item.id + "/" + item.icon)
-            layoutBinding.ivIcon.load(uri)
+            layoutBinding.ivIcon.loadImage(uri)
         }else{
-            layoutBinding.ivIcon.load(R.drawable.ic_default_round)
+            layoutBinding.ivIcon.loadImage(R.drawable.ic_default_round)
         }
 
         layoutBinding.ivIsEnable.visibility = if (item.isEnable) View.INVISIBLE else View.VISIBLE

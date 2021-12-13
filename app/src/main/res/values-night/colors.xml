@@ -12,4 +12,5 @@
     <color name="bottom_sheet">@color/colorPrimary</color>
     <color name="bottom_sheet_text">#ffffff</color>
 
+    <color name="imageBackgroundTint">#006064</color>
 </resources>
