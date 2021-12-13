@@ -4,10 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import github.xtvj.cleanx.utils.DATABASE_NAME
 
 
-@Database(entities = arrayOf(AppItem::class), version = 1,exportSchema = false)
+@Database(entities = arrayOf(AppItem::class), version = 2,exportSchema = false)
 abstract class AppDatabase : RoomDatabase(){
     abstract fun appItemDao(): AppItemDao
 
@@ -16,6 +17,11 @@ abstract class AppDatabase : RoomDatabase(){
 
         // For Singleton instantiation
         @Volatile private var instance: AppDatabase? = null
+
+        val MIGRATION_1_2 = Migration(1, 2) {
+//            it.execSQL("****************")
+        }
+
 
         fun getInstance(context: Context): AppDatabase {
             return instance ?: synchronized(this) {
@@ -27,6 +33,7 @@ abstract class AppDatabase : RoomDatabase(){
         // https://medium.com/google-developers/7-pro-tips-for-room-fbadea4bfbd1#4785
         private fun buildDatabase(context: Context): AppDatabase {
             return Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
+//                .addMigrations(MIGRATION_1_2)
 //                .addCallback(
 //                    object : RoomDatabase.Callback() {
 //                        override fun onCreate(db: SupportSQLiteDatabase) {
@@ -40,5 +47,7 @@ abstract class AppDatabase : RoomDatabase(){
 //                )
                 .build()
         }
+
+
     }
 }

@@ -21,7 +21,6 @@ import github.xtvj.cleanx.databinding.DialogBottomAppBinding
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.shell.RunnerUtils
-import github.xtvj.cleanx.utils.DateUtil
 import github.xtvj.cleanx.utils.FileUtils
 import github.xtvj.cleanx.utils.ShareContentType
 import kotlinx.coroutines.CoroutineScope
@@ -87,7 +86,7 @@ class SheetDialog : BottomSheetDialogFragment() {
         layoutBinding.tvAppName.text = item.name
         layoutBinding.tvAppVersion.text = getString(R.string.version) + item.version
         layoutBinding.tvUpdateTime.text =
-            getString(R.string.update_time) + DateUtil.format(item.lastUpdateTime)
+            getString(R.string.update_time) + item.lastUpdateTime
 
         if (item.icon != 0){
             val uri = Uri.parse("android.resource://" + item.id + "/" + item.icon)

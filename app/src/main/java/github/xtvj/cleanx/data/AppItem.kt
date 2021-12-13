@@ -15,8 +15,8 @@ data class AppItem(
     var version: String,
     var isSystem: Boolean,
     var isEnable: Boolean,
-    var firstInstallTime: Long,
-    var lastUpdateTime: Long,
+    var firstInstallTime: String,
+    var lastUpdateTime: String,
     var dataDir: String,
     var sourceDir: String,
     var deviceProtectedDataDir: String?,
@@ -33,8 +33,8 @@ data class AppItem(
         parcel.readString().toString(),
         parcel.readByte() != 0.toByte(),
         parcel.readByte() != 0.toByte(),
-        parcel.readLong(),
-        parcel.readLong(),
+        parcel.readString().toString(),
+        parcel.readString().toString(),
         parcel.readString().toString(),
         parcel.readString().toString(),
         parcel.readString(),
@@ -49,8 +49,8 @@ data class AppItem(
         parcel.writeString(version)
         parcel.writeByte(if (isSystem) 1 else 0)
         parcel.writeByte(if (isEnable) 1 else 0)
-        parcel.writeLong(firstInstallTime)
-        parcel.writeLong(lastUpdateTime)
+        parcel.writeString(firstInstallTime)
+        parcel.writeString(lastUpdateTime)
         parcel.writeString(dataDir)
         parcel.writeString(sourceDir)
         parcel.writeString(deviceProtectedDataDir)

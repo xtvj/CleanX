@@ -103,6 +103,12 @@
         <item name="shapeAppearanceOverlay">@null</item>
     </style>
 
+    <style name="MaterialButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+<!--        <item name="android:translationZ">5dp</item>-->
+    </style>
+
+
+
 
     <style name="Theme.CleanX.Fullscreen" parent="Theme.CleanX">
         <item name="android:windowActionBarOverlay">true</item>

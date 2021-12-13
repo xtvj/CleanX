@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.shell.Runner
+import github.xtvj.cleanx.utils.DateUtil
 import github.xtvj.cleanx.utils.log
 import javax.inject.Inject
 
@@ -36,8 +37,8 @@ class AppRepository @Inject constructor(
                         val isSystem =
                             (appInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
                         val isEnable = appInfo.applicationInfo.enabled
-                        val firstInstallTime = appInfo.firstInstallTime
-                        val lastUpdateTime = appInfo.lastUpdateTime
+                        val firstInstallTime = DateUtil.format(appInfo.firstInstallTime)
+                        val lastUpdateTime = DateUtil.format(appInfo.lastUpdateTime)
                         val dataDir = appInfo.applicationInfo.dataDir
                         val sourceDir = appInfo.applicationInfo.sourceDir
                         val deviceProtectedDataDir = appInfo.applicationInfo.deviceProtectedDataDir

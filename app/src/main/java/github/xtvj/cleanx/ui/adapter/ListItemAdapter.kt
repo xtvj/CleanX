@@ -17,7 +17,6 @@ import coil.load
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
-import github.xtvj.cleanx.utils.DateUtil
 import java.util.*
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -96,9 +95,8 @@ open class ListItemAdapter @Inject constructor() :
             holderBinding.ivIsEnable.visibility =
                 if (type == 2 || item.isEnable) View.INVISIBLE else View.VISIBLE
             holderBinding.tvUpdateTime.text =
-                holderBinding.tvUpdateTime.context.getString(R.string.update_time) + DateUtil.format(
-                    item.lastUpdateTime
-                )
+                holderBinding.tvUpdateTime.context.getString(R.string.update_time) + item.lastUpdateTime
+
             if (item.icon != 0) {
                 val uri = Uri.parse("android.resource://" + item.id + "/" + item.icon)
                 holderBinding.ivIcon.load(uri)
