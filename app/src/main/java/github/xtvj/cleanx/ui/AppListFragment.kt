@@ -215,7 +215,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                     if (isRoot) {
                         Toast.makeText(
                             context,
-                            getString(R.string.geted_root),
+                            getString(R.string.got_root),
                             Toast.LENGTH_LONG
                         ).show()
                     }else{

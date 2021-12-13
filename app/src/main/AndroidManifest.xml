@@ -24,7 +24,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
             android:theme="@style/Theme.CleanX"
-            android:label="设置" />
+            android:label="@string/setting" />
         <activity
             android:name=".ui.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

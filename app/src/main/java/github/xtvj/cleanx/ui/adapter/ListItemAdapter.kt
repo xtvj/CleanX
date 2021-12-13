@@ -1,6 +1,7 @@
 package github.xtvj.cleanx.ui.adapter
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -12,18 +13,17 @@ import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
 import github.xtvj.cleanx.utils.DateUtil
-import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import java.util.*
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
-open class ListItemAdapter @Inject constructor(
-    private val imageLoaderX: ImageLoaderX,
-) : PagingDataAdapter<AppItem, ListItemAdapter.ItemViewHolder>(diffCallback) {
+open class ListItemAdapter @Inject constructor() :
+    PagingDataAdapter<AppItem, ListItemAdapter.ItemViewHolder>(diffCallback) {
 
 
     private lateinit var selectionTracker: SelectionTracker<Long>
@@ -62,8 +62,8 @@ open class ListItemAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = getItem(position)
-        if (item != null){
-            holder.bind(item,position)
+        if (item != null) {
+            holder.bind(item, position)
         }
     }
 
@@ -79,7 +79,6 @@ open class ListItemAdapter @Inject constructor(
     fun setAdapterType(type: Int) {
         this.type = type
     }
-
 
 
     inner class ItemViewHolder(private val holderBinding: ItemFragmentAppListBinding) :
@@ -100,7 +99,12 @@ open class ListItemAdapter @Inject constructor(
                 holderBinding.tvUpdateTime.context.getString(R.string.update_time) + DateUtil.format(
                     item.lastUpdateTime
                 )
-            this@ListItemAdapter.imageLoaderX.displayImage(item.id, holderBinding.ivIcon)
+            if (item.icon != 0) {
+                val uri = Uri.parse("android.resource://" + item.id + "/" + item.icon)
+                holderBinding.ivIcon.load(uri)
+            } else {
+                holderBinding.ivIcon.load(R.drawable.ic_default_round)
+            }
 
             bindSelectedState()
             holderBinding.cvAppItem.setOnClickListener {

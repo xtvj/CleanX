@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import coil.load
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
@@ -22,7 +23,6 @@ import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.utils.DateUtil
 import github.xtvj.cleanx.utils.FileUtils
-import github.xtvj.cleanx.utils.ImageLoader.ImageLoaderX
 import github.xtvj.cleanx.utils.ShareContentType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,9 +52,6 @@ class SheetDialog : BottomSheetDialogFragment() {
 
     @Inject
     lateinit var fragmentContext: Context
-
-    @Inject
-    lateinit var imageLoaderX: ImageLoaderX
 
     @Inject
     lateinit var pm: PackageManager
@@ -92,7 +89,13 @@ class SheetDialog : BottomSheetDialogFragment() {
         layoutBinding.tvUpdateTime.text =
             getString(R.string.update_time) + DateUtil.format(item.lastUpdateTime)
 
-        imageLoaderX.displayImage(item.id, layoutBinding.ivIcon)
+        if (item.icon != 0){
+            val uri = Uri.parse("android.resource://" + item.id + "/" + item.icon)
+            layoutBinding.ivIcon.load(uri)
+        }else{
+            layoutBinding.ivIcon.load(R.drawable.ic_default_round)
+        }
+
         layoutBinding.ivIsEnable.visibility = if (item.isEnable) View.INVISIBLE else View.VISIBLE
         binding.tvUnInstall.visibility = if (item.isSystem) View.GONE else View.VISIBLE
         binding.tvFreeze.visibility = if (RunnerUtils.isRootAvailable()) View.VISIBLE else View.GONE

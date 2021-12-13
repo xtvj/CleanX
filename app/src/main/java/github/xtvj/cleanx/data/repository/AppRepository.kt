@@ -42,6 +42,7 @@ class AppRepository @Inject constructor(
                         val sourceDir = appInfo.applicationInfo.sourceDir
                         val deviceProtectedDataDir = appInfo.applicationInfo.deviceProtectedDataDir
                         val publicSourceDir = appInfo.applicationInfo.publicSourceDir
+                        val icon = appInfo.applicationInfo.icon
 
                         val item = AppItem(
                             i,
@@ -54,7 +55,8 @@ class AppRepository @Inject constructor(
                             dataDir,
                             sourceDir,
                             deviceProtectedDataDir,
-                            publicSourceDir
+                            publicSourceDir,
+                            icon
                         )
                         itemDao.insertAll(item)
                     } catch (e: PackageManager.NameNotFoundException) {

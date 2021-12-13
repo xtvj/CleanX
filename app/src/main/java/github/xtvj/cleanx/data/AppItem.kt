@@ -20,7 +20,8 @@ data class AppItem(
     var dataDir: String,
     var sourceDir: String,
     var deviceProtectedDataDir: String?,
-    var publicSourceDir: String
+    var publicSourceDir: String,
+    var icon:Int
 
     //可以使用@Ignore忽略不想在数据库中储存的字段
     //@ColumnInfo为字段在数据库中重命名
@@ -36,8 +37,9 @@ data class AppItem(
         parcel.readLong(),
         parcel.readString().toString(),
         parcel.readString().toString(),
+        parcel.readString(),
         parcel.readString().toString(),
-        parcel.readString().toString()
+        parcel.readInt()
     ) {
     }
 
@@ -53,6 +55,7 @@ data class AppItem(
         parcel.writeString(sourceDir)
         parcel.writeString(deviceProtectedDataDir)
         parcel.writeString(publicSourceDir)
+        parcel.writeInt(icon)
     }
 
     override fun describeContents(): Int {
@@ -71,3 +74,4 @@ data class AppItem(
 
 
 }
+
