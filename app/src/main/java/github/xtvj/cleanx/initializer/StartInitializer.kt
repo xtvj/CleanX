@@ -2,8 +2,6 @@ package github.xtvj.cleanx.initializer
 
 import android.content.Context
 import androidx.startup.Initializer
-import androidx.work.Configuration
-import androidx.work.WorkManager
 import github.xtvj.cleanx.data.AppDatabase
 import github.xtvj.cleanx.data.DataStoreManager
 import github.xtvj.cleanx.utils.ThemeHelper
@@ -26,16 +24,6 @@ class StartInitializer : Initializer<Unit> {
 
         //初始化log工具
         initLog()
-
-        //https://developer.android.com/topic/libraries/architecture/workmanager/advanced/custom-configuration#custom
-        // provide custom configuration
-        val myConfig = Configuration.Builder()
-            .setMinimumLoggingLevel(android.util.Log.INFO)
-            .build()
-
-        // initialize WorkManager
-        WorkManager.initialize(context, myConfig)
-
 
     }
 

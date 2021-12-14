@@ -18,16 +18,14 @@ import kotlinx.coroutines.withContext
 class AppWorker @AssistedInject constructor(
     @Assisted val context: Context,
     @Assisted val workerParams: WorkerParameters,
+    private val appItemDao: AppItemDao,
+    private val pm: PackageManager
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
 
             try {
-
-                val appItemDao = AppDatabase.getInstance(context).appItemDao()
-                val pm = context.packageManager
-
                 val code = inputData.getString(KEY_CODE)
                 if (code != null) {
                     log("get app list by worker $code")
