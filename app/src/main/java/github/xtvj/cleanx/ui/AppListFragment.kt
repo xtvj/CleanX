@@ -10,7 +10,6 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.whenResumed
 import androidx.paging.PagingData
@@ -19,6 +18,7 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,6 +74,9 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     @Inject
     lateinit var dataStoreManager: DataStoreManager
 
+    @Inject
+    lateinit var workManager: WorkManager
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -96,12 +99,12 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
             val fragment = SheetDialog.create(item)
             fragment.clickListener = {
                 lifecycleScope.launch {
-                    if (!rootDialog.isShowing){
+                    if (!rootDialog.isShowing) {
                         rootDialog.show()
                     }
                 }
             }
-            fragment.show(childFragmentManager,"bottom_dialog")
+            fragment.show(childFragmentManager, "bottom_dialog")
         }
         binding.rvApp.adapter = adapter
         selectionTracker = SelectionTracker.Builder<Long>(
@@ -133,28 +136,25 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
                 //viewModel是懒加载，必需在主线程中创建
                 fragmentViewModel.run {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        if (needLoadData) {
-                            when (type) {
-                                0 -> {
-                                    getUserApps()
-                                    observeApps(userList)
-                                    observeReload(userReload)
-                                }
-                                1 -> {
-                                    getSystemApps()
-                                    observeApps(systemList)
-                                    observeReload(systemReload)
-                                }
-                                else -> {
-                                    getDisabledApps()
-                                    observeApps(disableList)
-                                    observeReload(disableReload)
-                                }
+                    if (needLoadData) {
+                        when (type) {
+                            0 -> {
+                                getAppsByCode(RunnerUtils.GETUSER)
+                                observeApps(userList)
+                            }
+                            1 -> {
+                                getAppsByCode(RunnerUtils.GETSYS)
+                                observeApps(systemList)
+                            }
+                            else -> {
+                                getAppsByCode(RunnerUtils.GETDISABLED)
+                                observeApps(disableList)
                             }
                         }
-                        needLoadData = false
+                    }
+                    needLoadData = false
 
+                    lifecycleScope.launch {
                         dataStoreManager.userPreferencesFlow.collectLatest {
                             log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
                             when (it.sortOrder) {
@@ -188,13 +188,6 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         }
     }
 
-    private fun observeReload(reload: MutableLiveData<Boolean>) {
-        lifecycleScope.launch(Dispatchers.Main) {
-            reload.observe(viewLifecycleOwner, {
-                binding.srlFragmentList.isRefreshing = it
-            })
-        }
-    }
 
     private fun initDialog() {
 
@@ -220,7 +213,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                             getString(R.string.got_root),
                             Toast.LENGTH_LONG
                         ).show()
-                    }else{
+                    } else {
                         Toast.makeText(
                             context,
                             getString(R.string.need_to_open_root),
@@ -265,7 +258,13 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     }
 
     override fun onRefresh() {
-        fragmentViewModel.reFresh(type)
+        lifecycleScope.launch {
+            val uuid = fragmentViewModel.reFreshAppsByType(type)
+            workManager.getWorkInfoByIdLiveData(uuid)
+                .observe(viewLifecycleOwner, { workInfo ->
+                    binding.srlFragmentList.isRefreshing = !workInfo.state.isFinished
+                })
+        }
     }
 
 

@@ -6,18 +6,13 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
-import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.databinding.ActivityMainBinding
 import github.xtvj.cleanx.ui.adapter.MainViewPageAdapter
 import github.xtvj.cleanx.ui.base.BaseActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -30,9 +25,6 @@ class MainActivity : BaseActivity() {
 //    val lifecycleScope = lifecycle.coroutineScope
 //    private lateinit var dialog : AlertDialog
     private lateinit var adapter: MainViewPageAdapter
-
-    @Inject
-    lateinit var appItemDao: AppItemDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,9 +57,6 @@ class MainActivity : BaseActivity() {
 //            }.create()
         setSupportActionBar(binding.tbMain)
 //        supportActionBar?.hide()
-        lifecycleScope.launch(Dispatchers.IO) {
-            appItemDao.deleteAll()
-        }
         adapter = MainViewPageAdapter(supportFragmentManager, lifecycle)
         binding.vp2Apps.adapter = adapter
         TabLayoutMediator(

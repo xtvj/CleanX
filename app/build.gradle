@@ -66,9 +66,16 @@ dependencies {
     //hilt-jetpack
     implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03'
     kapt "androidx.hilt:hilt-compiler:1.0.0"
+    //Hilt work
+    implementation 'androidx.hilt:hilt-work:1.0.0'
 
     //coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
+
+    //work Kotlin + coroutines
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
+    // optional - Multiprocess support
+//    implementation "androidx.work:work-multiprocess:$work_version"
 
     //startup
     implementation "androidx.startup:startup-runtime:1.1.0"
