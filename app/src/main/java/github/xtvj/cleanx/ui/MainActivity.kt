@@ -7,7 +7,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,7 +17,6 @@ import github.xtvj.cleanx.ui.adapter.MainViewPageAdapter
 import github.xtvj.cleanx.ui.base.BaseActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.lang.reflect.Field
 import javax.inject.Inject
 
 
@@ -109,25 +107,7 @@ class MainActivity : BaseActivity() {
             }
         })
 
-
-        //https://stackoverflow.com/a/61774223/7772501
-        try {
-            val recyclerViewField: Field = ViewPager2::class.java.getDeclaredField("mRecyclerView")
-            recyclerViewField.isAccessible = true
-            val recyclerView = recyclerViewField.get(binding.vp2Apps)
-            val touchSlopField: Field = RecyclerView::class.java.getDeclaredField("mTouchSlop")
-            val num = touchSlopField.get(recyclerView) as Int
-            touchSlopField.run {
-                isAccessible = true
-                set(
-                    recyclerView,
-                    num * 6
-                )
-            }
-        } catch (ignore: Exception) {
-        }
     }
-
 
 //    private fun checkRoot(){
 //        mainViewModel.root.observe(this,{
