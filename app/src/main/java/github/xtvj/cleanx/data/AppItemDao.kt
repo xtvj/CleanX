@@ -29,7 +29,10 @@ interface AppItemDao {
      * By order id
      */
     @Query("UPDATE appItem SET isEnable = :b WHERE id =:appID")
-    suspend fun update(appID:String, b:Boolean)
+    suspend fun updateEnable(appID:String, b:Boolean)
+
+    @Query("UPDATE appItem SET isRunning = :b WHERE id =:appID")
+    suspend fun updateRunning(appID:String, b:Boolean)
 
     @Query("SELECT * FROM appItem WHERE name LIKE :search OR id LIKE :search")
     fun findWithNameOrId(search: String): PagingSource<Int,AppItem>

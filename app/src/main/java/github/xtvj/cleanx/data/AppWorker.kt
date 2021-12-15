@@ -24,8 +24,8 @@ class AppWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
-
             try {
+                val FLAG_STOPPED = 1 shl 21
                 val code = inputData.getString(KEY_CODE)
                 if (code != null) {
                     log("get app list by worker $code")
@@ -51,6 +51,7 @@ class AppWorker @AssistedInject constructor(
                                     appInfo.applicationInfo.deviceProtectedDataDir
                                 val publicSourceDir = appInfo.applicationInfo.publicSourceDir
                                 val icon = appInfo.applicationInfo.icon
+                                val isRunning = (appInfo.applicationInfo.flags and FLAG_STOPPED) == 0
 
                                 val item = AppItem(
                                     i,
@@ -64,7 +65,8 @@ class AppWorker @AssistedInject constructor(
                                     sourceDir,
                                     deviceProtectedDataDir,
                                     publicSourceDir,
-                                    icon
+                                    icon,
+                                    isRunning
                                 )
                                 appItemDao.insertAll(item)
                             } catch (e: PackageManager.NameNotFoundException) {

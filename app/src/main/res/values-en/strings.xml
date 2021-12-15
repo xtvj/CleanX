@@ -12,6 +12,7 @@
     <string name="app_no_intent">该程序无启动项。</string>
     <string name="disable">禁用</string>
     <string name="enable">启用</string>
+    <string name="stop">强制停止</string>
     <string name="success">成功</string>
     <string name="fail">失败</string>
     <string name="version">版本：</string>
@@ -24,4 +25,6 @@
     <string name="dark_model">深色模式</string>
     <string name="got_root">获取Root权限成功</string>
     <string name="setting">设置</string>
+    <string name="stop_success">停止成功</string>
+    <string name="stop_failed">停止失败</string>
 </resources>

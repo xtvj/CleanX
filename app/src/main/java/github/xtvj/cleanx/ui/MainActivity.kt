@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -124,9 +123,9 @@ class MainActivity : BaseActivity() {
             R.id.item_setting -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
-            R.id.item_search -> {
-                Toast.makeText(this, "功能未完成", Toast.LENGTH_SHORT).show()
-            }
+//            R.id.item_search -> {
+//                Toast.makeText(this, "功能未完成", Toast.LENGTH_SHORT).show()
+//            }
         }
         return true
     }

@@ -84,7 +84,7 @@ open class ListItemAdapter @Inject constructor() :
         RecyclerView.ViewHolder(binding.root) {
         private val details = ItemDetails()
 
-        @SuppressLint("SetTextI18n")
+        @SuppressLint("SetTextI18n", "ResourceAsColor")
         fun bind(item: AppItem, position: Int) {
             details.position = position.toLong()
             holderBinding.tvAppId.text = item.id
@@ -102,6 +102,12 @@ open class ListItemAdapter @Inject constructor() :
                 holderBinding.ivIcon.loadImage(uri)
             } else {
                 holderBinding.ivIcon.loadImage(R.drawable.ic_default_round)
+            }
+
+            if (item.isRunning){
+                holderBinding.cvAppItem.setCardBackgroundColor(holderBinding.cvAppItem.context.getColorStateList(R.color.running_card_view_background))
+            }else{
+                holderBinding.cvAppItem.setCardBackgroundColor(holderBinding.cvAppItem.context.getColorStateList(R.color.selector_card_view_background))
             }
 
             bindSelectedState()

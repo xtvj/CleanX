@@ -16,6 +16,7 @@ object RunnerUtils {
     val GETUSER = "$CMD_PM list packages -3"
     val GETSYS = "$CMD_PM list packages -s"
     val GETDISABLED = "$CMD_PM list packages -d"
+    val FORCE_STOP = "am force-stop "
 
     private var ESCAPE_XSI: LookupTranslator
 

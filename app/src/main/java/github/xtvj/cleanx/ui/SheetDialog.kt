@@ -22,6 +22,7 @@ import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.utils.FileUtils
 import github.xtvj.cleanx.utils.ShareContentType
+import github.xtvj.cleanx.utils.ToastUtils
 import github.xtvj.cleanx.utils.loadImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -50,7 +51,10 @@ class SheetDialog : BottomSheetDialogFragment() {
     private lateinit var item: AppItem
 
     @Inject
-    lateinit var fragmentContext: Context
+    lateinit var fragmentContext: Context //Application Context
+
+    @Inject
+    lateinit var toastUtils: ToastUtils
 
     @Inject
     lateinit var pm: PackageManager
@@ -88,23 +92,25 @@ class SheetDialog : BottomSheetDialogFragment() {
         layoutBinding.tvUpdateTime.text =
             getString(R.string.update_time) + item.lastUpdateTime
 
-        if (item.icon != 0){
+        if (item.icon != 0) {
             val uri = Uri.parse("android.resource://" + item.id + "/" + item.icon)
             layoutBinding.ivIcon.loadImage(uri)
-        }else{
+        } else {
             layoutBinding.ivIcon.loadImage(R.drawable.ic_default_round)
         }
 
         layoutBinding.ivIsEnable.visibility = if (item.isEnable) View.INVISIBLE else View.VISIBLE
-        binding.tvUnInstall.visibility = if (item.isSystem) View.GONE else View.VISIBLE
-        binding.tvFreeze.visibility = if (RunnerUtils.isRootAvailable()) View.VISIBLE else View.GONE
+        binding.btnRunning.visibility = if (item.isRunning) View.VISIBLE else View.GONE
+        binding.btnUnInstall.visibility = if (item.isSystem) View.GONE else View.VISIBLE
+        binding.btnFreeze.visibility =
+            if (RunnerUtils.isRootAvailable()) View.VISIBLE else View.GONE
 
-        binding.tvFreeze.text =
+        binding.btnFreeze.text =
             if (item.isEnable) getString(R.string.disable) else getString(
                 R.string.enable
             )
 
-        binding.tvOpen.setOnClickListener {
+        binding.btnOpen.setOnClickListener {
             if (item.isEnable) {
                 val intent = pm.getLaunchIntentForPackage(item.id)
                 if (intent != null) {
@@ -121,7 +127,7 @@ class SheetDialog : BottomSheetDialogFragment() {
             }
             dismissAllowingStateLoss()
         }
-        binding.tvShare.setOnClickListener {
+        binding.btnShare.setOnClickListener {
             val file = File(item.sourceDir)
             val uri: Uri? = FileUtils.getFileUri(fragmentContext, ShareContentType.FILE, file)
             val shareIntent = Intent()
@@ -136,21 +142,21 @@ class SheetDialog : BottomSheetDialogFragment() {
             )
             dismissAllowingStateLoss()
         }
-        binding.tvDetail.setOnClickListener {
+        binding.btnDetail.setOnClickListener {
             val intent = Intent()
             intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
             intent.data = Uri.fromParts("package", item.id, null)
             context?.startActivity(intent)
             dismissAllowingStateLoss()
         }
-        binding.tvUnInstall.setOnClickListener {
+        binding.btnUnInstall.setOnClickListener {
             val intent = Intent()
             intent.action = Intent.ACTION_DELETE
             intent.data = Uri.parse("package:${item.id}")
             context?.startActivity(intent)
             dismissAllowingStateLoss()
         }
-        binding.tvFreeze.setOnClickListener {
+        binding.btnFreeze.setOnClickListener {
 
             //如果使用lifecycleScope，UI不更新
             CoroutineScope(Dispatchers.IO).launch {
@@ -165,7 +171,7 @@ class SheetDialog : BottomSheetDialogFragment() {
                             RunnerUtils.CMD_PM + " disable " + item.id
                         )
                         if (result.isSuccessful) {
-                            appItemDao.update(item.id, false)
+                            appItemDao.updateEnable(item.id, false)
                             withContext(Dispatchers.Main) {
                                 Toast.makeText(
                                     fragmentContext,
@@ -191,24 +197,44 @@ class SheetDialog : BottomSheetDialogFragment() {
                         )
                         //pm enable package
                         if (result.isSuccessful) {
-                            appItemDao.update(item.id, true)
+                            appItemDao.updateEnable(item.id, true)
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(
-                                    fragmentContext,
-                                    "${getString(R.string.enable)}${item.name}${
-                                        getString(R.string.success)
-                                    }", Toast.LENGTH_SHORT
-                                ).show()
+                                toastUtils.toast("${getString(R.string.enable)}${item.name}${
+                                    getString(R.string.success)
+                                }")
                             }
                         } else {
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(
-                                    fragmentContext,
+                                toastUtils.toast(
                                     "${getString(R.string.enable)}${item.name}${
                                         getString(R.string.fail)
-                                    }", Toast.LENGTH_SHORT
-                                ).show()
+                                    }"
+                                )
                             }
+                        }
+                    }
+                } else {
+                    clickListener?.invoke("")
+                }
+            }
+            dismissAllowingStateLoss()
+        }
+        binding.btnRunning.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                val hasRoot = RunnerUtils.isRootGiven()
+                if (hasRoot) {
+                    val result = Runner.runCommand(
+                        Runner.rootInstance(),
+                        RunnerUtils.FORCE_STOP + item.id
+                    )
+                    if (result.isSuccessful) {
+                        appItemDao.updateRunning(item.id, false)
+                        withContext(Dispatchers.Main) {
+                            toastUtils.toast(getString(R.string.stop_success))
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            toastUtils.toast(getString(R.string.stop_failed))
                         }
                     }
                 } else {

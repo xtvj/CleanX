@@ -22,3 +22,5 @@
 - Flow
 - Room
 - Paging 3
+- DataStore
+- Workmanager

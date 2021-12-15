@@ -109,7 +109,7 @@ class ListViewModel @Inject constructor(
                     log(result.output)
                     if (result.isSuccessful) {
                         for (item in list) {
-                            appItemDao.update(item.id, false)
+                            appItemDao.updateEnable(item.id, false)
                         }
                     }
                 }
@@ -122,7 +122,7 @@ class ListViewModel @Inject constructor(
                     log(result.output)
                     if (result.isSuccessful) {
                         for (item in list) {
-                            appItemDao.update(item.id, true)
+                            appItemDao.updateEnable(item.id, true)
                         }
                     }
                 }
