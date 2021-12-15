@@ -5,13 +5,13 @@
     <a href="README.md">English</a>
   </p>
 
-## 项目目的：
+## Purpose:
 
-- 练手：尽量使用最新的技术。
+- Practice: Use the latest technology as much as possible.
 
-- 自用APP：速度快、功能简单、不附带杂七杂八的功能、不频繁升级。
+- Personal App: fast, simple, no miscellaneous features, infrequent upgrades.
 
-## 技术点：
+## Tech-stack：
 
 - Coroutines
 - Hilt

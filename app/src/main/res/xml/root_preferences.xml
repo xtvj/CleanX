@@ -2,7 +2,7 @@
     >
 
     <PreferenceCategory
-        app:title="主题"
+        app:title="@string/setting_theme"
         app:iconSpaceReserved="false">
 
         <ListPreference
@@ -17,7 +17,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:title="列表设置"
+        app:title="@string/setting_list"
        app:iconSpaceReserved="false">
 
         <ListPreference
@@ -26,7 +26,7 @@
             app:entryValues="@array/app_list_values"
             app:key="sortMode"
             app:iconSpaceReserved="false"
-            app:title="排序方式"
+            app:title="@string/setting_sort_by"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>

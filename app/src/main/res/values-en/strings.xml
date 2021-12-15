@@ -1,31 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CleanX</string>
-    <string name="request_root_message">本程序主要功能基于Root权限实现，程序代码开源，地址：&lt;a href="https://github.com/xtvj/cleanx">https://github.com/xtvj/cleanx&lt;/a>，授予Root权限？</string>
-    <string name="request_root_ok">手动设置Root权限</string>
-    <string name="request_root_cancel">取消操作</string>
-    <string name="no_data">未获取到数据</string>
-    <string name="dialog_open">打开</string>
-    <string name="dialog_share">提取安装包</string>
-    <string name="dialog_system_info">系统详情页</string>
-    <string name="dialog_uninstall">卸载</string>
-    <string name="app_no_intent">该程序无启动项。</string>
-    <string name="disable">禁用</string>
-    <string name="enable">启用</string>
-    <string name="stop">强制停止</string>
-    <string name="success">成功</string>
-    <string name="fail">失败</string>
-    <string name="version">版本：</string>
-    <string name="update_time">更新时间：</string>
-    <string name="share_apk">分享APP安装包</string>
-    <string name="need_to_open_root">需要您手动打开Root管理程序设置，如果已赋予权限请重启APP</string>
-    <string name="user_app">用户应用</string>
-    <string name="system_app">系统应用</string>
-    <string name="disabled_app">已禁用</string>
-    <string name="dark_model">深色模式</string>
-    <string name="got_root">获取Root权限成功</string>
-    <string name="setting">设置</string>
-    <string name="stop_success">停止成功</string>
-    <string name="stop_failed">停止失败</string>
-    <string name="disabled_can_not_open">被禁用，无法打开</string>
+    <string name="request_root_message">The main features are implemented based on Root permission, program is open source, address：&lt;a href="https://github.com/xtvj/cleanx">https://github.com/xtvj/cleanx&lt;/a>,Want to grant permissions?</string>
+    <string name="request_root_ok">manual setting</string>
+    <string name="request_root_cancel">Cancel</string>
+    <string name="no_data">No data</string>
+    <string name="dialog_open">Open</string>
+    <string name="dialog_share">Extract APK</string>
+    <string name="dialog_system_info">System Info</string>
+    <string name="dialog_uninstall">Uninstall</string>
+    <string name="app_no_intent">program has no startup item.</string>
+    <string name="disable">Disable</string>
+    <string name="enable">Enable</string>
+    <string name="stop">Forced stop</string>
+    <string name="success">Success</string>
+    <string name="fail">Fail</string>
+    <string name="version">Version：</string>
+    <string name="update_time">update：</string>
+    <string name="share_apk">Share Apk</string>
+    <string name="need_to_open_root">You need to manually open the Root management program settings, if you have given permission, please restart the APP</string>
+    <string name="user_app">User applications</string>
+    <string name="system_app">System applications</string>
+    <string name="disabled_app">Disabled</string>
+    <string name="dark_model">Dark model</string>
+    <string name="got_root">Obtained root permission</string>
+    <string name="setting">setting</string>
+    <string name="stop_success">Stopped successfully</string>
+    <string name="stop_failed">Stop failed</string>
+    <string name="disabled_can_not_open">Is disabled and cannot be opened</string>
+    <string name="setting_auto">auto</string>
+    <string name="setting_light">light</string>
+    <string name="setting_night">night</string>
+    <string name="setting_pkg_name">package name</string>
+    <string name="setting_app_name">app name</string>
+    <string name="setting_update_time">last update time</string>
+    <string name="setting_theme">Theme</string>
+    <string name="setting_list">App list settings</string>
+    <string name="setting_sort_by">Sort by</string>
 </resources>

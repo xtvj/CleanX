@@ -1,9 +1,9 @@
 <resources>
     <!-- Reply Preference -->
     <string-array name="dark_model_entries">
-        <item>自动</item>
-        <item>白天</item>
-        <item>夜间</item>
+        <item>@string/setting_auto</item>
+        <item>@string/setting_light</item>
+        <item>@string/setting_night</item>
     </string-array>
 
     <string-array name="dark_model_values">
@@ -13,9 +13,9 @@
     </string-array>
 
     <string-array name="app_list_entries">
-        <item>包名</item>
-        <item>应用名</item>
-        <item>更新时间</item>
+        <item>@string/setting_pkg_name</item>
+        <item>@string/setting_app_name</item>
+        <item>@string/setting_update_time</item>
     </string-array>
 
     <string-array name="app_list_values">

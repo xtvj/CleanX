@@ -27,4 +27,15 @@
     <string name="stop_success">停止成功</string>
     <string name="stop_failed">停止失败</string>
     <string name="disabled_can_not_open">被禁用，无法打开</string>
+    <string name="setting_auto">自动</string>
+    <string name="setting_light">白天</string>
+    <string name="setting_night">夜间</string>
+    <string name="setting_pkg_name">包名</string>
+    <string name="setting_app_name">应用名</string>
+    <string name="setting_update_time">更新时间</string>
+    <string name="setting_theme">主题</string>
+    <string name="setting_list">列表设置</string>
+    <string name="setting_sort_by">排序方式</string>
+
+
 </resources>
