@@ -15,6 +15,6 @@
         android:icon="@drawable/ic_menu_setting"
         android:title="@string/setting"
         android:titleCondensed="@string/setting"
-        app:showAsAction="always|withText" />
+        app:showAsAction="ifRoom|withText" />
 
 </menu>

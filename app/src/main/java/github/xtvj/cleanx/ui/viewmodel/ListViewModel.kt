@@ -13,10 +13,7 @@ import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.data.AppWorker
 import github.xtvj.cleanx.shell.Runner
-import github.xtvj.cleanx.shell.RunnerUtils
-import github.xtvj.cleanx.utils.APPS_BY_LAST_UPDATE_TIME
-import github.xtvj.cleanx.utils.APPS_BY_NAME
-import github.xtvj.cleanx.utils.log
+import github.xtvj.cleanx.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -81,48 +78,45 @@ class ListViewModel @Inject constructor(
             when (type) {
                 0 -> {
                     appItemDao.deleteAllUser()
-                    getAppsByCode(RunnerUtils.GETUSER)
+                    getAppsByCode(GET_USER)
                 }
                 1 -> {
                     appItemDao.deleteAllSystem()
-                    getAppsByCode(RunnerUtils.GETSYS)
+                    getAppsByCode(GET_SYS)
                 }
                 else -> {
                     appItemDao.deleteAllDisable()
-                    getAppsByCode(RunnerUtils.GETDISABLED)
+                    getAppsByCode(GET_DISABLED)
 
                 }
             }
         }
 
 
-    fun setApps(s: String, list: List<AppItem>) {
+    fun setApps(code: String, list: List<AppItem>) {
         viewModelScope.launch(Dispatchers.IO) {
             //可以添加弹窗提示正在执行中。由于执行时间过于短暂，暂时不添加
-            when (s) {
-                "disable" -> {
-                    val builder = StringBuilder()
-                    for (item in list) {
-                        builder.append(RunnerUtils.CMD_PM + " disable " + item.id + "\n")
+            val builder = StringBuilder()
+            for (item in list) {
+                builder.append(code + item.id + "\n")
+            }
+            val result = Runner.runCommand(Runner.rootInstance(), builder.toString())
+            log(result.output)
+            if (result.isSuccessful) {
+                when(code){
+                    PM_ENABLE ->{
+                        for (item in list) {
+                            appItemDao.updateEnable(item.id, true)
+                        }
                     }
-                    val result = Runner.runCommand(Runner.rootInstance(), builder.toString())
-                    log(result.output)
-                    if (result.isSuccessful) {
+                    PM_DISABLE ->{
                         for (item in list) {
                             appItemDao.updateEnable(item.id, false)
                         }
                     }
-                }
-                "enable" -> {
-                    val builder = StringBuilder()
-                    for (item in list) {
-                        builder.append(RunnerUtils.CMD_PM + " enable " + item.id + "\n")
-                    }
-                    val result = Runner.runCommand(Runner.rootInstance(), builder.toString())
-                    log(result.output)
-                    if (result.isSuccessful) {
+                    FORCE_STOP ->{
                         for (item in list) {
-                            appItemDao.updateEnable(item.id, true)
+                            appItemDao.updateRunning(item.id, false)
                         }
                     }
                 }

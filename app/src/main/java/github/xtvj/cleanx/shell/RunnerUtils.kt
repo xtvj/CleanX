@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package github.xtvj.cleanx.shell
 
-import android.os.Build
 import java.io.File
 import java.io.IOException
 import java.io.StringWriter
@@ -10,14 +9,8 @@ import java.security.InvalidParameterException
 import java.util.*
 
 object RunnerUtils {
-    private const val EMPTY = ""
-    val CMD_PM = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) "cmd package" else "pm"
-    val GETAll = "$CMD_PM list packages"
-    val GETUSER = "$CMD_PM list packages -3"
-    val GETSYS = "$CMD_PM list packages -s"
-    val GETDISABLED = "$CMD_PM list packages -d"
-    val FORCE_STOP = "am force-stop "
 
+    private const val EMPTY = ""
     private var ESCAPE_XSI: LookupTranslator
 
 
@@ -218,7 +211,6 @@ object RunnerUtils {
         escapeXsiMap.plus(Pair("~", "\\~"))
         escapeXsiMap.plus(Pair("=", "\\="))
         escapeXsiMap.plus(Pair("%", "\\%"))
-         ESCAPE_XSI =
-            LookupTranslator(Collections.unmodifiableMap(escapeXsiMap))
+        ESCAPE_XSI = LookupTranslator(Collections.unmodifiableMap(escapeXsiMap))
     }
 }

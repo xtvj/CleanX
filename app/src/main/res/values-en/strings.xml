@@ -27,4 +27,5 @@
     <string name="setting">设置</string>
     <string name="stop_success">停止成功</string>
     <string name="stop_failed">停止失败</string>
+    <string name="disabled_can_not_open">被禁用，无法打开</string>
 </resources>

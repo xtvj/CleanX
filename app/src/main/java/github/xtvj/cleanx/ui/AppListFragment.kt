@@ -30,10 +30,7 @@ import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.ui.adapter.ListItemAdapter
 import github.xtvj.cleanx.ui.viewmodel.ListViewModel
-import github.xtvj.cleanx.utils.APPS_BY_ID
-import github.xtvj.cleanx.utils.APPS_BY_LAST_UPDATE_TIME
-import github.xtvj.cleanx.utils.APPS_BY_NAME
-import github.xtvj.cleanx.utils.log
+import github.xtvj.cleanx.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -139,15 +136,15 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                     if (needLoadData) {
                         when (type) {
                             0 -> {
-                                getAppsByCode(RunnerUtils.GETUSER)
+                                getAppsByCode(GET_USER)
                                 observeApps(userList)
                             }
                             1 -> {
-                                getAppsByCode(RunnerUtils.GETSYS)
+                                getAppsByCode(GET_SYS)
                                 observeApps(systemList)
                             }
                             else -> {
-                                getAppsByCode(RunnerUtils.GETDISABLED)
+                                getAppsByCode(GET_DISABLED)
                                 observeApps(disableList)
                             }
                         }
@@ -246,11 +243,15 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.item_disable -> {
-                fragmentViewModel.setApps("disable", adapter.getSelectItems())
+                fragmentViewModel.setApps(PM_DISABLE, adapter.getSelectItems())
                 mode?.finish()
             }
             R.id.item_enable -> {
-                fragmentViewModel.setApps("enable", adapter.getSelectItems())
+                fragmentViewModel.setApps(PM_ENABLE, adapter.getSelectItems())
+                mode?.finish()
+            }
+            R.id.item_stop -> {
+                fragmentViewModel.setApps(FORCE_STOP, adapter.getSelectItems())
                 mode?.finish()
             }
         }

@@ -10,7 +10,6 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
@@ -20,10 +19,7 @@ import github.xtvj.cleanx.databinding.DialogBottomAppBinding
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.shell.RunnerUtils
-import github.xtvj.cleanx.utils.FileUtils
-import github.xtvj.cleanx.utils.ShareContentType
-import github.xtvj.cleanx.utils.ToastUtils
-import github.xtvj.cleanx.utils.loadImage
+import github.xtvj.cleanx.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -116,14 +112,10 @@ class SheetDialog : BottomSheetDialogFragment() {
                 if (intent != null) {
                     context?.startActivity(intent)
                 } else {
-                    Toast.makeText(
-                        context,
-                        getString(R.string.app_no_intent),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                   toastUtils.toast(R.string.app_no_intent)
                 }
             } else {
-                Toast.makeText(context, item.name + "被禁用，无法打", Toast.LENGTH_SHORT).show()
+                toastUtils.toast(item.name + getString(R.string.disabled_can_not_open))
             }
             dismissAllowingStateLoss()
         }
@@ -168,32 +160,26 @@ class SheetDialog : BottomSheetDialogFragment() {
                         //pm disable package
                         val result = Runner.runCommand(
                             Runner.rootInstance(),
-                            RunnerUtils.CMD_PM + " disable " + item.id
+                            PM_DISABLE + item.id
                         )
                         if (result.isSuccessful) {
                             appItemDao.updateEnable(item.id, false)
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(
-                                    fragmentContext,
-                                    "${getString(R.string.disable)}${item.name}${
-                                        getString(R.string.success)
-                                    }", Toast.LENGTH_SHORT
-                                ).show()
+                                toastUtils.toast("${getString(R.string.disable)}${item.name}${
+                                    getString(R.string.success)
+                                }")
                             }
                         } else {
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(
-                                    fragmentContext,
-                                    "${getString(R.string.disable)}${item.name}${
-                                        getString(R.string.fail)
-                                    }", Toast.LENGTH_SHORT
-                                ).show()
+                                toastUtils.toast("${getString(R.string.disable)}${item.name}${
+                                    getString(R.string.fail)
+                                }")
                             }
                         }
                     } else {
                         val result = Runner.runCommand(
                             Runner.rootInstance(),
-                            RunnerUtils.CMD_PM + " enable " + item.id
+                            PM_ENABLE + item.id
                         )
                         //pm enable package
                         if (result.isSuccessful) {
@@ -225,7 +211,7 @@ class SheetDialog : BottomSheetDialogFragment() {
                 if (hasRoot) {
                     val result = Runner.runCommand(
                         Runner.rootInstance(),
-                        RunnerUtils.FORCE_STOP + item.id
+                        FORCE_STOP + item.id
                     )
                     if (result.isSuccessful) {
                         appItemDao.updateRunning(item.id, false)
