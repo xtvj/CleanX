@@ -36,6 +36,7 @@
     <string name="setting_theme">主题</string>
     <string name="setting_list">列表设置</string>
     <string name="setting_sort_by">排序方式</string>
+    <string name="refresh_done">刷新完成</string>
 
 
 </resources>

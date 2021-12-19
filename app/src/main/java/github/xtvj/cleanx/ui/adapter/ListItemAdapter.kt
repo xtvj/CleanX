@@ -1,6 +1,7 @@
 package github.xtvj.cleanx.ui.adapter
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -21,7 +22,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
-open class ListItemAdapter @Inject constructor() :
+open class ListItemAdapter @Inject constructor(val context: Context) :
     PagingDataAdapter<AppItem, ListItemAdapter.ItemViewHolder>(diffCallback) {
 
 
@@ -90,12 +91,12 @@ open class ListItemAdapter @Inject constructor() :
             holderBinding.tvAppId.text = item.id
             holderBinding.tvAppName.text = item.name
             holderBinding.tvAppVersion.text =
-                holderBinding.tvAppVersion.context.getString(R.string.version) + item.version
+                context.getString(R.string.version) + item.version
 
             holderBinding.ivIsEnable.visibility =
                 if (type == 2 || item.isEnable) View.INVISIBLE else View.VISIBLE
             holderBinding.tvUpdateTime.text =
-                holderBinding.tvUpdateTime.context.getString(R.string.update_time) + item.lastUpdateTime
+                context.getString(R.string.update_time) + item.lastUpdateTime
 
             if (item.icon != 0) {
                 val uri = Uri.parse("android.resource://" + item.id + "/" + item.icon)
@@ -105,9 +106,9 @@ open class ListItemAdapter @Inject constructor() :
             }
 
             if (item.isRunning){
-                holderBinding.cvAppItem.setCardBackgroundColor(holderBinding.cvAppItem.context.getColorStateList(R.color.running_card_view_background))
+                holderBinding.cvAppItem.setCardBackgroundColor(context.getColorStateList(R.color.running_card_view_background))
             }else{
-                holderBinding.cvAppItem.setCardBackgroundColor(holderBinding.cvAppItem.context.getColorStateList(R.color.selector_card_view_background))
+                holderBinding.cvAppItem.setCardBackgroundColor(context.getColorStateList(R.color.selector_card_view_background))
             }
 
             bindSelectedState()

@@ -37,4 +37,5 @@
     <string name="setting_theme">Theme</string>
     <string name="setting_list">App list settings</string>
     <string name="setting_sort_by">Sort by</string>
+    <string name="refresh_done">Refreshed</string>
 </resources>

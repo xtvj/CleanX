@@ -37,11 +37,11 @@ class ListViewModel @Inject constructor(
     @ExperimentalCoroutinesApi
     val userList = sortByColumnFlow.flatMapLatest { query ->
         if (query == APPS_BY_LAST_UPDATE_TIME) {
-            Pager(PagingConfig(pageSize = 15)) {
+            Pager(PagingConfig(pageSize = 12, prefetchDistance = 5)) {
                 appItemDao.getUser(query, false)
             }.flow.cachedIn(viewModelScope)
         } else {
-            Pager(PagingConfig(pageSize = 15)) {
+            Pager(PagingConfig(pageSize = 12, prefetchDistance = 5)) {
                 appItemDao.getUser(query, true)
             }.flow.cachedIn(viewModelScope)
         }
@@ -50,11 +50,11 @@ class ListViewModel @Inject constructor(
     @ExperimentalCoroutinesApi
     val systemList = sortByColumnFlow.flatMapLatest { query ->
         if (query == APPS_BY_LAST_UPDATE_TIME) {
-            Pager(PagingConfig(pageSize = 15)) {
+            Pager(PagingConfig(pageSize = 12, prefetchDistance = 5)) {
                 appItemDao.getSystem(query, false)
             }.flow.cachedIn(viewModelScope)
         } else {
-            Pager(PagingConfig(pageSize = 15)) {
+            Pager(PagingConfig(pageSize = 12, prefetchDistance = 5)) {
                 appItemDao.getSystem(query, true)
             }.flow.cachedIn(viewModelScope)
         }
@@ -63,11 +63,11 @@ class ListViewModel @Inject constructor(
     @ExperimentalCoroutinesApi
     val disableList = sortByColumnFlow.flatMapLatest { query ->
         if (query == APPS_BY_LAST_UPDATE_TIME) {
-            Pager(PagingConfig(pageSize = 15)) {
+            Pager(PagingConfig(pageSize = 10, prefetchDistance = 5)) {
                 appItemDao.getDisable(query, false)
             }.flow.cachedIn(viewModelScope)
         } else {
-            Pager(PagingConfig(pageSize = 15)) {
+            Pager(PagingConfig(pageSize = 10, prefetchDistance = 5)) {
                 appItemDao.getDisable(query, true)
             }.flow.cachedIn(viewModelScope)
         }

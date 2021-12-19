@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -118,7 +119,7 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
     // recyclerview animators
-//    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
+    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
 
     //PermissionsDispatcher
 //    implementation "com.github.permissions-dispatcher:permissionsdispatcher:4.9.1"

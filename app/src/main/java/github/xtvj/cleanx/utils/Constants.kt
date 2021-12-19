@@ -19,5 +19,5 @@ val GET_SYS = "$CMD_PM list packages -s"
 val GET_DISABLED = "$CMD_PM list packages -d"
 
 const val FORCE_STOP = "am force-stop "
-val PM_DISABLE = "$CMD_PM disable "
+val PM_DISABLE = "$CMD_PM disable-user "
 val PM_ENABLE = "$CMD_PM enable "

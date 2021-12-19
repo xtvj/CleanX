@@ -3,7 +3,6 @@ package github.xtvj.cleanx.ui
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.*
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
@@ -11,7 +10,7 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.coroutineScope
-import androidx.lifecycle.whenResumed
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -31,11 +30,9 @@ import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.ui.adapter.ListItemAdapter
 import github.xtvj.cleanx.ui.viewmodel.ListViewModel
 import github.xtvj.cleanx.utils.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -64,6 +61,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     private lateinit var selectionTracker: SelectionTracker<Long>
     private var needLoadData = true
     private lateinit var rootDialog: AlertDialog
+    private var job:Job? = null
 
     @Inject
     lateinit var adapter: ListItemAdapter
@@ -73,6 +71,9 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
     @Inject
     lateinit var workManager: WorkManager
+
+    @Inject
+    lateinit var toastUtils: ToastUtils
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -88,7 +89,6 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     }
 
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter.setAdapterType(type)
@@ -128,57 +128,65 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                 }
             })
         binding.rvApp.layoutManager = LinearLayoutManager(context)
-        lifecycleScope.launch {
-            lifecycle.whenResumed {
-
-                //viewModel是懒加载，必需在主线程中创建
-                fragmentViewModel.run {
-                    if (needLoadData) {
-                        when (type) {
-                            0 -> {
-                                getAppsByCode(GET_USER)
-                                observeApps(userList)
-                            }
-                            1 -> {
-                                getAppsByCode(GET_SYS)
-                                observeApps(systemList)
-                            }
-                            else -> {
-                                getAppsByCode(GET_DISABLED)
-                                observeApps(disableList)
-                            }
-                        }
-                    }
-                    needLoadData = false
-
-                    lifecycleScope.launch {
-                        dataStoreManager.userPreferencesFlow.collectLatest {
-                            log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
-                            when (it.sortOrder) {
-                                SortOrder.BY_ID -> {
-                                    sortByColumnFlow.update { APPS_BY_ID }
-                                }
-                                SortOrder.BY_NAME -> {
-                                    sortByColumnFlow.update { APPS_BY_NAME }
-                                }
-                                SortOrder.BY_UPDATE_TIME -> {
-                                    sortByColumnFlow.update { APPS_BY_LAST_UPDATE_TIME }
-                                }
-                            }
-
-                        }
-                    }
-
-                }
-            }
-        }
         binding.srlFragmentList.setOnRefreshListener(this)
+
+//        adapter.addLoadStateListener {
+//            if (it.mediator?.refresh is LoadState.Loading) {
+//                binding.srlFragmentList.isRefreshing = true
+//            }else{
+//                binding.srlFragmentList.isRefreshing = false
+//            }
+//        }
 
         initDialog()
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch {
+            //viewModel是懒加载，必需在主线程中创建
+            fragmentViewModel.run {
+                    if (needLoadData) {
+                        val uuid = when (type) {
+                            0 -> {
+                                getAppsByCode(GET_USER)
+                            }
+                            1 -> {
+                                getAppsByCode(GET_SYS)
+                            }
+                            else -> {
+                                getAppsByCode(GET_DISABLED)
+                            }
+                        }
+                        loadDone(uuid,false)
+
+                        lifecycleScope.launch {
+                            dataStoreManager.userPreferencesFlow.collectLatest {
+                                log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
+                                when (it.sortOrder) {
+                                    SortOrder.BY_ID -> {
+                                        sortByColumnFlow.update { APPS_BY_ID }
+                                    }
+                                    SortOrder.BY_NAME -> {
+                                        sortByColumnFlow.update { APPS_BY_NAME }
+                                    }
+                                    SortOrder.BY_UPDATE_TIME -> {
+                                        sortByColumnFlow.update { APPS_BY_LAST_UPDATE_TIME }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    needLoadData = false
+                }
+        }
+    }
+
     private fun observeApps(apps: Flow<PagingData<AppItem>>) {
-        lifecycleScope.launch(Dispatchers.Main) {
+        job?.cancel()
+        job = lifecycleScope.launch {
             apps.collectLatest {
                 adapter.submitData(lifecycle, it)
             }
@@ -205,17 +213,9 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                         RunnerUtils.isRootGiven()
                     }
                     if (isRoot) {
-                        Toast.makeText(
-                            context,
-                            getString(R.string.got_root),
-                            Toast.LENGTH_LONG
-                        ).show()
+                        toastUtils.toastLong(R.string.got_root)
                     } else {
-                        Toast.makeText(
-                            context,
-                            getString(R.string.need_to_open_root),
-                            Toast.LENGTH_LONG
-                        ).show()
+                        toastUtils.toastLong(R.string.need_to_open_root)
                     }
                 }
                 dialog.dismiss()
@@ -261,11 +261,34 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     override fun onRefresh() {
         lifecycleScope.launch {
             val uuid = fragmentViewModel.reFreshAppsByType(type)
-            workManager.getWorkInfoByIdLiveData(uuid)
-                .observe(viewLifecycleOwner, { workInfo ->
-                    binding.srlFragmentList.isRefreshing = !workInfo.state.isFinished
-                })
+            loadDone(uuid,true)
         }
+
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun loadDone(uuid: UUID,isFresh: Boolean){
+        workManager.getWorkInfoByIdLiveData(uuid)
+            .observe(viewLifecycleOwner, { workInfo ->
+                binding.srlFragmentList.isRefreshing = !workInfo.state.isFinished
+                if (workInfo.state.isFinished){
+                    when (type) {
+                        0 -> {
+                            observeApps(fragmentViewModel.userList)
+                        }
+                        1 -> {
+                            observeApps(fragmentViewModel.systemList)
+                        }
+                        else -> {
+                            observeApps(fragmentViewModel.disableList)
+                        }
+                    }
+                    if (isFresh){
+//                        adapter.refresh()
+                        toastUtils.toast(R.string.refresh_done)
+                    }
+                }
+            })
     }
 
 
