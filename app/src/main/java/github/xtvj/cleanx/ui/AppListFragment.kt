@@ -10,7 +10,6 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.coroutineScope
-import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -59,9 +58,9 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
     private var actionMode: ActionMode? = null
     private lateinit var selectionTracker: SelectionTracker<Long>
-    private var needLoadData = true
     private lateinit var rootDialog: AlertDialog
-    private var job:Job? = null
+    private var job: Job? = null
+    private var needObserver = true
 
     @Inject
     lateinit var adapter: ListItemAdapter
@@ -146,46 +145,32 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         super.onResume()
         lifecycleScope.launch {
             //viewModel是懒加载，必需在主线程中创建
-            fragmentViewModel.run {
-                    if (needLoadData) {
-                        val uuid = when (type) {
-                            0 -> {
-                                getAppsByCode(GET_USER)
-                            }
-                            1 -> {
-                                getAppsByCode(GET_SYS)
-                            }
-                            else -> {
-                                getAppsByCode(GET_DISABLED)
-                            }
-                        }
-                        loadDone(uuid,false)
-
-                        lifecycleScope.launch {
-                            dataStoreManager.userPreferencesFlow.collectLatest {
-                                log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
-                                when (it.sortOrder) {
-                                    SortOrder.BY_ID -> {
-                                        sortByColumnFlow.update { APPS_BY_ID }
-                                    }
-                                    SortOrder.BY_NAME -> {
-                                        sortByColumnFlow.update { APPS_BY_NAME }
-                                    }
-                                    SortOrder.BY_UPDATE_TIME -> {
-                                        sortByColumnFlow.update { APPS_BY_LAST_UPDATE_TIME }
-                                    }
+            if (needObserver) {
+                fragmentViewModel.run {
+                    lifecycleScope.launch {
+                        loadDone(ALL_UUID!!,false)
+                        dataStoreManager.userPreferencesFlow.collectLatest {
+                            log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
+                            when (it.sortOrder) {
+                                SortOrder.BY_ID -> {
+                                    sortByColumnFlow.update { APPS_BY_ID }
                                 }
-
+                                SortOrder.BY_NAME -> {
+                                    sortByColumnFlow.update { APPS_BY_NAME }
+                                }
+                                SortOrder.BY_UPDATE_TIME -> {
+                                    sortByColumnFlow.update { APPS_BY_LAST_UPDATE_TIME }
+                                }
                             }
                         }
                     }
-                    needLoadData = false
                 }
+            }
+            needObserver = false
         }
     }
 
     private fun observeApps(apps: Flow<PagingData<AppItem>>) {
-        job?.cancel()
         job = lifecycleScope.launch {
             apps.collectLatest {
                 adapter.submitData(lifecycle, it)
@@ -261,17 +246,18 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     override fun onRefresh() {
         lifecycleScope.launch {
             val uuid = fragmentViewModel.reFreshAppsByType(type)
-            loadDone(uuid,true)
+            job?.cancel()
+            loadDone(uuid, true)
         }
 
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun loadDone(uuid: UUID,isFresh: Boolean){
+    fun loadDone(uuid: UUID, isFresh: Boolean) {
         workManager.getWorkInfoByIdLiveData(uuid)
             .observe(viewLifecycleOwner, { workInfo ->
                 binding.srlFragmentList.isRefreshing = !workInfo.state.isFinished
-                if (workInfo.state.isFinished){
+                if (workInfo.state.isFinished) {
                     when (type) {
                         0 -> {
                             observeApps(fragmentViewModel.userList)
@@ -283,7 +269,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                             observeApps(fragmentViewModel.disableList)
                         }
                     }
-                    if (isFresh){
+                    if (isFresh) {
 //                        adapter.refresh()
                         toastUtils.toast(R.string.refresh_done)
                     }

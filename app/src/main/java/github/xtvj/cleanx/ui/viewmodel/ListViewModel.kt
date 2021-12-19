@@ -125,7 +125,7 @@ class ListViewModel @Inject constructor(
 
     }
 
-    fun getAppsByCode(code: String): UUID {
+    private fun getAppsByCode(code: String): UUID {
         val request = OneTimeWorkRequestBuilder<AppWorker>()
             .setInputData(workDataOf(AppWorker.KEY_CODE to code))
             .build()
