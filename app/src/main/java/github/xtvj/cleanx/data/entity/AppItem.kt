@@ -1,4 +1,4 @@
-package github.xtvj.cleanx.data
+package github.xtvj.cleanx.data.entity
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo
@@ -20,8 +20,6 @@ data class AppItem(
     var lastUpdateTime: String,
     var dataDir: String,
     var sourceDir: String,
-    var deviceProtectedDataDir: String?,
-    var publicSourceDir: String,
     var icon:Int,
     var isRunning: Boolean
 

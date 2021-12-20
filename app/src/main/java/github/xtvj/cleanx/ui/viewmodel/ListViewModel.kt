@@ -2,16 +2,11 @@ package github.xtvj.cleanx.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
 import dagger.hilt.android.lifecycle.HiltViewModel
-import github.xtvj.cleanx.data.AppItem
-import github.xtvj.cleanx.data.AppItemDao
-import github.xtvj.cleanx.data.AppWorker
+import github.xtvj.cleanx.data.dao.AppItemDao
+import github.xtvj.cleanx.data.entity.AppItem
+import github.xtvj.cleanx.data.repository.AppRepository
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.utils.*
 import kotlinx.coroutines.Dispatchers
@@ -19,15 +14,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.*
 import javax.inject.Inject
 
 
 @HiltViewModel
 class ListViewModel @Inject constructor(
     private val appItemDao: AppItemDao,
-    private val workManager: WorkManager
+    private val appRepository: AppRepository
 ) : ViewModel() {
 
 //    var sortDirection = MutableLiveData(true)
@@ -37,60 +30,48 @@ class ListViewModel @Inject constructor(
     @ExperimentalCoroutinesApi
     val userList = sortByColumnFlow.flatMapLatest { query ->
         if (query == APPS_BY_LAST_UPDATE_TIME) {
-            Pager(PagingConfig(pageSize = 12, prefetchDistance = 5)) {
-                appItemDao.getUser(query, false)
-            }.flow.cachedIn(viewModelScope)
+            appRepository.getUser(query,false).cachedIn(viewModelScope)
         } else {
-            Pager(PagingConfig(pageSize = 12, prefetchDistance = 5)) {
-                appItemDao.getUser(query, true)
-            }.flow.cachedIn(viewModelScope)
+            appRepository.getUser(query,true).cachedIn(viewModelScope)
         }
     }
 
     @ExperimentalCoroutinesApi
     val systemList = sortByColumnFlow.flatMapLatest { query ->
         if (query == APPS_BY_LAST_UPDATE_TIME) {
-            Pager(PagingConfig(pageSize = 12, prefetchDistance = 5)) {
-                appItemDao.getSystem(query, false)
-            }.flow.cachedIn(viewModelScope)
+            appRepository.getSys(query,false).cachedIn(viewModelScope)
         } else {
-            Pager(PagingConfig(pageSize = 12, prefetchDistance = 5)) {
-                appItemDao.getSystem(query, true)
-            }.flow.cachedIn(viewModelScope)
+            appRepository.getSys(query,true).cachedIn(viewModelScope)
         }
     }
 
     @ExperimentalCoroutinesApi
     val disableList = sortByColumnFlow.flatMapLatest { query ->
         if (query == APPS_BY_LAST_UPDATE_TIME) {
-            Pager(PagingConfig(pageSize = 10, prefetchDistance = 5)) {
-                appItemDao.getDisable(query, false)
-            }.flow.cachedIn(viewModelScope)
+            appRepository.getDisable(query,false).cachedIn(viewModelScope)
         } else {
-            Pager(PagingConfig(pageSize = 10, prefetchDistance = 5)) {
-                appItemDao.getDisable(query, true)
-            }.flow.cachedIn(viewModelScope)
+            appRepository.getDisable(query,true).cachedIn(viewModelScope)
         }
     }
 
-    suspend fun reFreshAppsByType(type: Int) =
-        withContext(Dispatchers.IO) {
-            when (type) {
-                0 -> {
-                    appItemDao.deleteAllUser()
-                    getAppsByCode(GET_USER)
-                }
-                1 -> {
-                    appItemDao.deleteAllSystem()
-                    getAppsByCode(GET_SYS)
-                }
-                else -> {
-                    appItemDao.deleteAllDisable()
-                    getAppsByCode(GET_DISABLED)
-
-                }
-            }
-        }
+//    suspend fun reFreshAppsByType(type: Int) =
+//        withContext(Dispatchers.IO) {
+//            when (type) {
+//                0 -> {
+//                    appItemDao.deleteAllUser()
+//                    getAppsByCode(GET_USER)
+//                }
+//                1 -> {
+//                    appItemDao.deleteAllSystem()
+//                    getAppsByCode(GET_SYS)
+//                }
+//                else -> {
+//                    appItemDao.deleteAllDisable()
+//                    getAppsByCode(GET_DISABLED)
+//
+//                }
+//            }
+//        }
 
 
     fun setApps(code: String, list: List<AppItem>) {
@@ -125,12 +106,12 @@ class ListViewModel @Inject constructor(
 
     }
 
-    private fun getAppsByCode(code: String): UUID {
-        val request = OneTimeWorkRequestBuilder<AppWorker>()
-            .setInputData(workDataOf(AppWorker.KEY_CODE to code))
-            .build()
-        workManager.enqueue(request)
-        return request.id
-    }
+//    private fun getAppsByCode(code: String): UUID {
+//        val request = OneTimeWorkRequestBuilder<AppWorker>()
+//            .setInputData(workDataOf(AppWorker.KEY_CODE to code))
+//            .build()
+//        workManager.enqueue(request)
+//        return request.id
+//    }
 
 }

@@ -10,6 +10,7 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.coroutineScope
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -21,9 +22,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
-import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.data.DataStoreManager
 import github.xtvj.cleanx.data.SortOrder
+import github.xtvj.cleanx.data.entity.AppItem
 import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.ui.adapter.ListItemAdapter
@@ -129,13 +130,9 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         binding.rvApp.layoutManager = LinearLayoutManager(context)
         binding.srlFragmentList.setOnRefreshListener(this)
 
-//        adapter.addLoadStateListener {
-//            if (it.mediator?.refresh is LoadState.Loading) {
-//                binding.srlFragmentList.isRefreshing = true
-//            }else{
-//                binding.srlFragmentList.isRefreshing = false
-//            }
-//        }
+        adapter.addLoadStateListener {
+            binding.srlFragmentList.isRefreshing = it.mediator?.refresh is LoadState.Loading
+        }
 
         initDialog()
     }
@@ -147,8 +144,18 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
             //viewModel是懒加载，必需在主线程中创建
             if (needObserver) {
                 fragmentViewModel.run {
+                    when(type){
+                        0 ->{
+                            observeApps(userList)
+                        }
+                        1 ->{
+                            observeApps(systemList)
+                        }
+                        2 ->{
+                            observeApps(disableList)
+                        }
+                    }
                     lifecycleScope.launch {
-                        loadDone(ALL_UUID!!,false)
                         dataStoreManager.userPreferencesFlow.collectLatest {
                             log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
                             when (it.sortOrder) {
@@ -171,8 +178,10 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     }
 
     private fun observeApps(apps: Flow<PagingData<AppItem>>) {
+        job?.cancel()
         job = lifecycleScope.launch {
             apps.collectLatest {
+                log("observerApps $type")
                 adapter.submitData(lifecycle, it)
             }
         }
@@ -244,38 +253,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     }
 
     override fun onRefresh() {
-        lifecycleScope.launch {
-            val uuid = fragmentViewModel.reFreshAppsByType(type)
-            job?.cancel()
-            loadDone(uuid, true)
-        }
-
+        adapter.refresh()
     }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun loadDone(uuid: UUID, isFresh: Boolean) {
-        workManager.getWorkInfoByIdLiveData(uuid)
-            .observe(viewLifecycleOwner, { workInfo ->
-                binding.srlFragmentList.isRefreshing = !workInfo.state.isFinished
-                if (workInfo.state.isFinished) {
-                    when (type) {
-                        0 -> {
-                            observeApps(fragmentViewModel.userList)
-                        }
-                        1 -> {
-                            observeApps(fragmentViewModel.systemList)
-                        }
-                        else -> {
-                            observeApps(fragmentViewModel.disableList)
-                        }
-                    }
-                    if (isFresh) {
-//                        adapter.refresh()
-                        toastUtils.toast(R.string.refresh_done)
-                    }
-                }
-            })
-    }
-
 
 }

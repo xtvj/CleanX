@@ -8,12 +8,18 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import github.xtvj.cleanx.data.dao.AppItemDao
+import github.xtvj.cleanx.data.entity.AppItem
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.utils.DateUtil
 import github.xtvj.cleanx.utils.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+/*
+使用AppRemoteMediator请求数据
+弃用WorkManager 保留此类待以后修改
+ */
 @HiltWorker
 class AppWorker @AssistedInject constructor(
     @Assisted val context: Context,
@@ -47,9 +53,9 @@ class AppWorker @AssistedInject constructor(
                                 val lastUpdateTime = DateUtil.format(appInfo.lastUpdateTime)
                                 val dataDir = appInfo.applicationInfo.dataDir
                                 val sourceDir = appInfo.applicationInfo.sourceDir
-                                val deviceProtectedDataDir =
-                                    appInfo.applicationInfo.deviceProtectedDataDir
-                                val publicSourceDir = appInfo.applicationInfo.publicSourceDir
+//                                val deviceProtectedDataDir =
+//                                    appInfo.applicationInfo.deviceProtectedDataDir
+//                                val publicSourceDir = appInfo.applicationInfo.publicSourceDir
                                 val icon = appInfo.applicationInfo.icon
                                 val isRunning = (appInfo.applicationInfo.flags and FLAG_STOPPED) == 0
 
@@ -63,8 +69,8 @@ class AppWorker @AssistedInject constructor(
                                     lastUpdateTime,
                                     dataDir,
                                     sourceDir,
-                                    deviceProtectedDataDir,
-                                    publicSourceDir,
+//                                    deviceProtectedDataDir,
+//                                    publicSourceDir,
                                     icon,
                                     isRunning
                                 )

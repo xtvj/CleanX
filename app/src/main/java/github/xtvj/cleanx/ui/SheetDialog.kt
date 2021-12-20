@@ -13,8 +13,8 @@ import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
-import github.xtvj.cleanx.data.AppItem
-import github.xtvj.cleanx.data.AppItemDao
+import github.xtvj.cleanx.data.dao.AppItemDao
+import github.xtvj.cleanx.data.entity.AppItem
 import github.xtvj.cleanx.databinding.DialogBottomAppBinding
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
 import github.xtvj.cleanx.shell.Runner
@@ -110,6 +110,9 @@ class SheetDialog : BottomSheetDialogFragment() {
             if (item.isEnable) {
                 val intent = pm.getLaunchIntentForPackage(item.id)
                 if (intent != null) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        appItemDao.updateRunning(item.id,true)
+                    }
                     context?.startActivity(intent)
                 } else {
                    toastUtils.toast(R.string.app_no_intent)

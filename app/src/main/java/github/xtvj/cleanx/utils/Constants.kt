@@ -1,7 +1,6 @@
 package github.xtvj.cleanx.utils
 
 import android.os.Build
-import java.util.*
 
 /**
  * Constants used throughout the app.
@@ -22,5 +21,3 @@ val GET_DISABLED = "$CMD_PM list packages -d"
 const val FORCE_STOP = "am force-stop "
 val PM_DISABLE = "$CMD_PM disable-user "
 val PM_ENABLE = "$CMD_PM enable "
-
-var ALL_UUID: UUID? = null

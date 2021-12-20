@@ -15,7 +15,7 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import github.xtvj.cleanx.R
-import github.xtvj.cleanx.data.AppItem
+import github.xtvj.cleanx.data.entity.AppItem
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
 import github.xtvj.cleanx.utils.loadImage
 import java.util.*
@@ -71,7 +71,9 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
         val list = mutableListOf<AppItem>()
         for (position in selectionTracker.selection) {
             val item = getItem(position.toInt())
-            list.add(item!!)
+            if (item != null){
+                list.add(item)
+            }
         }
         return list
     }

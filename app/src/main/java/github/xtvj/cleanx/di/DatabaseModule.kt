@@ -1,12 +1,15 @@
 package github.xtvj.cleanx.di
 
 import android.content.Context
+import android.content.pm.PackageManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import github.xtvj.cleanx.data.AppDatabase
+import github.xtvj.cleanx.data.dao.AppItemDao
+import github.xtvj.cleanx.data.db.AppDatabase
+import github.xtvj.cleanx.data.repository.AppRepository
 import javax.inject.Singleton
 
 @Module
@@ -31,13 +34,24 @@ open class DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideAppItemDao(db: AppDatabase) = db.appItemDao() // The reason we can implement a Dao for the database
+    fun provideAppItemDao(db: AppDatabase) =
+        db.appItemDao() // The reason we can implement a Dao for the database
 
 
     @Singleton
     @Provides
-    fun provideContext(@ApplicationContext context: Context) : Context{
+    fun provideContext(@ApplicationContext context: Context): Context {
         return context
+    }
+
+    @Singleton
+    @Provides
+    fun provideAppRepository(
+        appItemDao: AppItemDao,
+        db: AppDatabase,
+        pm: PackageManager
+    ): AppRepository {
+        return AppRepository(appItemDao, db, pm)
     }
 
 

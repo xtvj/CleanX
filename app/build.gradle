@@ -36,6 +36,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+//        freeCompilerArgs += [
+//                "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
+//                "-Xuse-experimental=kotlinx.coroutines.ObsoleteCoroutinesApi"]
     }
 
 }
@@ -89,13 +92,13 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.4.0"
 
     //Room
-    implementation 'androidx.room:room-runtime:2.4.0-rc01'
+    implementation 'androidx.room:room-runtime:2.4.0'
     // To use Kotlin annotation processing tool (kapt)
-    kapt 'androidx.room:room-compiler:2.4.0-rc01'
+    kapt 'androidx.room:room-compiler:2.4.0'
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation('androidx.room:room-ktx:2.4.0-rc01')
+    implementation('androidx.room:room-ktx:2.4.0')
     // optional - Paging 3 Integration
-    implementation "androidx.room:room-paging:2.4.0-rc01"
+    implementation "androidx.room:room-paging:2.4.0"
 
     //Paging 3
     implementation "androidx.paging:paging-runtime-ktx:3.1.0"
