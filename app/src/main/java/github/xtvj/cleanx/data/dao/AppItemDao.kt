@@ -56,13 +56,13 @@ interface AppItemDao {
     @Query("DELETE FROM appItem WHERE isEnable = 0")
     suspend fun deleteAllDisable()
 
-    @Query("SELECT COUNT(id) FROM appItem where isSystem = 0")
-    suspend fun countUser(): Int
-
-    @Query("SELECT COUNT(id) FROM appItem where isSystem = 1")
-    suspend fun countSystem(): Int
-
-    @Query("SELECT COUNT(id) FROM appItem where isEnable = 0")
-    suspend fun countDisable(): Int
+//    @Query("SELECT COUNT(id) FROM appItem where isSystem = 0")
+//    suspend fun countUser(): Int
+//
+//    @Query("SELECT COUNT(id) FROM appItem where isSystem = 1")
+//    suspend fun countSystem(): Int
+//
+//    @Query("SELECT COUNT(id) FROM appItem where isEnable = 0")
+//    suspend fun countDisable(): Int
 
 }

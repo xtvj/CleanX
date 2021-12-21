@@ -1,15 +1,12 @@
 package github.xtvj.cleanx.di
 
 import android.content.Context
-import android.content.pm.PackageManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import github.xtvj.cleanx.data.dao.AppItemDao
 import github.xtvj.cleanx.data.db.AppDatabase
-import github.xtvj.cleanx.data.repository.AppRepository
 import javax.inject.Singleton
 
 @Module
@@ -44,15 +41,6 @@ open class DatabaseModule {
         return context
     }
 
-    @Singleton
-    @Provides
-    fun provideAppRepository(
-        appItemDao: AppItemDao,
-        db: AppDatabase,
-        pm: PackageManager
-    ): AppRepository {
-        return AppRepository(appItemDao, db, pm)
-    }
 
 
 }

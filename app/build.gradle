@@ -96,7 +96,7 @@ dependencies {
     // To use Kotlin annotation processing tool (kapt)
     kapt 'androidx.room:room-compiler:2.4.0'
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation('androidx.room:room-ktx:2.4.0')
+    implementation 'androidx.room:room-ktx:2.4.0'
     // optional - Paging 3 Integration
     implementation "androidx.room:room-paging:2.4.0"
 
@@ -115,14 +115,14 @@ dependencies {
     //log
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
-    // The core module is used by all other components
+    //Magisk libsu
     implementation "com.github.topjohnwu.libsu:core:3.2.0"
 
     // debugImplementation because LeakCanary should only run in debug builds.
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
     // recyclerview animators
-    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
+//    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
 
     //PermissionsDispatcher
 //    implementation "com.github.permissions-dispatcher:permissionsdispatcher:4.9.1"
