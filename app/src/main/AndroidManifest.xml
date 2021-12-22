@@ -30,14 +30,14 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
             android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.CleanX" />
         <activity
             android:name=".ui.SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.CleanX.Fullscreen"
-            android:launchMode="singleTask">
+            android:theme="@style/Theme.CleanX.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

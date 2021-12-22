@@ -96,7 +96,7 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
                 context.getString(R.string.version) + item.version
 
             holderBinding.ivIsEnable.visibility =
-                if (item.isEnable) View.INVISIBLE else View.VISIBLE
+                if (type == 2 || item.isEnable) View.INVISIBLE else View.VISIBLE
             holderBinding.tvUpdateTime.text =
                 context.getString(R.string.update_time) + item.lastUpdateTime
 
@@ -119,9 +119,9 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
                 this@ListItemAdapter.selectionTracker.isSelected(details.selectionKey)
             //没有被选中并且正在运行的app才显示不同的背景色，否则透明，显示cardview的颜色
             if (!holderBinding.cvAppItem.isChecked && running){
-                holderBinding.clAppItem.setBackgroundColor(R.color.card_View_running)
+                holderBinding.clAppItem.setBackgroundResource(R.color.card_View_running)
             }else{
-                holderBinding.clAppItem.setBackgroundColor(android.R.color.transparent)
+                holderBinding.clAppItem.setBackgroundResource(android.R.color.transparent)
             }
         }
 
