@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
-import github.xtvj.cleanx.utils.CoilHolder
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -14,7 +13,7 @@ class CleanXApplication : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
 
-        CoilHolder.init(this)
+//        CoilHolder.init(this)
         
     }
 

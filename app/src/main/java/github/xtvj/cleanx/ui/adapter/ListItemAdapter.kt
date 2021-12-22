@@ -18,7 +18,6 @@ import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.entity.AppItem
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
 import github.xtvj.cleanx.utils.loadImage
-import java.util.*
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -95,8 +94,8 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
             holderBinding.tvAppVersion.text =
                 context.getString(R.string.version) + item.version
 
-            holderBinding.ivIsEnable.visibility =
-                if (type == 2 || item.isEnable) View.INVISIBLE else View.VISIBLE
+//            holderBinding.ivIsEnable.visibility =
+//                if (type == 2 || item.isEnable) View.INVISIBLE else View.VISIBLE
             holderBinding.tvUpdateTime.text =
                 context.getString(R.string.update_time) + item.lastUpdateTime
 
@@ -107,21 +106,25 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
                 holderBinding.ivIcon.loadImage(R.drawable.ic_default_round)
             }
 
-            bindSelectedState(item.isRunning)
-            holderBinding.cvAppItem.setOnClickListener {
-                itemClickListener?.invoke(item)
-            }
-        }
-
-        @SuppressLint("ResourceAsColor")
-        private fun bindSelectedState(running: Boolean) {
+            //bindSelectedState
             holderBinding.cvAppItem.isChecked =
                 this@ListItemAdapter.selectionTracker.isSelected(details.selectionKey)
-            //没有被选中并且正在运行的app才显示不同的背景色，否则透明，显示cardview的颜色
-            if (!holderBinding.cvAppItem.isChecked && running){
+
+            if (!holderBinding.cvAppItem.isChecked && item.isRunning){
                 holderBinding.clAppItem.setBackgroundResource(R.color.card_View_running)
             }else{
                 holderBinding.clAppItem.setBackgroundResource(android.R.color.transparent)
+            }
+
+            if (!holderBinding.cvAppItem.isChecked && type != 2 && !item.isEnable){
+                holderBinding.ivIsEnable.visibility = View.VISIBLE
+            }else{
+                holderBinding.ivIsEnable.visibility = View.INVISIBLE
+            }
+
+
+            holderBinding.cvAppItem.setOnClickListener {
+                itemClickListener?.invoke(item)
             }
         }
 

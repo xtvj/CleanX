@@ -1,10 +1,9 @@
-<!-- SPDX-License-Identifier: Apache-2.0 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-        android:width="24dp"
-        android:height="24dp"
-        android:viewportWidth="24.0"
-        android:viewportHeight="24.0">
-    <path
-        android:fillColor="@color/colorAccent"
-        android:pathData="M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10 10,-4.48 10,-10S17.52,2 12,2zM4,12c0,-4.42 3.58,-8 8,-8 1.85,0 3.55,0.63 4.9,1.69L5.69,16.9C4.63,15.55 4,13.85 4,12zM12,20c-1.85,0 -3.55,-0.63 -4.9,-1.69L18.31,7.1C19.37,8.45 20,10.15 20,12c0,4.42 -3.58,8 -8,8z"/>
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="1024"
+    android:viewportHeight="1024">
+  <path
+      android:fillColor="@color/colorAccent"
+      android:pathData="M512,51.2c-128,0 -243.2,51.2 -325.12,135.68 -84.48,84.48 -135.68,199.68 -135.68,325.12 0,253.44 207.36,460.8 460.8,460.8s460.8,-207.36 460.8,-460.8 -207.36,-460.8 -460.8,-460.8zM921.6,512c0,104.96 -38.4,197.12 -102.4,271.36l-576,-576c71.68,-64 166.4,-102.4 271.36,-102.4 222.72,-2.56 407.04,181.76 407.04,407.04zM102.4,512c0,-104.96 38.4,-197.12 102.4,-271.36l576,576c-71.68,64 -166.4,102.4 -271.36,102.4 -222.72,2.56 -407.04,-181.76 -407.04,-407.04z"/>
 </vector>

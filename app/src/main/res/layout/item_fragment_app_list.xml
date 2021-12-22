@@ -5,30 +5,29 @@
     android:id="@+id/cv_app_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/selector_card_view_background"
-    app:checkedIconTint="@color/colorAccent"
-    app:cardCornerRadius="0dp"
-    app:cardElevation="0dp"
     android:checkable="true"
     android:clickable="true"
     android:focusable="true"
-    android:minHeight="70dp">
+    app:cardBackgroundColor="@color/selector_card_view_background"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp"
+    app:checkedIconTint="@color/colorAccent"
+    app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_app_item"
+        android:padding="6dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="70dp"
-        android:padding="6dp">
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_icon"
             android:layout_width="54dp"
             android:layout_height="54dp"
-            tools:src="@drawable/ic_launcher_c"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_launcher_c" />
 
 
         <com.google.android.material.textview.MaterialTextView
@@ -40,6 +39,7 @@
             android:ellipsize="end"
             android:gravity="center|start"
             android:lines="1"
+            app:layout_constraintBottom_toTopOf="@id/tv_appId"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_icon"
             app:layout_constraintTop_toTopOf="parent"
@@ -52,9 +52,10 @@
             android:ellipsize="end"
             android:gravity="center|start"
             android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@+id/tv_updateTime"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/tv_appName"
-            app:layout_constraintTop_toBottomOf="@id/tv_appName"
+            app:layout_constraintStart_toStartOf="@+id/tv_appName"
+            app:layout_constraintTop_toBottomOf="@+id/tv_appName"
             tools:text="github.xtvj.cleanx" />
 
 
@@ -64,10 +65,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
+            android:gravity="center|start"
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tv_updateTime"
-            app:layout_constraintStart_toStartOf="@id/tv_appName"
+            app:layout_constraintStart_toStartOf="@+id/tv_appId"
             app:layout_constraintTop_toBottomOf="@+id/tv_appId"
             tools:ignore="SmallSp"
             tools:text="版本：1.0beta" />
@@ -76,13 +78,14 @@
             android:id="@+id/tv_updateTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="6dp"
             android:ellipsize="end"
+            android:gravity="center|start"
             android:lines="1"
             android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_appVersion"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_appId"
+            app:layout_constraintStart_toEndOf="@id/tv_appVersion"
+            app:layout_constraintTop_toTopOf="@+id/tv_appVersion"
             tools:ignore="SmallSp"
             tools:text="2021年11月23日" />
 
@@ -90,7 +93,6 @@
             android:id="@+id/iv_isEnable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="6dp"
             android:src="@drawable/ic_disable_right"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"

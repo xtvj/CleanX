@@ -97,7 +97,7 @@
     </style>
 
     <style name="Theme.BottomSheetModal" parent="Widget.MaterialComponents.BottomSheet.Modal">
-        <item name="android:paddingTop">@dimen/padding_large</item>
+        <item name="android:paddingTop">@dimen/padding_medium</item>
         <item name="android:background">@drawable/rounded_top_small</item>
         <item name="shapeAppearance">@null</item>
         <item name="shapeAppearanceOverlay">@null</item>
