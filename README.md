@@ -7,7 +7,7 @@
 
 ## Purpose:
 
-- Practice: Use the latest technology as much as possible.
+- Practice: use jetpack components whenever possible.
 
 - Personal App: fast, simple, no miscellaneous features, infrequent upgrades.
 
