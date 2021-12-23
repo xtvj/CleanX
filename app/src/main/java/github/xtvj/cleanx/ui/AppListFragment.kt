@@ -144,7 +144,6 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         initDialog()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun onResume() {
         super.onResume()

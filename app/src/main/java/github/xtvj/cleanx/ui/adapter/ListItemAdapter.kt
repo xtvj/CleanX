@@ -90,7 +90,7 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
         fun bind(item: AppItem, position: Int) {
             details.position = position.toLong()
             holderBinding.tvAppId.text = item.id
-            holderBinding.tvAppName.text = item.name + "position: " + position
+            holderBinding.tvAppName.text = item.name
             holderBinding.tvAppVersion.text =
                 context.getString(R.string.version) + item.version
 
