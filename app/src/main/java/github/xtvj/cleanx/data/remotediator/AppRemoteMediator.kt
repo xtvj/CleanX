@@ -31,23 +31,25 @@ class AppRemoteMediator(
     ): MediatorResult {
 
         try {
-            val list = withContext(Dispatchers.IO){
-                GetApps.getAppsByCode(pm, code)
-            }
-
-            db.withTransaction {
-                when (code) {
-                    GET_USER -> {
-                        appItemDao.deleteAllUser()
-                    }
-                    GET_SYS -> {
-                        appItemDao.deleteAllSystem()
-                    }
-                    GET_DISABLED -> {
-                        appItemDao.deleteAllDisable()
-                    }
+            if (loadType == LoadType.REFRESH || loadType == LoadType.PREPEND) {
+                val list = withContext(Dispatchers.IO) {
+                    GetApps.getAppsByCode(pm, code)
                 }
-                appItemDao.insertMultipleItems(list)
+
+                db.withTransaction {
+                    when (code) {
+                        GET_USER -> {
+                            appItemDao.deleteAllUser()
+                        }
+                        GET_SYS -> {
+                            appItemDao.deleteAllSystem()
+                        }
+                        GET_DISABLED -> {
+                            appItemDao.deleteAllDisable()
+                        }
+                    }
+                    appItemDao.insertMultipleItems(list)
+                }
             }
 
             return MediatorResult.Success(true)

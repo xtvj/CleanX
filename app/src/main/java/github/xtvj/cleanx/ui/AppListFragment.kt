@@ -1,5 +1,6 @@
 package github.xtvj.cleanx.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.*
@@ -131,12 +132,19 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         binding.srlFragmentList.setOnRefreshListener(this)
 
         adapter.addLoadStateListener {
-            binding.srlFragmentList.isRefreshing = it.mediator?.refresh is LoadState.Loading
+            if (it.refresh is LoadState.Loading) {
+//                if (adapter.itemCount == 0) {
+//                   //可以显示加载progress或者显示retryButton
+//                }
+            }else{
+                binding.srlFragmentList.isRefreshing = false
+            }
         }
 
         initDialog()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun onResume() {
         super.onResume()

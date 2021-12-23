@@ -90,7 +90,7 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
         fun bind(item: AppItem, position: Int) {
             details.position = position.toLong()
             holderBinding.tvAppId.text = item.id
-            holderBinding.tvAppName.text = item.name
+            holderBinding.tvAppName.text = item.name + "position: " + position
             holderBinding.tvAppVersion.text =
                 context.getString(R.string.version) + item.version
 
@@ -116,7 +116,7 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
                 holderBinding.clAppItem.setBackgroundResource(android.R.color.transparent)
             }
 
-            if (!holderBinding.cvAppItem.isChecked && type != 2 && !item.isEnable){
+            if (!item.isEnable && !holderBinding.cvAppItem.isChecked && type != 2){
                 holderBinding.ivIsEnable.visibility = View.VISIBLE
             }else{
                 holderBinding.ivIsEnable.visibility = View.INVISIBLE
@@ -167,6 +167,7 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
     }
 
     class KeyProvider : ItemKeyProvider<Long?>(SCOPE_MAPPED) {
+
         override fun getKey(position: Int): Long {
             return position.toLong()
         }
