@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.entity.AppItem
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
+import github.xtvj.cleanx.utils.DateUtil
 import github.xtvj.cleanx.utils.loadImage
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -97,7 +98,7 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
 //            holderBinding.ivIsEnable.visibility =
 //                if (type == 2 || item.isEnable) View.INVISIBLE else View.VISIBLE
             holderBinding.tvUpdateTime.text =
-                context.getString(R.string.update_time) + item.lastUpdateTime
+                context.getString(R.string.update_time) + DateUtil.format(item.lastUpdateTime)
 
             if (item.icon != 0) {
                 val uri = Uri.parse("android.resource://" + item.id + "/" + item.icon)

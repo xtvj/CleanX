@@ -54,7 +54,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     private val fragmentViewModel: ListViewModel by viewModels() //Fragment自己的ViewModel
 
     //private val viewModel: MainViewModel by activityViewModels() //与Activity共用的ViewModel
-    private var type by Delegates.notNull<Int>()
+    private var type = -1
     private lateinit var binding: FragmentAppListBinding
     private val lifecycleScope = lifecycle.coroutineScope
 
@@ -117,7 +117,8 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         selectionTracker.addObserver(
             object : SelectionTracker.SelectionObserver<Long>() {
                 override fun onSelectionChanged() {
-                    if (selectionTracker.selection.size() > 0) {
+                    if (selectionTracker.hasSelection()) {
+                        binding.srlFragmentList.isEnabled = false
                         if (actionMode == null) {
                             actionMode =
                                 (activity as AppCompatActivity).startSupportActionMode(this@AppListFragment)
@@ -125,6 +126,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                         actionMode?.title = selectionTracker.selection.size().toString()
                     } else {
                         actionMode?.finish()
+                        binding.srlFragmentList.isEnabled = true
                     }
                 }
             })
@@ -133,10 +135,13 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
         adapter.addLoadStateListener {
             if (it.refresh is LoadState.Loading) {
-//                if (adapter.itemCount == 0) {
-//                   //可以显示加载progress或者显示retryButton
-//                }
-            }else{
+                if (adapter.itemCount == 0) {
+                    //可以显示加载progress或者显示retryButton
+                    binding.pgbFragment.visibility = View.VISIBLE
+                }
+            } else {
+                //todo 空数据时显示提示内容
+                binding.pgbFragment.visibility = View.INVISIBLE
                 binding.srlFragmentList.isRefreshing = false
             }
         }
@@ -147,22 +152,11 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun onResume() {
         super.onResume()
-        lifecycleScope.launch {
-            //viewModel是懒加载，必需在主线程中创建
-            if (needObserver) {
+        if (needObserver) {
+            lifecycleScope.launch {
+                //viewModel是懒加载，必需在主线程中创建
                 fragmentViewModel.run {
-                    when(type){
-                        0 ->{
-                            observeApps(userList)
-                        }
-                        1 ->{
-                            observeApps(systemList)
-                        }
-                        2 ->{
-                            observeApps(disableList)
-                        }
-                    }
-                    lifecycleScope.launch {
+                    launch {
                         dataStoreManager.userPreferencesFlow.collectLatest {
                             log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
                             when (it.sortOrder) {
@@ -178,17 +172,28 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                             }
                         }
                     }
+                    when (type) {
+                        0 -> {
+                            observeApps(userList)
+                        }
+                        1 -> {
+                            observeApps(systemList)
+                        }
+                        2 -> {
+                            observeApps(disableList)
+                        }
+                    }
                 }
+                needObserver = false
             }
-            needObserver = false
         }
     }
 
     private fun observeApps(apps: Flow<PagingData<AppItem>>) {
+        log("observer Apps type =$type")
         job?.cancel()
         job = lifecycleScope.launch {
             apps.collectLatest {
-                log("observerApps $type")
                 adapter.submitData(lifecycle, it)
             }
         }

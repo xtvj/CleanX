@@ -86,7 +86,7 @@ class SheetDialog : BottomSheetDialogFragment() {
         layoutBinding.tvAppName.text = item.name
         layoutBinding.tvAppVersion.text = getString(R.string.version) + item.version
         layoutBinding.tvUpdateTime.text =
-            getString(R.string.update_time) + item.lastUpdateTime
+            getString(R.string.update_time) + DateUtil.format(item.lastUpdateTime)
 
         if (item.icon != 0) {
             val uri = Uri.parse("android.resource://" + item.id + "/" + item.icon)

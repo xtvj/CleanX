@@ -49,8 +49,8 @@ class AppWorker @AssistedInject constructor(
                                 val isSystem =
                                     (appInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
                                 val isEnable = appInfo.applicationInfo.enabled
-                                val firstInstallTime = DateUtil.format(appInfo.firstInstallTime)
-                                val lastUpdateTime = DateUtil.format(appInfo.lastUpdateTime)
+                                val firstInstallTime = appInfo.firstInstallTime
+                                val lastUpdateTime = appInfo.lastUpdateTime
                                 val dataDir = appInfo.applicationInfo.dataDir
                                 val sourceDir = appInfo.applicationInfo.sourceDir
 //                                val deviceProtectedDataDir =
