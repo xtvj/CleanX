@@ -27,7 +27,7 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
     PagingDataAdapter<AppItem, ListItemAdapter.ItemViewHolder>(diffCallback) {
 
 
-    private lateinit var selectionTracker: SelectionTracker<String>
+    private lateinit var selectionTracker: SelectionTracker<AppItem>
 
     private lateinit var binding: ItemFragmentAppListBinding
 
@@ -51,7 +51,7 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
         }
     }
 
-    open fun setSelectionTracker(selectionTracker: SelectionTracker<String>) {
+    open fun setSelectionTracker(selectionTracker: SelectionTracker<AppItem>) {
         this.selectionTracker = selectionTracker
     }
 
@@ -70,11 +70,8 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
 
     fun getSelectItems(): List<AppItem> {
         val list = mutableListOf<AppItem>()
-        for (position in selectionTracker.selection) {
-            val item = getItem(position.toInt())
-            if (item != null) {
-                list.add(item)
-            }
+        for (key in selectionTracker.selection) {
+            list.add(key)
         }
         return list
     }
@@ -129,17 +126,17 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
             }
         }
 
-        fun getItemDetails(): ItemDetailsLookup.ItemDetails<String> =
-            object : ItemDetailsLookup.ItemDetails<String>() {
+        fun getItemDetails(): ItemDetailsLookup.ItemDetails<AppItem> =
+            object : ItemDetailsLookup.ItemDetails<AppItem>() {
                 override fun getPosition(): Int = bindingAdapterPosition
-                override fun getSelectionKey(): String? = getItem(bindingAdapterPosition)?.id
+                override fun getSelectionKey(): AppItem? = getItem(bindingAdapterPosition)
             }
     }
 
 
     class DetailsLookup(private val recyclerView: RecyclerView) :
-        ItemDetailsLookup<String>() {
-        override fun getItemDetails(e: MotionEvent): ItemDetails<String>? {
+        ItemDetailsLookup<AppItem>() {
+        override fun getItemDetails(e: MotionEvent): ItemDetails<AppItem>? {
             val view = recyclerView.findChildViewUnder(e.x, e.y)
             val viewHolder = view?.let { recyclerView.getChildViewHolder(it) }
             if (viewHolder is ListItemAdapter.ItemViewHolder) {
@@ -150,13 +147,13 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
     }
 
     class KeyProvider(private val adapter: ListItemAdapter) :
-        ItemKeyProvider<String>(SCOPE_MAPPED) {
-        override fun getKey(position: Int): String {
-            return adapter.snapshot().items[position].id
+        ItemKeyProvider<AppItem>(SCOPE_MAPPED) {
+        override fun getKey(position: Int): AppItem? {
+            return adapter.getItem(position)
         }
 
-        override fun getPosition(key: String): Int {
-            return adapter.snapshot().indexOfFirst { it?.id == key }
+        override fun getPosition(key: AppItem): Int {
+            return adapter.snapshot().indexOfFirst { it?.id == key.id }
         }
 
     }
