@@ -59,7 +59,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     private val lifecycleScope = lifecycle.coroutineScope
 
     private var actionMode: ActionMode? = null
-    private lateinit var selectionTracker: SelectionTracker<Long>
+    private lateinit var selectionTracker: SelectionTracker<String>
     private lateinit var rootDialog: AlertDialog
     private var job: Job? = null
     private var needObserver = true
@@ -105,17 +105,17 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
             fragment.show(childFragmentManager, "bottom_dialog")
         }
         binding.rvApp.adapter = adapter
-        selectionTracker = SelectionTracker.Builder<Long>(
+        selectionTracker = SelectionTracker.Builder<String>(
             "selection",
             binding.rvApp,
-            ListItemAdapter.KeyProvider(),
+            ListItemAdapter.KeyProvider(adapter),
             ListItemAdapter.DetailsLookup(binding.rvApp),
-            StorageStrategy.createLongStorage()
+            StorageStrategy.createStringStorage()
         )
             .withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
         adapter.setSelectionTracker(selectionTracker)
         selectionTracker.addObserver(
-            object : SelectionTracker.SelectionObserver<Long>() {
+            object : SelectionTracker.SelectionObserver<String>() {
                 override fun onSelectionChanged() {
                     if (selectionTracker.hasSelection()) {
                         binding.srlFragmentList.isEnabled = false
