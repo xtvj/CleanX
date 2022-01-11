@@ -74,7 +74,7 @@ dependencies {
     implementation 'androidx.hilt:hilt-work:1.0.0'
 
     //coroutines
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0-native-mt"
 
     //work Kotlin + coroutines
     implementation "androidx.work:work-runtime-ktx:2.7.1"
@@ -119,7 +119,7 @@ dependencies {
     implementation "com.github.topjohnwu.libsu:core:3.2.0"
 
     // debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8'
 
     // recyclerview animators
 //    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'

@@ -10,6 +10,7 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
@@ -19,6 +20,7 @@ import github.xtvj.cleanx.databinding.DialogBottomAppBinding
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.shell.RunnerUtils
+import github.xtvj.cleanx.ui.adapter.ListItemAdapter
 import github.xtvj.cleanx.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -110,12 +112,12 @@ class SheetDialog : BottomSheetDialogFragment() {
             if (item.isEnable) {
                 val intent = pm.getLaunchIntentForPackage(item.id)
                 if (intent != null) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        appItemDao.updateRunning(item.id,true)
+                    lifecycleScope.launch {
+                        appItemDao.updateRunning(item.id, true)
                     }
                     context?.startActivity(intent)
                 } else {
-                   toastUtils.toast(R.string.app_no_intent)
+                    toastUtils.toast(R.string.app_no_intent)
                 }
             } else {
                 toastUtils.toast(item.name + getString(R.string.disabled_can_not_open))
@@ -153,11 +155,8 @@ class SheetDialog : BottomSheetDialogFragment() {
         }
         binding.btnFreeze.setOnClickListener {
 
-            //如果使用lifecycleScope，UI不更新
-            CoroutineScope(Dispatchers.IO).launch {
-
+            lifecycleScope.launch {
                 val hasRoot = RunnerUtils.isRootGiven()
-
                 if (hasRoot) {
                     if (item.isEnable) {
                         //pm disable package
@@ -168,15 +167,19 @@ class SheetDialog : BottomSheetDialogFragment() {
                         if (result.isSuccessful) {
                             appItemDao.updateEnable(item.id, false)
                             withContext(Dispatchers.Main) {
-                                toastUtils.toast("${getString(R.string.disable)}${item.name}${
-                                    getString(R.string.success)
-                                }")
+                                toastUtils.toast(
+                                    "${getString(R.string.disable)}${item.name}${
+                                        getString(R.string.success)
+                                    }"
+                                )
                             }
                         } else {
                             withContext(Dispatchers.Main) {
-                                toastUtils.toast("${getString(R.string.disable)}${item.name}${
-                                    getString(R.string.fail)
-                                }")
+                                toastUtils.toast(
+                                    "${getString(R.string.disable)}${item.name}${
+                                        getString(R.string.fail)
+                                    }"
+                                )
                             }
                         }
                     } else {
@@ -188,9 +191,11 @@ class SheetDialog : BottomSheetDialogFragment() {
                         if (result.isSuccessful) {
                             appItemDao.updateEnable(item.id, true)
                             withContext(Dispatchers.Main) {
-                                toastUtils.toast("${getString(R.string.enable)}${item.name}${
-                                    getString(R.string.success)
-                                }")
+                                toastUtils.toast(
+                                    "${getString(R.string.enable)}${item.name}${
+                                        getString(R.string.success)
+                                    }"
+                                )
                             }
                         } else {
                             withContext(Dispatchers.Main) {
@@ -205,11 +210,11 @@ class SheetDialog : BottomSheetDialogFragment() {
                 } else {
                     clickListener?.invoke("")
                 }
+                dismissAllowingStateLoss()
             }
-            dismissAllowingStateLoss()
         }
         binding.btnRunning.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
+            lifecycleScope.launch {
                 val hasRoot = RunnerUtils.isRootGiven()
                 if (hasRoot) {
                     val result = Runner.runCommand(
@@ -229,8 +234,8 @@ class SheetDialog : BottomSheetDialogFragment() {
                 } else {
                     clickListener?.invoke("")
                 }
+                dismissAllowingStateLoss()
             }
-            dismissAllowingStateLoss()
         }
     }
 

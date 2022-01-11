@@ -33,7 +33,7 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
 
     private var type by Delegates.notNull<Int>()
 
-    var itemClickListener: ((appItem: AppItem) -> Unit)? = null
+    var itemClickListener: ((appItem: AppItem,position: Int) -> Unit)? = null
 
     companion object {
         val diffCallback = object : DiffUtil.ItemCallback<AppItem>() {
@@ -122,7 +122,7 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
 
 
             holderBinding.cvAppItem.setOnClickListener {
-                itemClickListener?.invoke(item)
+                itemClickListener?.invoke(item,bindingAdapterPosition)
             }
         }
 
