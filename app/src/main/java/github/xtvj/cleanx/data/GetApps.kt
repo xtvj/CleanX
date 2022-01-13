@@ -2,9 +2,7 @@ package github.xtvj.cleanx.data
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import github.xtvj.cleanx.data.entity.AppItem
 import github.xtvj.cleanx.shell.Runner
-import github.xtvj.cleanx.utils.DateUtil
 import github.xtvj.cleanx.utils.log
 
 object GetApps{

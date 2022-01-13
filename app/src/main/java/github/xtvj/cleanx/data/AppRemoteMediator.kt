@@ -1,4 +1,4 @@
-package github.xtvj.cleanx.data.remotediator
+package github.xtvj.cleanx.data
 
 import android.content.pm.PackageManager
 import androidx.paging.ExperimentalPagingApi
@@ -7,9 +7,9 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import github.xtvj.cleanx.data.GetApps
-import github.xtvj.cleanx.data.dao.AppItemDao
-import github.xtvj.cleanx.data.db.AppDatabase
-import github.xtvj.cleanx.data.entity.AppItem
+import github.xtvj.cleanx.data.AppItemDao
+import github.xtvj.cleanx.data.AppDatabase
+import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.utils.GET_DISABLED
 import github.xtvj.cleanx.utils.GET_SYS
 import github.xtvj.cleanx.utils.GET_USER

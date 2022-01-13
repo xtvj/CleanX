@@ -5,17 +5,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.databinding.ActivityMainBinding
 import github.xtvj.cleanx.ui.adapter.MainViewPageAdapter
-import github.xtvj.cleanx.ui.base.BaseActivity
 
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity() {
+class MainActivity : AppCompatActivity() {
 
 
     private lateinit var binding: ActivityMainBinding

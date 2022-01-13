@@ -1,8 +1,7 @@
-package github.xtvj.cleanx.data.dao
+package github.xtvj.cleanx.data
 
 import androidx.paging.PagingSource
 import androidx.room.*
-import github.xtvj.cleanx.data.entity.AppItem
 
 @Dao
 interface AppItemDao {

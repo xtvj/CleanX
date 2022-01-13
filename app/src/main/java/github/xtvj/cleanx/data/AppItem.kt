@@ -1,4 +1,4 @@
-package github.xtvj.cleanx.data.entity
+package github.xtvj.cleanx.data
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo

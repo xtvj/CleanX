@@ -14,15 +14,13 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
-import github.xtvj.cleanx.data.dao.AppItemDao
-import github.xtvj.cleanx.data.entity.AppItem
+import github.xtvj.cleanx.data.AppItemDao
+import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.databinding.DialogBottomAppBinding
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.shell.RunnerUtils
-import github.xtvj.cleanx.ui.adapter.ListItemAdapter
 import github.xtvj.cleanx.utils.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

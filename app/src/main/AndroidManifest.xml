@@ -17,9 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CleanX">
         <activity
-            android:name=".ui.base.BaseActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.SettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"

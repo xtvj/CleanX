@@ -6,7 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import github.xtvj.cleanx.data.db.AppDatabase
+import github.xtvj.cleanx.data.AppDatabase
 import javax.inject.Singleton
 
 @Module

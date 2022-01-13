@@ -1,14 +1,10 @@
-package github.xtvj.cleanx.data.repository
+package github.xtvj.cleanx.data
 
 import android.content.pm.PackageManager
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import github.xtvj.cleanx.data.dao.AppItemDao
-import github.xtvj.cleanx.data.db.AppDatabase
-import github.xtvj.cleanx.data.entity.AppItem
-import github.xtvj.cleanx.data.remotediator.AppRemoteMediator
 import github.xtvj.cleanx.utils.GET_DISABLED
 import github.xtvj.cleanx.utils.GET_SYS
 import github.xtvj.cleanx.utils.GET_USER

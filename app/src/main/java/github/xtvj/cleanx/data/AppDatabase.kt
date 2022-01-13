@@ -1,12 +1,10 @@
-package github.xtvj.cleanx.data.db
+package github.xtvj.cleanx.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
-import github.xtvj.cleanx.data.dao.AppItemDao
-import github.xtvj.cleanx.data.entity.AppItem
 import github.xtvj.cleanx.utils.DATABASE_NAME
 
 

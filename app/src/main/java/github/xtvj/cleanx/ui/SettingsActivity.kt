@@ -1,6 +1,7 @@
 package github.xtvj.cleanx.ui
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -10,14 +11,13 @@ import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.DarkModel
 import github.xtvj.cleanx.data.DataStoreManager
 import github.xtvj.cleanx.data.SortOrder
-import github.xtvj.cleanx.ui.base.BaseActivity
 import github.xtvj.cleanx.utils.ThemeHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SettingsActivity : BaseActivity() {
+class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

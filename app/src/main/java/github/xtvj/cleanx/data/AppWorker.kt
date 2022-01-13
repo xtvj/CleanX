@@ -8,10 +8,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import github.xtvj.cleanx.data.dao.AppItemDao
-import github.xtvj.cleanx.data.entity.AppItem
 import github.xtvj.cleanx.shell.Runner
-import github.xtvj.cleanx.utils.DateUtil
 import github.xtvj.cleanx.utils.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

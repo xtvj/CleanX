@@ -1,6 +1,5 @@
 package github.xtvj.cleanx.ui
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.*
@@ -10,9 +9,7 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.selection.SelectionPredicates
@@ -27,7 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.DataStoreManager
 import github.xtvj.cleanx.data.SortOrder
-import github.xtvj.cleanx.data.entity.AppItem
+import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.ui.adapter.ListItemAdapter
@@ -37,7 +34,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.*
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 
 @AndroidEntryPoint
