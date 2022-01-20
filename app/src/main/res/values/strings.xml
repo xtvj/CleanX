@@ -3,7 +3,7 @@
     <string name="request_root_message">本程序主要功能基于Root权限实现，程序代码开源，地址：&lt;a href="https://github.com/xtvj/cleanx">https://github.com/xtvj/cleanx&lt;/a>，授予Root权限？</string>
     <string name="request_root_ok">手动设置Root权限</string>
     <string name="request_root_cancel">取消操作</string>
-    <string name="no_data">未获取到数据</string>
+    <string name="no_data">未获查询到数据</string>
     <string name="dialog_open">打开</string>
     <string name="dialog_share">提取安装包</string>
     <string name="dialog_system_info">系统详情页</string>

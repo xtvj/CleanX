@@ -41,13 +41,11 @@ class AppRemoteMediator(
         try {
             log("RemoteMediator loadType: ${loadType.name}")
 
-            if (loadType == LoadType.REFRESH) {
-                val list = withContext(Dispatchers.Default) {
-                    GetApps.getAppsByCode(pm, code)
-                }
+            val list = GetApps.getAppsByCode(pm, code)
 
-                db.withTransaction {
-                    log("RemoteMediator code: $code")
+            db.withTransaction {
+                log("RemoteMediator code: $code")
+                if (loadType == LoadType.REFRESH) {
                     when (code) {
                         GET_USER -> {
                             appItemDao.deleteAllUser()
@@ -59,12 +57,10 @@ class AppRemoteMediator(
                             appItemDao.deleteAllDisable()
                         }
                     }
-                    appItemDao.insertMultipleItems(list)
                 }
-                return MediatorResult.Success(true)
-            } else {
-                return MediatorResult.Success(false)
+                appItemDao.insertMultipleItems(list)
             }
+            return MediatorResult.Success(true)
 
         } catch (exception: IOException) {
             return MediatorResult.Error(exception)

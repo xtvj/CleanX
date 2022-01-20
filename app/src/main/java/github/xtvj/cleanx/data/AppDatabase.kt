@@ -8,15 +8,15 @@ import androidx.room.migration.Migration
 import github.xtvj.cleanx.utils.DATABASE_NAME
 
 
-@Database(entities = arrayOf(AppItem::class), version = 2,exportSchema = false)
-abstract class AppDatabase : RoomDatabase(){
+@Database(entities = [AppItem::class], version = 2, exportSchema = false)
+abstract class AppDatabase : RoomDatabase() {
     abstract fun appItemDao(): AppItemDao
-
 
     companion object {
 
         // For Singleton instantiation
-        @Volatile private var instance: AppDatabase? = null
+        @Volatile
+        private var instance: AppDatabase? = null
 
         val MIGRATION_1_2 = Migration(1, 2) {
 //            it.execSQL("****************")

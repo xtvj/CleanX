@@ -25,6 +25,7 @@ import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.DataStoreManager
 import github.xtvj.cleanx.data.SortOrder
 import github.xtvj.cleanx.data.AppItem
+import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.ui.adapter.ListItemAdapter
@@ -74,6 +75,9 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     @Inject
     lateinit var toastUtils: ToastUtils
 
+    @Inject
+    lateinit var appItemDao: AppItemDao
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -101,6 +105,11 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                 }
             }
             fragment.show(childFragmentManager, "bottom_dialog")
+
+//            lifecycleScope.launch{
+//                appItemDao.updateName(item.id,item.name + "嗨")
+//            }
+
         }
         binding.rvApp.adapter = adapter
         selectionTracker = SelectionTracker.Builder(
@@ -135,13 +144,27 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
             if (it.refresh is LoadState.Loading) {
                 if (adapter.itemCount == 0) {
                     //可以显示加载progress或者显示retryButton
-                    binding.pgbFragment.visibility = View.VISIBLE
+                    binding.pgbLoading.visibility = View.VISIBLE
                 }
+                binding.tvNoData.visibility = View.INVISIBLE
             } else {
-                //todo 空数据时显示提示内容
-                binding.pgbFragment.visibility = View.INVISIBLE
+                binding.tvNoData.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.INVISIBLE
+                binding.pgbLoading.visibility = View.INVISIBLE
                 binding.srlFragmentList.isRefreshing = false
+//                if (it.refresh is LoadState.Error){
+//                    binding.tvNoData.setOnClickListener {
+//                        adapter.retry()
+//                    }
+//                }else{
+//                    binding.tvNoData.setOnClickListener {
+//                        adapter.refresh()
+//                    }
+//                }
             }
+        }
+        //查询不到数据时，点击刷新
+        binding.tvNoData.setOnClickListener {
+            adapter.refresh()
         }
 
         initDialog()

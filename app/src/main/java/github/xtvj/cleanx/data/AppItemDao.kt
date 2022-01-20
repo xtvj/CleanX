@@ -37,6 +37,9 @@ interface AppItemDao {
     @Query("UPDATE appItem SET isRunning = :b WHERE id =:appID")
     suspend fun updateRunning(appID:String, b:Boolean)
 
+    @Query("UPDATE appItem SET name = :newName WHERE id =:appID")
+    suspend fun updateName(appID:String, newName:String)
+
     @Query("SELECT * FROM appItem WHERE name LIKE :search OR id LIKE :search")
     fun findWithNameOrId(search: String): PagingSource<Int, AppItem>
 
@@ -55,13 +58,13 @@ interface AppItemDao {
     @Query("DELETE FROM appItem WHERE isEnable = 0")
     suspend fun deleteAllDisable()
 
-//    @Query("SELECT COUNT(id) FROM appItem where isSystem = 0")
-//    suspend fun countUser(): Int
-//
-//    @Query("SELECT COUNT(id) FROM appItem where isSystem = 1")
-//    suspend fun countSystem(): Int
-//
-//    @Query("SELECT COUNT(id) FROM appItem where isEnable = 0")
-//    suspend fun countDisable(): Int
+    @Query("SELECT COUNT(id) FROM appItem where isSystem = 0")
+    suspend fun countUser(): Int
+
+    @Query("SELECT COUNT(id) FROM appItem where isSystem = 1")
+    suspend fun countSystem(): Int
+
+    @Query("SELECT COUNT(id) FROM appItem where isEnable = 0")
+    suspend fun countDisable(): Int
 
 }
