@@ -37,6 +37,9 @@
     <string name="setting_list">列表设置</string>
     <string name="setting_sort_by">排序方式</string>
     <string name="refresh_done">刷新完成</string>
+    <string name="about">关于</string>
+    <string name="version_setting">版本</string>
+    <string name="project_address">开源地址</string>
 
 
 </resources>

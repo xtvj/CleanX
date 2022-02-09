@@ -11,6 +11,8 @@
 
 - 自用APP：速度快、功能简单、不附带杂七杂八的功能、不频繁升级。
 
+# 
+
 ## 技术点：
 
 - Coroutines
@@ -24,3 +26,7 @@
 - Paging 3
 - DataStore
 - Workmanager
+
+## Screenshot:
+
+![](screenshot/screenshot.png?raw=true)

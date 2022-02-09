@@ -75,9 +75,6 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     @Inject
     lateinit var toastUtils: ToastUtils
 
-    @Inject
-    lateinit var appItemDao: AppItemDao
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -142,10 +139,10 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
         adapter.addLoadStateListener {
             if (it.refresh is LoadState.Loading) {
-                if (adapter.itemCount == 0) {
+//                if (adapter.itemCount == 0) {
                     //可以显示加载progress或者显示retryButton
                     binding.pgbLoading.visibility = View.VISIBLE
-                }
+//                }
                 binding.tvNoData.visibility = View.INVISIBLE
             } else {
                 binding.tvNoData.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.INVISIBLE

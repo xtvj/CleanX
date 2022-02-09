@@ -11,6 +11,8 @@
 
 - Personal App: fast, simple, no miscellaneous features, infrequent upgrades.
 
+# 
+
 ## Tech-stack：
 
 - Coroutines
@@ -24,3 +26,7 @@
 - Paging 3
 - DataStore
 - Workmanager
+
+## Screenshot:
+
+![](screenshot/screenshot.png?raw=true)

@@ -38,6 +38,7 @@ class AppRemoteMediator(
         state: PagingState<Int, AppItem>
     ): MediatorResult {
 
+        //RemoteMediator适用于网络请求，不适用于本地获取数据，此处只是简单了解RemoteMediator
         try {
             log("RemoteMediator loadType: ${loadType.name}")
 

@@ -38,4 +38,7 @@
     <string name="setting_list">App list settings</string>
     <string name="setting_sort_by">Sort by</string>
     <string name="refresh_done">Refreshed</string>
+    <string name="about">About</string>
+    <string name="version_setting">Version</string>
+    <string name="project_address">Project Address</string>
 </resources>
