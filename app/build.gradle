@@ -13,8 +13,8 @@ android {
         applicationId "github.xtvj.cleanx"
         minSdk 24
         targetSdk 31
-        versionCode 2
-        versionName "1.0 beta"
+        versionCode 3
+        versionName '1.0 beta2'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -84,14 +84,14 @@ dependencies {
 //    implementation "androidx.work:work-multiprocess:$work_version"
 
     //startup
-    implementation "androidx.startup:startup-runtime:1.1.0"
+    implementation 'androidx.startup:startup-runtime:1.1.1'
 
     // lifecycle for ViewModel livedata
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
     // Saved state module for ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.4.0"
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.4.1'
 
     //Room
     implementation 'androidx.room:room-runtime:2.4.1'

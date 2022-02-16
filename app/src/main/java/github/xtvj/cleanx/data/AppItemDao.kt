@@ -46,6 +46,9 @@ interface AppItemDao {
     @Delete
     suspend fun delete(appItem: AppItem)
 
+    @Query("DELETE FROM appItem WHERE id = :id")
+    suspend fun deleteByID(id: String)
+
     @Query("DELETE FROM appItem")
     suspend fun deleteAll()
 

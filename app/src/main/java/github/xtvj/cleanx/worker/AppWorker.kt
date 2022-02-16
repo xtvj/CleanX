@@ -1,4 +1,4 @@
-package github.xtvj.cleanx.data
+package github.xtvj.cleanx.worker
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
@@ -8,6 +8,8 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import github.xtvj.cleanx.data.AppItem
+import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.utils.log
 import kotlinx.coroutines.Dispatchers
