@@ -1,52 +1,52 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        app:title="@string/setting_theme"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:title="@string/setting_theme">
 
         <ListPreference
             app:defaultValue="default"
             app:entries="@array/dark_model_entries"
             app:entryValues="@array/dark_model_values"
-            app:key="themeMode"
             app:iconSpaceReserved="false"
+            app:key="themeMode"
             app:title="@string/dark_model"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:title="@string/setting_list"
-       app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:title="@string/setting_list">
 
         <ListPreference
             app:defaultValue="id"
             app:entries="@array/app_list_entries"
             app:entryValues="@array/app_list_values"
-            app:key="sortMode"
             app:iconSpaceReserved="false"
+            app:key="sortMode"
             app:title="@string/setting_sort_by"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:title="@string/about"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:title="@string/about">
 
+        <Preference
+            app:key="version"
+            app:iconSpaceReserved="false"
+            app:title="@string/version_setting" />
         <Preference
             app:iconSpaceReserved="false"
-            app:title="@string/version_setting"
-            app:summary="1.0 beta"
-            />
-        <Preference
-            app:title="@string/project_address"
             app:summary="https://github.com/xtvj/CleanX"
-            app:iconSpaceReserved="false">
+            app:title="@string/project_address">
 
-            <intent android:action="android.intent.action.VIEW"
-                android:data="https://github.com/xtvj/CleanX"/>
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/xtvj/CleanX" />
 
         </Preference>
 

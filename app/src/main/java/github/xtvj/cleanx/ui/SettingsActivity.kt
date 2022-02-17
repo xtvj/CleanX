@@ -7,6 +7,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import dagger.hilt.android.AndroidEntryPoint
+import github.xtvj.cleanx.BuildConfig
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.DarkModel
 import github.xtvj.cleanx.data.DataStoreManager
@@ -43,6 +44,7 @@ class SettingsActivity : AppCompatActivity() {
 
             val themePreference = findPreference<ListPreference>("themeMode")
             val sortPreference = findPreference<ListPreference>("sortMode")
+            val versionPreference = findPreference<Preference>("version")
 
             lifecycleScope.launch(Dispatchers.IO){
                val preferences =  dataStoreManager.fetchInitialPreferences()
@@ -101,6 +103,7 @@ class SettingsActivity : AppCompatActivity() {
                     }
                     true
                 }
+            versionPreference?.summary = BuildConfig.VERSION_NAME
         }
     }
 }
