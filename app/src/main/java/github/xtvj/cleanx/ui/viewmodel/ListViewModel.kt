@@ -21,6 +21,7 @@ import javax.inject.Inject
 class ListViewModel @Inject constructor(
     private val appItemDao: AppItemDao,
     private val appRepository: AppRepository
+//    private val workManager: WorkManager
 ) : ViewModel() {
 
 //    var sortDirection = MutableLiveData(true)
@@ -54,26 +55,6 @@ class ListViewModel @Inject constructor(
         }
     }
 
-//    suspend fun reFreshAppsByType(type: Int) =
-//        withContext(Dispatchers.IO) {
-//            when (type) {
-//                0 -> {
-//                    appItemDao.deleteAllUser()
-//                    getAppsByCode(GET_USER)
-//                }
-//                1 -> {
-//                    appItemDao.deleteAllSystem()
-//                    getAppsByCode(GET_SYS)
-//                }
-//                else -> {
-//                    appItemDao.deleteAllDisable()
-//                    getAppsByCode(GET_DISABLED)
-//
-//                }
-//            }
-//        }
-
-
     fun setApps(code: String, list: List<AppItem>) {
         viewModelScope.launch(Dispatchers.IO) {
             //可以添加弹窗提示正在执行中。由于执行时间过于短暂，暂时不添加
@@ -106,12 +87,12 @@ class ListViewModel @Inject constructor(
 
     }
 
-//    private fun getAppsByCode(code: String): UUID {
+//    fun getAppsByCode(code: String): LiveData<WorkInfo> {
 //        val request = OneTimeWorkRequestBuilder<AppWorker>()
 //            .setInputData(workDataOf(AppWorker.KEY_CODE to code))
 //            .build()
 //        workManager.enqueue(request)
-//        return request.id
+//        return workManager.getWorkInfoByIdLiveData(request.id)
 //    }
 
 }

@@ -17,7 +17,6 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,7 +24,6 @@ import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.DataStoreManager
 import github.xtvj.cleanx.data.SortOrder
 import github.xtvj.cleanx.data.AppItem
-import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.ui.adapter.ListItemAdapter
@@ -33,7 +31,6 @@ import github.xtvj.cleanx.ui.viewmodel.ListViewModel
 import github.xtvj.cleanx.utils.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import java.util.*
 import javax.inject.Inject
 
 
@@ -62,15 +59,13 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     private lateinit var rootDialog: AlertDialog
     private var job: Job? = null
     private var needObserver = true
+//    private lateinit var workInfo: LiveData<WorkInfo>
 
     @Inject
     lateinit var adapter: ListItemAdapter
 
     @Inject
     lateinit var dataStoreManager: DataStoreManager
-
-    @Inject
-    lateinit var workManager: WorkManager
 
     @Inject
     lateinit var toastUtils: ToastUtils
@@ -102,11 +97,6 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                 }
             }
             fragment.show(childFragmentManager, "bottom_dialog")
-
-//            lifecycleScope.launch{
-//                appItemDao.updateName(item.id,item.name + "嗨")
-//            }
-
         }
         binding.rvApp.adapter = adapter
         selectionTracker = SelectionTracker.Builder(
@@ -140,26 +130,18 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         adapter.addLoadStateListener {
             if (it.refresh is LoadState.Loading) {
 //                if (adapter.itemCount == 0) {
-                    //可以显示加载progress或者显示retryButton
-                    binding.pgbLoading.visibility = View.VISIBLE
+                //可以显示加载progress或者显示retryButton
+                binding.pgbLoading.visibility = View.VISIBLE
 //                }
                 binding.tvNoData.visibility = View.INVISIBLE
             } else {
-                binding.tvNoData.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.INVISIBLE
+                binding.tvNoData.visibility =
+                    if (adapter.itemCount == 0) View.VISIBLE else View.INVISIBLE
                 binding.pgbLoading.visibility = View.INVISIBLE
                 binding.srlFragmentList.isRefreshing = false
-//                if (it.refresh is LoadState.Error){
-//                    binding.tvNoData.setOnClickListener {
-//                        adapter.retry()
-//                    }
-//                }else{
-//                    binding.tvNoData.setOnClickListener {
-//                        adapter.refresh()
-//                    }
-//                }
             }
         }
-        //查询不到数据时，点击刷新
+//        查询不到数据时，点击刷新
         binding.tvNoData.setOnClickListener {
             adapter.refresh()
         }
@@ -201,6 +183,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                             observeApps(disableList)
                         }
                     }
+//                    refreshData()
                 }
                 needObserver = false
             }
@@ -284,6 +267,57 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
     override fun onRefresh() {
         adapter.refresh()
+//        if (!needObserver){
+//            refreshData()
+//        }
     }
+
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    private fun refreshData(){
+//        when (type) {
+//            0 -> {
+//                workInfo = fragmentViewModel.getAppsByCode(GET_USER)
+//            }
+//            1 -> {
+//                workInfo = fragmentViewModel.getAppsByCode(GET_SYS)
+//            }
+//            2 -> {
+//                workInfo = fragmentViewModel.getAppsByCode(GET_DISABLED)
+//            }
+//        }
+//        workInfo.observe(viewLifecycleOwner) {
+//            when (it.state) {
+//                WorkInfo.State.SUCCEEDED -> {
+//                    //获取数据完成
+//                    binding.pgbLoading.visibility = View.INVISIBLE
+//                    binding.tvNoData.visibility = View.INVISIBLE
+//                    binding.srlFragmentList.isRefreshing = false
+//                    when (type) {
+//                        0 -> {
+//                            observeApps(fragmentViewModel.userList)
+//                        }
+//                        1 -> {
+//                            observeApps(fragmentViewModel.systemList)
+//                        }
+//                        2 -> {
+//                            observeApps(fragmentViewModel.disableList)
+//                        }
+//                    }
+//                }
+//                WorkInfo.State.FAILED -> {
+//                    binding.srlFragmentList.isRefreshing = false
+//                    binding.pgbLoading.visibility = View.INVISIBLE
+//                    binding.tvNoData.visibility = View.VISIBLE
+//                }
+//                WorkInfo.State.RUNNING -> {
+//                    //正在获取数据
+//                    job?.cancel()
+//                    binding.pgbLoading.visibility = View.VISIBLE
+//                    binding.tvNoData.visibility = View.INVISIBLE
+//                }
+//                else -> {}
+//            }
+//        }
+//    }
 
 }

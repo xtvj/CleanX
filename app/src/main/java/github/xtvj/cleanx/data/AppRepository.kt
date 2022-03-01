@@ -25,7 +25,7 @@ class AppRepository @Inject constructor(
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
-                enablePlaceholders = false
+                enablePlaceholders = true
             ),
             remoteMediator = AppRemoteMediator(
                 appItemDao,
@@ -43,7 +43,7 @@ class AppRepository @Inject constructor(
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
-                enablePlaceholders = false
+                enablePlaceholders = true
             ),
             remoteMediator = AppRemoteMediator(
                 appItemDao,
@@ -61,7 +61,7 @@ class AppRepository @Inject constructor(
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
-                enablePlaceholders = false
+                enablePlaceholders = true
             ),
             remoteMediator = AppRemoteMediator(
                 appItemDao,

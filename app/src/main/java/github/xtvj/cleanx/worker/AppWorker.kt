@@ -11,6 +11,9 @@ import dagger.assisted.AssistedInject
 import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.shell.Runner
+import github.xtvj.cleanx.utils.GET_DISABLED
+import github.xtvj.cleanx.utils.GET_SYS
+import github.xtvj.cleanx.utils.GET_USER
 import github.xtvj.cleanx.utils.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -37,6 +40,17 @@ class AppWorker @AssistedInject constructor(
                     //获取应用列表
                     val result = Runner.runCommand(Runner.userInstance(), code)
                     if (result.isSuccessful) {
+                        when (code) {
+                            GET_USER -> {
+                                appItemDao.deleteAllUser()
+                            }
+                            GET_SYS -> {
+                                appItemDao.deleteAllSystem()
+                            }
+                            GET_DISABLED -> {
+                                appItemDao.deleteAllDisable()
+                            }
+                        }
                         val temp = result.getOutputAsList(0).map { s ->
                             s.substring(8)
                         }.sorted()
