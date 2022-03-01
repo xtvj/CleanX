@@ -22,6 +22,8 @@ data class AppItem(
     var sourceDir: String,
     var icon:Int,
     var isRunning: Boolean,
+
+    @ColumnInfo(defaultValue = "1")
     var versionCode: Long
 
     //可以使用@Ignore忽略不想在数据库中储存的字段

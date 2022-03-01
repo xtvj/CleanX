@@ -55,10 +55,10 @@ class SettingsActivity : AppCompatActivity() {
                                 themePreference?.setValueIndex(0)
                             }
                             DarkModel.NIGHT ->{
-                                themePreference?.setValueIndex(1)
+                                themePreference?.setValueIndex(2)
                             }
                             DarkModel.LIGHT ->{
-                                themePreference?.setValueIndex(2)
+                                themePreference?.setValueIndex(1)
                             }
                         }
                         when(it.sortOrder){
