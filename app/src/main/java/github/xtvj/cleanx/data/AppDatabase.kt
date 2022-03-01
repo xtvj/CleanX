@@ -1,6 +1,7 @@
 package github.xtvj.cleanx.data
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -8,7 +9,12 @@ import androidx.room.migration.Migration
 import github.xtvj.cleanx.utils.DATABASE_NAME
 
 
-@Database(entities = [AppItem::class], version = 2, exportSchema = false)
+@Database(
+    entities = [AppItem::class],
+    version = 3,
+    exportSchema = true,
+    autoMigrations = [AutoMigration(from = 2, to = 3)]
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun appItemDao(): AppItemDao
 
@@ -18,9 +24,9 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var instance: AppDatabase? = null
 
-        val MIGRATION_1_2 = Migration(1, 2) {
+//        val MIGRATION_1_2 = Migration(1, 2) {
 //            it.execSQL("****************")
-        }
+//        }
 
 
         fun getInstance(context: Context): AppDatabase {

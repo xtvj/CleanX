@@ -21,7 +21,8 @@ data class AppItem(
     var dataDir: String,
     var sourceDir: String,
     var icon:Int,
-    var isRunning: Boolean
+    var isRunning: Boolean,
+    var versionCode: Long
 
     //可以使用@Ignore忽略不想在数据库中储存的字段
     //@ColumnInfo为字段在数据库中重命名

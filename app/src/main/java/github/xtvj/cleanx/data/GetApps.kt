@@ -2,6 +2,7 @@ package github.xtvj.cleanx.data
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.os.Build
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.utils.log
 
@@ -36,7 +37,11 @@ object GetApps{
 //                        val publicSourceDir = appInfo.applicationInfo.publicSourceDir
                         val icon = appInfo.applicationInfo.icon
                         val isRunning = (appInfo.applicationInfo.flags and FLAG_STOPPED) == 0
-
+                        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            appInfo.longVersionCode
+                        } else {
+                            appInfo.versionCode.toLong()
+                        }
                         val item = AppItem(
                             i,
                             name,
@@ -50,7 +55,8 @@ object GetApps{
 //                          deviceProtectedDataDir,
 //                          publicSourceDir,
                             icon,
-                            isRunning
+                            isRunning,
+                            versionCode
                         )
                         list.add(item)
                     } catch (e: PackageManager.NameNotFoundException) {

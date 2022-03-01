@@ -3,6 +3,7 @@ package github.xtvj.cleanx.worker
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -71,7 +72,11 @@ class AppWorker @AssistedInject constructor(
 //                                val publicSourceDir = appInfo.applicationInfo.publicSourceDir
                                 val icon = appInfo.applicationInfo.icon
                                 val isRunning = (appInfo.applicationInfo.flags and FLAG_STOPPED) == 0
-
+                                val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                    appInfo.longVersionCode
+                                } else {
+                                    appInfo.versionCode.toLong()
+                                }
                                 val item = AppItem(
                                     i,
                                     name,
@@ -85,7 +90,8 @@ class AppWorker @AssistedInject constructor(
 //                                    deviceProtectedDataDir,
 //                                    publicSourceDir,
                                     icon,
-                                    isRunning
+                                    isRunning,
+                                    versionCode
                                 )
                                 appItemDao.insertAll(item)
                             } catch (e: PackageManager.NameNotFoundException) {

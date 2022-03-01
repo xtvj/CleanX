@@ -86,7 +86,7 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         //默认包名排序
         val sortOrder =
             SortOrder.valueOf(
-                preferences[PreferencesKeys.SORT_ORDER] ?: SortOrder.BY_ID.name
+                preferences[PreferencesKeys.SORT_ORDER] ?: SortOrder.BY_NAME.name
             )
 
         //默认自动

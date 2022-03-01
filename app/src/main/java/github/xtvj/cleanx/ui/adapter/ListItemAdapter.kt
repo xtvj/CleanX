@@ -88,7 +88,7 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
             holderBinding.tvAppId.text = item.id
             holderBinding.tvAppName.text = item.name
             holderBinding.tvAppVersion.text =
-                context.getString(R.string.version) + item.version
+                context.getString(R.string.version) + item.version + " (" + item.versionCode + ")"
 
 //            holderBinding.ivIsEnable.visibility =
 //                if (type == 2 || item.isEnable) View.INVISIBLE else View.VISIBLE

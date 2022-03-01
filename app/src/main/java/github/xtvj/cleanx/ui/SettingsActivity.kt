@@ -14,7 +14,9 @@ import github.xtvj.cleanx.data.DataStoreManager
 import github.xtvj.cleanx.data.SortOrder
 import github.xtvj.cleanx.utils.ThemeHelper
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -47,29 +49,30 @@ class SettingsActivity : AppCompatActivity() {
             val versionPreference = findPreference<Preference>("version")
 
             lifecycleScope.launch(Dispatchers.IO){
-               val preferences =  dataStoreManager.fetchInitialPreferences()
-                when(preferences.darkModel){
-                    DarkModel.AUTO -> {
-                        themePreference?.setDefaultValue("default")
-                    }
-                    DarkModel.NIGHT ->{
-                        themePreference?.setDefaultValue("dark")
-                    }
-                    DarkModel.LIGHT ->{
-                        themePreference?.setDefaultValue("light")
-                    }
-                }
-                when(preferences.sortOrder){
-                    SortOrder.BY_ID ->{
-                        sortPreference?.setDefaultValue("id")
-                    }
-                    SortOrder.BY_NAME ->{
-                        sortPreference?.setDefaultValue("name")
-                    }
-                    SortOrder.BY_UPDATE_TIME ->{
-                        sortPreference?.setDefaultValue("update_time")
-                    }
-                }
+               dataStoreManager.userPreferencesFlow.collectLatest {
+                        when(it.darkModel){
+                            DarkModel.AUTO -> {
+                                themePreference?.setValueIndex(0)
+                            }
+                            DarkModel.NIGHT ->{
+                                themePreference?.setValueIndex(1)
+                            }
+                            DarkModel.LIGHT ->{
+                                themePreference?.setValueIndex(2)
+                            }
+                        }
+                        when(it.sortOrder){
+                            SortOrder.BY_ID ->{
+                                sortPreference?.setValueIndex(0)
+                            }
+                            SortOrder.BY_NAME ->{
+                                sortPreference?.setValueIndex(1)
+                            }
+                            SortOrder.BY_UPDATE_TIME ->{
+                                sortPreference?.setValueIndex(2)
+                            }
+                        }
+               }
             }
             themePreference?.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { _, newValue ->
@@ -103,7 +106,7 @@ class SettingsActivity : AppCompatActivity() {
                     }
                     true
                 }
-            versionPreference?.summary = BuildConfig.VERSION_NAME
+            versionPreference?.summary = BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")"
         }
     }
 }
