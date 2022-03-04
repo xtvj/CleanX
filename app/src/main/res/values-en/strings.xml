@@ -24,7 +24,7 @@
     <string name="disabled_app">Disabled</string>
     <string name="dark_model">Dark model</string>
     <string name="got_root">Obtained root permission</string>
-    <string name="setting">setting</string>
+    <string name="setting">Setting</string>
     <string name="stop_success">Stopped successfully</string>
     <string name="stop_failed">Stop failed</string>
     <string name="disabled_can_not_open">Is disabled and cannot be opened</string>
@@ -40,5 +40,6 @@
     <string name="refresh_done">Refreshed</string>
     <string name="about">About</string>
     <string name="version_setting">Version</string>
-    <string name="project_address">Project Address</string>
+    <string name="project_address">Open source address</string>
+    <string name="third_party_licenses">Third party licenses</string>
 </resources>

@@ -2,13 +2,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        app:iconSpaceReserved="false"
         app:title="@string/setting_theme">
 
         <ListPreference
+            app:icon="@drawable/ic_night_mode"
             app:entries="@array/dark_model_entries"
             app:entryValues="@array/dark_model_values"
-            app:iconSpaceReserved="false"
             app:key="themeMode"
             app:title="@string/dark_model"
             app:useSimpleSummaryProvider="true" />
@@ -16,13 +15,12 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:iconSpaceReserved="false"
         app:title="@string/setting_list">
 
         <ListPreference
+            app:icon="@drawable/ic_sort"
             app:entries="@array/app_list_entries"
             app:entryValues="@array/app_list_values"
-            app:iconSpaceReserved="false"
             app:key="sortMode"
             app:title="@string/setting_sort_by"
             app:useSimpleSummaryProvider="true" />
@@ -30,15 +28,14 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:iconSpaceReserved="false"
         app:title="@string/about">
 
         <Preference
+            app:icon="@drawable/ic_version"
             app:key="version"
-            app:iconSpaceReserved="false"
             app:title="@string/version_setting" />
         <Preference
-            app:iconSpaceReserved="false"
+            app:icon="@drawable/ic_source"
             app:summary="https://github.com/xtvj/CleanX"
             app:title="@string/project_address">
 
@@ -48,6 +45,10 @@
 
         </Preference>
 
+        <Preference
+            app:icon="@drawable/ic_licenses"
+            app:key="licenses"
+            app:title="@string/third_party_licenses" />
     </PreferenceCategory>
 
 </PreferenceScreen>

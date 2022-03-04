@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
                     tab.contentDescription = getString(R.string.user_app)
                 }
                 1 -> {
-                    tab.icon = getDrawable(R.drawable.ic_sys)
+                    tab.icon = getDrawable(R.drawable.ic_system)
                     tab.contentDescription = getString(R.string.system_app)
                 }
                 2 -> {

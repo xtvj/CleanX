@@ -84,7 +84,8 @@ class SheetDialog : BottomSheetDialogFragment() {
         layoutBinding.root.isClickable = false
         layoutBinding.tvAppId.text = item.id
         layoutBinding.tvAppName.text = item.name
-        layoutBinding.tvAppVersion.text = getString(R.string.version) + item.version
+        layoutBinding.tvAppVersion.text =
+            getString(R.string.version) + item.version + " (" + item.versionCode + ")"
         layoutBinding.tvUpdateTime.text =
             getString(R.string.update_time) + DateUtil.format(item.lastUpdateTime)
 
@@ -156,54 +157,17 @@ class SheetDialog : BottomSheetDialogFragment() {
             lifecycleScope.launch {
                 val hasRoot = RunnerUtils.isRootGiven()
                 if (hasRoot) {
-                    if (item.isEnable) {
-                        //pm disable package
-                        val result = Runner.runCommand(
-                            Runner.rootInstance(),
-                            PM_DISABLE + item.id
-                        )
-                        if (result.isSuccessful) {
-                            appItemDao.updateEnable(item.id, false)
-                            withContext(Dispatchers.Main) {
-                                toastUtils.toast(
-                                    "${getString(R.string.disable)}${item.name}${
-                                        getString(R.string.success)
-                                    }"
-                                )
-                            }
-                        } else {
-                            withContext(Dispatchers.Main) {
-                                toastUtils.toast(
-                                    "${getString(R.string.disable)}${item.name}${
-                                        getString(R.string.fail)
-                                    }"
-                                )
-                            }
-                        }
-                    } else {
-                        val result = Runner.runCommand(
-                            Runner.rootInstance(),
-                            PM_ENABLE + item.id
-                        )
-                        //pm enable package
-                        if (result.isSuccessful) {
-                            appItemDao.updateEnable(item.id, true)
-                            withContext(Dispatchers.Main) {
-                                toastUtils.toast(
-                                    "${getString(R.string.enable)}${item.name}${
-                                        getString(R.string.success)
-                                    }"
-                                )
-                            }
-                        } else {
-                            withContext(Dispatchers.Main) {
-                                toastUtils.toast(
-                                    "${getString(R.string.enable)}${item.name}${
-                                        getString(R.string.fail)
-                                    }"
-                                )
-                            }
-                        }
+                    val cmd = (if (item.isEnable) PM_DISABLE else PM_ENABLE) + item.id
+                    val result = Runner.runCommand(Runner.rootInstance(), cmd)
+                    if (result.isSuccessful) {
+                        appItemDao.updateEnable(item.id, !item.isEnable)
+                    }
+                    withContext(Dispatchers.Main) {
+                        val toast =
+                            (if (item.isEnable) getString(R.string.disable) else getString(R.string.enable)) + item.name + (if (result.isSuccessful) getString(
+                                R.string.success
+                            ) else getString(R.string.fail))
+                        toastUtils.toast(toast)
                     }
                 } else {
                     clickListener?.invoke("")
@@ -221,13 +185,12 @@ class SheetDialog : BottomSheetDialogFragment() {
                     )
                     if (result.isSuccessful) {
                         appItemDao.updateRunning(item.id, false)
-                        withContext(Dispatchers.Main) {
-                            toastUtils.toast(getString(R.string.stop_success))
-                        }
-                    } else {
-                        withContext(Dispatchers.Main) {
-                            toastUtils.toast(getString(R.string.stop_failed))
-                        }
+                    }
+                    withContext(Dispatchers.Main) {
+                        toastUtils.toast(
+                            if (result.isSuccessful) getString(R.string.stop_success)
+                            else getString(R.string.stop_failed)
+                        )
                     }
                 } else {
                     clickListener?.invoke("")

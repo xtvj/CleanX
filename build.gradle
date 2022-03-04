@@ -4,6 +4,9 @@ buildscript {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.1.2'
@@ -13,6 +16,14 @@ buildscript {
         classpath 'com.google.dagger:hilt-android-gradle-plugin:2.40.5'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+
+//        //生成开源许可列表
+//        classpath 'com.google.android.gms:oss-licenses-plugin:0.10.4'
+        classpath "com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:10.0.0-rc02"
+
+        //导航确保类型安全
+        def nav_version = "2.4.1"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
     }
 }
 
@@ -25,5 +36,8 @@ allprojects {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
 }
