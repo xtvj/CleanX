@@ -4,9 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-parcelize'
-//    id 'com.google.android.gms.oss-licenses-plugin'
     id 'androidx.navigation.safeargs.kotlin'
-    id 'com.mikepenz.aboutlibraries.plugin'
 }
 
 android {
@@ -69,7 +67,6 @@ dependencies {
 
     //recycleView
     implementation "androidx.recyclerview:recyclerview:1.2.1"
-    // For control over item selection of both touch and mouse driven selection
     implementation "androidx.recyclerview:recyclerview-selection:1.1.0"
 
     //swipe refresh layout
@@ -79,10 +76,8 @@ dependencies {
     def hilt = '2.41'
     implementation "com.google.dagger:hilt-android:$hilt"
     kapt "com.google.dagger:hilt-android-compiler:$hilt"
-    //hilt-jetpack
     implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03'
     kapt "androidx.hilt:hilt-compiler:1.0.0"
-    //Hilt work
     implementation 'androidx.hilt:hilt-work:1.0.0'
 
     //coroutines
@@ -90,8 +85,6 @@ dependencies {
 
     //work Kotlin + coroutines
     implementation "androidx.work:work-runtime-ktx:2.7.1"
-    // optional - Multiprocess support
-//    implementation "androidx.work:work-multiprocess:$work_version"
 
     //startup
     implementation 'androidx.startup:startup-runtime:1.1.1'
@@ -101,27 +94,18 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle"
-    // Saved state module for ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle"
 
     //Room
     def room = "2.4.2"
     implementation "androidx.room:room-runtime:$room"
-    // To use Kotlin annotation processing tool (kapt)
     kapt "androidx.room:room-compiler:$room"
-    // optional - Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:$room"
-    // optional - Paging 3 Integration
     implementation "androidx.room:room-paging:$room"
 
     //Paging 3
     implementation "androidx.paging:paging-runtime-ktx:3.1.0"
 
-//    //splashscreen
-//    implementation 'androidx.core:core-splashscreen:1.0.0-alpha02'
-
-    //Coil image load
-//    implementation "io.coil-kt:coil:2.0.0-alpha05"
     //Glide
     def glide = '4.13.1'
     implementation "com.github.bumptech.glide:glide:$glide"
@@ -133,32 +117,25 @@ dependencies {
     //Magisk libsu
     implementation "com.github.topjohnwu.libsu:core:3.2.1"
 
-    // debugImplementation because LeakCanary should only run in debug builds.
+    //LeakCanary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8.1'
 
-    // recyclerview animators
-//    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
-
-    //PermissionsDispatcher
-//    implementation "com.github.permissions-dispatcher:permissionsdispatcher:4.9.1"
-//    kapt "com.github.permissions-dispatcher:permissionsdispatcher-processor:4.9.1"
-
-    //setting preference
+    //preference
     implementation 'androidx.preference:preference-ktx:1.2.0'
 
     //data store
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
-//    //开源许可列表
-//    implementation "com.google.android.gms:play-services-oss-licenses:17.0.0"
-    implementation "com.mikepenz:aboutlibraries:10.0.0-rc02"
-
-    // Kotlin
+    // Navigation
     def nav_version = "2.4.1"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    // Testing Navigation
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+
+    //json
+    def moshi = "1.13.0"
+    implementation "com.squareup.moshi:moshi:$moshi"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

@@ -1,0 +1,58 @@
+[
+    {
+        "name": "material-components-android",
+        "author": "material-components",
+        "version": "1.5.0",
+        "address": "https://github.com/material-components/material-components-android",
+        "license": "Apache-2.0 License",
+        "about": "Modular and customizable Material Design UI components for Android"
+    },
+    {
+        "name": "flexbox-layout",
+        "author": "google",
+        "version": "3.0.0",
+        "address": "https://github.com/google/flexbox-layout",
+        "license": "Apache-2.0 License",
+        "about": "Flexbox for Android"
+    },
+    {
+        "name": "glide",
+        "author": "bumptech",
+        "version": "4.13.1",
+        "address": "https://github.com/bumptech/glide",
+        "license": "BSD, part MIT and Apache 2.0",
+        "about": "An image loading and caching library for Android focused on smooth scrolling"
+    },
+    {
+        "name": "timber",
+        "author": "JakeWharton",
+        "version": "5.0.1",
+        "address": "https://github.com/JakeWharton/timber",
+        "license": "Apache-2.0 License",
+        "about": "A logger with a small, extensible API which provides utility on top of Android's normal Log class."
+    },
+    {
+        "name": "libsu",
+        "author": "topjohnwu",
+        "version": "3.2.1",
+        "address": "https://github.com/topjohnwu/libsu",
+        "license": " Apache-2.0 License",
+        "about": "A complete solution for apps using root permissions"
+    },
+    {
+        "name": "leakcanary",
+        "author": "square",
+        "version": "2.8.1",
+        "address": "https://github.com/square/leakcanary",
+        "license": "Apache-2.0 License",
+        "about": "A memory leak detection library for Android."
+    },
+    {
+        "name": "moshi",
+        "author": "square",
+        "version": "1.13.0",
+        "address": "https://github.com/square/moshi",
+        "license": "Apache-2.0 License",
+        "about": "A modern JSON library for Kotlin and Java."
+    }
+]

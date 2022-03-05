@@ -40,6 +40,18 @@ class AppRemoteMediator(
 
         //RemoteMediator适用于网络请求，不适用于本地获取数据，此处只是简单了解RemoteMediator
         try {
+
+            when (loadType) {
+                LoadType.PREPEND -> {
+                    return MediatorResult.Success(true)
+                }
+                LoadType.APPEND -> {
+                    return MediatorResult.Success(true)
+                }
+                else -> {}
+            }
+
+
             log("RemoteMediator loadType: ${loadType.name}")
 
             val list = GetApps.getAppsByCode(pm, code)

@@ -7,15 +7,20 @@
 
     <fragment
         android:id="@+id/settings_fragment"
-        android:name="github.xtvj.cleanx.ui.SettingsActivity$SettingsFragment"
-        android:label="@string/setting">
+        android:name="github.xtvj.cleanx.ui.SettingsActivity$SettingsFragment">
+
+        <action
+            android:id="@+id/action_settings_fragment_to_licenses_fragment"
+            app:destination="@id/licenses_fragment" />
     </fragment>
 
-<!--    <action android:id="@+id/open_OssLicensesMenuActivity"-->
-<!--        app:destination="@id/licenses_Activity"/>-->
-<!--    <activity-->
-<!--        android:id="@+id/licenses_Activity"-->
-<!--        android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"-->
-<!--        android:label="@string/setting"/>-->
+    <fragment
+        android:id="@+id/licenses_fragment"
+        android:name="github.xtvj.cleanx.ui.LicensesFragment">
+
+        <action
+            android:id="@+id/action_licenses_fragment_to_settings_fragment"
+            app:destination="@id/settings_fragment" />
+    </fragment>
 
 </navigation>
