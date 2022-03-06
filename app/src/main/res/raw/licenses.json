@@ -8,6 +8,14 @@
         "about": "Modular and customizable Material Design UI components for Android"
     },
     {
+        "name": "kotlinx.coroutines",
+        "author": "Kotlin",
+        "version": "1.6.0",
+        "address": "https://github.com/Kotlin/kotlinx.coroutines",
+        "license": "Apache-2.0 License",
+        "about": "Library support for Kotlin coroutines"
+    },
+    {
         "name": "flexbox-layout",
         "author": "google",
         "version": "3.0.0",
