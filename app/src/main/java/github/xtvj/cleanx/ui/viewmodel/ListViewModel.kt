@@ -1,5 +1,6 @@
 package github.xtvj.cleanx.ui.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -20,13 +21,24 @@ import javax.inject.Inject
 @HiltViewModel
 class ListViewModel @Inject constructor(
     private val appItemDao: AppItemDao,
-    private val appRepository: AppRepository
+    private val appRepository: AppRepository,
+    private val state: SavedStateHandle
 //    private val workManager: WorkManager
 ) : ViewModel() {
 
-//    var sortDirection = MutableLiveData(true)
-
-    var sortByColumnFlow = MutableStateFlow(APPS_BY_NAME)
+    companion object {
+        private const val SORT_BY = "sortBy"
+    }
+    val sortByColumnFlow: MutableStateFlow<String> = MutableStateFlow(
+        state.get(SORT_BY) ?: APPS_BY_NAME
+    )
+    init {
+        viewModelScope.launch {
+            sortByColumnFlow.collect { newSort ->
+                state.set(SORT_BY, newSort)
+            }
+        }
+    }
 
     @ExperimentalCoroutinesApi
     val userList = sortByColumnFlow.flatMapLatest { query ->

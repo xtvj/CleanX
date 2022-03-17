@@ -14,8 +14,8 @@ android {
         applicationId "github.xtvj.cleanx"
         minSdk 24
         targetSdk 31
-        versionCode 5
-        versionName '1.1'
+        versionCode 6
+        versionName '1.2'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
@@ -104,7 +104,7 @@ dependencies {
     implementation "androidx.room:room-paging:$room"
 
     //Paging 3
-    implementation "androidx.paging:paging-runtime-ktx:3.1.0"
+    implementation "androidx.paging:paging-runtime-ktx:3.1.1"
 
     //Glide
     def glide = '4.13.1'
