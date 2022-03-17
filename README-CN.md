@@ -3,7 +3,7 @@
 <div align="center">
   <sub>Language:</sub>
   <a href="README.md#readme">
-    <span>:en:</span>
+    <span>:us:</span>
   </a>
   <a href="README-CN.md#readme">
     <span>:cn:</span>
