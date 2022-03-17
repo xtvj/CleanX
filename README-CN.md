@@ -1,9 +1,30 @@
-<h2 align="center">CleanX</h2>
-  <p align="center">
-       <a href="README-CN.md">简体中文</a>
-    ·
-    <a href="README.md">English</a>
-  </p>
+<h1 align="center">CleanX</h1>
+
+<div align="center">
+  <sub>Language:</sub>
+  <a href="README.md#readme">
+    <span>:en:</span>
+  </a>
+  <a href="README-CN.md#readme">
+    <span>:cn:</span>
+  </a>
+</div>
+
+<div align="center">
+  <!-- License -->
+  <a href="LICENSE">
+    <img src="https://img.shields.io/github/license/xtvj/cleanx.svg" alt="LICENSE">
+  </a>
+ <!-- release-date -->
+  <a href="release-date">
+    <img src="https://img.shields.io/github/release-date/xtvj/cleanx" alt="release-date">
+  </a>
+ <!-- release -->
+  <a href="release">
+    <img src="https://img.shields.io/github/v/release/xtvj/cleanx?include_prereleases" alt="release">
+  </a>
+
+</div>
 
 ## 项目目的：
 
