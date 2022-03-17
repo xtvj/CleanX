@@ -16,11 +16,11 @@
     <img src="https://img.shields.io/github/license/xtvj/cleanx.svg" alt="LICENSE">
   </a>
  <!-- release-date -->
-  <a href="release-date">
+  <a href="https://github.com/xtvj/cleanx/releases/latest">
     <img src="https://img.shields.io/github/release-date/xtvj/cleanx" alt="release-date">
   </a>
  <!-- release -->
-  <a href="release">
+  <a href="https://github.com/xtvj/cleanx/releases">
     <img src="https://img.shields.io/github/v/release/xtvj/cleanx?include_prereleases" alt="release">
   </a>
 
