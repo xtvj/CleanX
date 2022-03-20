@@ -90,8 +90,6 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
             holderBinding.tvAppVersion.text =
                 context.getString(R.string.version) + item.version + " (" + item.versionCode + ")"
 
-//            holderBinding.ivIsEnable.visibility =
-//                if (type == 2 || item.isEnable) View.INVISIBLE else View.VISIBLE
             holderBinding.tvUpdateTime.text =
                 context.getString(R.string.update_time) + DateUtil.format(item.lastUpdateTime)
 

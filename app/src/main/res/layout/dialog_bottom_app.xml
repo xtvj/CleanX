@@ -75,7 +75,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:visibility="gone"
             android:focusable="true"
             android:text="@string/stop"
             android:textColor="@color/bottom_sheet_text"

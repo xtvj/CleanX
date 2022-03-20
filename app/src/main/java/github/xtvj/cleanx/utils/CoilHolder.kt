@@ -1,8 +1,10 @@
 package github.xtvj.cleanx.utils
 
+import android.app.Application
+
 object CoilHolder {
 
-//    fun init(application: Application) {
+    fun init(application: Application) {
 //        Coil.setImageLoader(
 //            ImageLoader.Builder(application)
 ////                .placeholder(ActivityCompat.getDrawable(application, R.drawable.ic_default_round)) //占位符
@@ -12,6 +14,6 @@ object CoilHolder {
 ////                .diskCachePolicy(CachePolicy.ENABLED) //开启磁盘缓存
 //                .build()
 //        )
-//    }
+    }
 
 }

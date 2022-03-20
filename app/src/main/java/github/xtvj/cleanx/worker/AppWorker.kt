@@ -41,20 +41,10 @@ class AppWorker @AssistedInject constructor(
                     //获取应用列表
                     val result = Runner.runCommand(Runner.userInstance(), code)
                     if (result.isSuccessful) {
-                        when (code) {
-                            GET_USER -> {
-                                appItemDao.deleteAllUser()
-                            }
-                            GET_SYS -> {
-                                appItemDao.deleteAllSystem()
-                            }
-                            GET_DISABLED -> {
-                                appItemDao.deleteAllDisable()
-                            }
-                        }
                         val temp = result.getOutputAsList(0).map { s ->
                             s.substring(8)
                         }.sorted()
+                        val list = mutableListOf<AppItem>()
                         for (i in temp) {
                             try {
                                 val appInfo = pm.getPackageInfo(i, PackageManager.GET_META_DATA)
@@ -93,11 +83,23 @@ class AppWorker @AssistedInject constructor(
                                     isRunning,
                                     versionCode
                                 )
-                                appItemDao.insertAll(item)
+                                list.add(item)
                             } catch (e: PackageManager.NameNotFoundException) {
                                 log(e.toString())
                             }
                         }
+                        when (code) {
+                            GET_USER -> {
+                                appItemDao.deleteAllUser()
+                            }
+                            GET_SYS -> {
+                                appItemDao.deleteAllSystem()
+                            }
+                            GET_DISABLED -> {
+                                appItemDao.deleteAllDisable()
+                            }
+                        }
+                        appItemDao.insertMultipleItems(list)
                     } else {
                         log(result.toString())
                         Result.failure()

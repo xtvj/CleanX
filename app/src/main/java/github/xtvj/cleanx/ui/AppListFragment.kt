@@ -9,14 +9,16 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
-import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.work.WorkInfo
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,6 +50,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     }
 
     private val fragmentViewModel: ListViewModel by viewModels() //Fragment自己的ViewModel
+//    private lateinit var fragmentViewModel: ListViewModel //Fragment自己的ViewModel
 
     //private val viewModel: MainViewModel by activityViewModels() //与Activity共用的ViewModel
     private var type = -1
@@ -58,8 +61,8 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     private lateinit var selectionTracker: SelectionTracker<AppItem>
     private lateinit var rootDialog: AlertDialog
     private var job: Job? = null
-    private var needObserver = true
-//    private lateinit var workInfo: LiveData<WorkInfo>
+    private var firstLoad = true
+    private lateinit var workInfo: LiveData<WorkInfo>
 
     @Inject
     lateinit var adapter: ListItemAdapter
@@ -127,24 +130,25 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         binding.rvApp.layoutManager = LinearLayoutManager(context)
         binding.srlFragmentList.setOnRefreshListener(this)
 
-        adapter.addLoadStateListener {
-            if (it.refresh is LoadState.Loading) {
-//                if (adapter.itemCount == 0) {
-                //可以显示加载progress或者显示retryButton
-                binding.pgbLoading.visibility = View.VISIBLE
-//                }
-                binding.tvNoData.visibility = View.INVISIBLE
-            } else {
-                binding.tvNoData.visibility =
-                    if (adapter.itemCount == 0) View.VISIBLE else View.INVISIBLE
-                binding.pgbLoading.visibility = View.INVISIBLE
-                binding.srlFragmentList.isRefreshing = false
-            }
-        }
+//        fragmentViewModel = ViewModelProvider(this)[ListViewModel::class.java]
+//        adapter.addLoadStateListener {
+//            if (it.refresh is LoadState.Loading) {
+////                if (adapter.itemCount == 0) {
+//                //可以显示加载progress或者显示retryButton
+//                binding.pgbLoading.visibility = View.VISIBLE
+////                }
+//                binding.tvNoData.visibility = View.INVISIBLE
+//            } else {
+//                binding.tvNoData.visibility =
+//                    if (adapter.itemCount == 0) View.VISIBLE else View.INVISIBLE
+//                binding.pgbLoading.visibility = View.INVISIBLE
+//                binding.srlFragmentList.isRefreshing = false
+//            }
+//        }
 //        查询不到数据时，点击刷新
-        binding.tvNoData.setOnClickListener {
-            adapter.refresh()
-        }
+//        binding.tvNoData.setOnClickListener {
+//            adapter.refresh()
+//        }
 
         initDialog()
     }
@@ -152,9 +156,8 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun onResume() {
         super.onResume()
-        if (needObserver) {
+        if (firstLoad) {
             lifecycleScope.launch {
-                //viewModel是懒加载，必需在主线程中创建
                 fragmentViewModel.run {
                     launch {
                         dataStoreManager.userPreferencesFlow.collectLatest {
@@ -172,20 +175,21 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                             }
                         }
                     }
-                    when (type) {
-                        0 -> {
-                            observeApps(userList)
-                        }
-                        1 -> {
-                            observeApps(systemList)
-                        }
-                        2 -> {
-                            observeApps(disableList)
+                    launch {
+                        refreshData()
+                        when (type) {
+                            0 -> {
+                                observeApps(userList)
+                            }
+                            1 -> {
+                                observeApps(systemList)
+                            }
+                            2 -> {
+                                observeApps(disableList)
+                            }
                         }
                     }
-//                    refreshData()
                 }
-                needObserver = false
             }
         }
     }
@@ -266,58 +270,49 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     }
 
     override fun onRefresh() {
-        adapter.refresh()
-//        if (!needObserver){
-//            refreshData()
-//        }
+//        adapter.refresh()
+        refreshData()
     }
 
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    private fun refreshData(){
-//        when (type) {
-//            0 -> {
-//                workInfo = fragmentViewModel.getAppsByCode(GET_USER)
-//            }
-//            1 -> {
-//                workInfo = fragmentViewModel.getAppsByCode(GET_SYS)
-//            }
-//            2 -> {
-//                workInfo = fragmentViewModel.getAppsByCode(GET_DISABLED)
-//            }
-//        }
-//        workInfo.observe(viewLifecycleOwner) {
-//            when (it.state) {
-//                WorkInfo.State.SUCCEEDED -> {
-//                    //获取数据完成
-//                    binding.pgbLoading.visibility = View.INVISIBLE
-//                    binding.tvNoData.visibility = View.INVISIBLE
-//                    binding.srlFragmentList.isRefreshing = false
-//                    when (type) {
-//                        0 -> {
-//                            observeApps(fragmentViewModel.userList)
-//                        }
-//                        1 -> {
-//                            observeApps(fragmentViewModel.systemList)
-//                        }
-//                        2 -> {
-//                            observeApps(fragmentViewModel.disableList)
-//                        }
-//                    }
-//                }
-//                WorkInfo.State.FAILED -> {
-//                    binding.srlFragmentList.isRefreshing = false
-//                    binding.pgbLoading.visibility = View.INVISIBLE
-//                    binding.tvNoData.visibility = View.VISIBLE
-//                }
-//                WorkInfo.State.RUNNING -> {
-//                    //正在获取数据
-//                    job?.cancel()
-//                    binding.pgbLoading.visibility = View.VISIBLE
-//                    binding.tvNoData.visibility = View.INVISIBLE
-//                }
-//                else -> {}
-//            }
-//        }
-//    }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun refreshData() {
+        when (type) {
+            0 -> {
+                workInfo = fragmentViewModel.getAppsByCode(GET_USER)
+            }
+            1 -> {
+                workInfo = fragmentViewModel.getAppsByCode(GET_SYS)
+            }
+            2 -> {
+                workInfo = fragmentViewModel.getAppsByCode(GET_DISABLED)
+            }
+        }
+        workInfo.observe(viewLifecycleOwner) {
+            when (it.state) {
+                WorkInfo.State.SUCCEEDED -> {
+                    //获取数据完成
+                    binding.pgbLoading.visibility = View.INVISIBLE
+                    binding.tvNoData.visibility = View.INVISIBLE
+                    binding.srlFragmentList.isRefreshing = false
+                    if (!firstLoad) {
+                        toastUtils.toast(getString(R.string.refresh_success))
+                    }
+                    firstLoad = false
+                }
+                WorkInfo.State.FAILED -> {
+                    binding.srlFragmentList.isRefreshing = false
+                    binding.pgbLoading.visibility = View.INVISIBLE
+                    binding.tvNoData.visibility = View.VISIBLE
+                    firstLoad = false
+                }
+                WorkInfo.State.RUNNING -> {
+                    //正在获取数据
+                    binding.pgbLoading.visibility = View.VISIBLE
+                    binding.tvNoData.visibility = View.INVISIBLE
+                }
+                else -> {}
+            }
+        }
+    }
 
 }

@@ -1,15 +1,21 @@
 package github.xtvj.cleanx.ui.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.data.AppRepository
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.utils.*
+import github.xtvj.cleanx.worker.AppWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,8 +28,8 @@ import javax.inject.Inject
 class ListViewModel @Inject constructor(
     private val appItemDao: AppItemDao,
     private val appRepository: AppRepository,
-    private val state: SavedStateHandle
-//    private val workManager: WorkManager
+    private val state: SavedStateHandle,
+    private val workManager: WorkManager
 ) : ViewModel() {
 
     companion object {
@@ -99,12 +105,12 @@ class ListViewModel @Inject constructor(
 
     }
 
-//    fun getAppsByCode(code: String): LiveData<WorkInfo> {
-//        val request = OneTimeWorkRequestBuilder<AppWorker>()
-//            .setInputData(workDataOf(AppWorker.KEY_CODE to code))
-//            .build()
-//        workManager.enqueue(request)
-//        return workManager.getWorkInfoByIdLiveData(request.id)
-//    }
+    fun getAppsByCode(code: String): LiveData<WorkInfo> {
+        val request = OneTimeWorkRequestBuilder<AppWorker>()
+            .setInputData(workDataOf(AppWorker.KEY_CODE to code))
+            .build()
+        workManager.enqueue(request)
+        return workManager.getWorkInfoByIdLiveData(request.id)
+    }
 
 }

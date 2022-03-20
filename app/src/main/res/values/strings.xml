@@ -41,6 +41,7 @@
     <string name="version_setting">版本</string>
     <string name="project_address">开源地址</string>
     <string name="third_party_licenses">第三方开源许可</string>
+    <string name="refresh_success">刷新成功</string>
 
 
 </resources>

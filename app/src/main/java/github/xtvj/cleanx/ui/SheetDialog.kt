@@ -97,8 +97,8 @@ class SheetDialog : BottomSheetDialogFragment() {
         }
 
         layoutBinding.ivIsEnable.visibility = if (item.isEnable) View.INVISIBLE else View.VISIBLE
-        binding.btnRunning.visibility = if (item.isRunning) View.VISIBLE else View.GONE
-        binding.btnUnInstall.visibility = if (item.isSystem) View.GONE else View.VISIBLE
+//        binding.btnRunning.visibility = if (item.isRunning) View.VISIBLE else View.GONE
+//        binding.btnUnInstall.visibility = if (item.isSystem) View.GONE else View.VISIBLE
         binding.btnFreeze.visibility =
             if (RunnerUtils.isRootAvailable()) View.VISIBLE else View.GONE
 

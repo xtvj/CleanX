@@ -27,12 +27,12 @@ class AppRepository @Inject constructor(
                 pageSize = PAGE_SIZE,
                 enablePlaceholders = true
             ),
-            remoteMediator = AppRemoteMediator(
-                appItemDao,
-                db,
-                pm,
-                GET_USER
-            ),
+//            remoteMediator = AppRemoteMediator(
+//                appItemDao,
+//                db,
+//                pm,
+//                GET_USER
+//            ),
             pagingSourceFactory = {
                 appItemDao.getUser(query, sort)
             }
@@ -45,12 +45,12 @@ class AppRepository @Inject constructor(
                 pageSize = PAGE_SIZE,
                 enablePlaceholders = true
             ),
-            remoteMediator = AppRemoteMediator(
-                appItemDao,
-                db,
-                pm,
-                GET_SYS
-            ),
+//            remoteMediator = AppRemoteMediator(
+//                appItemDao,
+//                db,
+//                pm,
+//                GET_SYS
+//            ),
             pagingSourceFactory = {
                 appItemDao.getSystem(query, sort)
             }
@@ -63,12 +63,12 @@ class AppRepository @Inject constructor(
                 pageSize = PAGE_SIZE,
                 enablePlaceholders = true
             ),
-            remoteMediator = AppRemoteMediator(
-                appItemDao,
-                db,
-                pm,
-                GET_DISABLED
-            ),
+//            remoteMediator = AppRemoteMediator(
+//                appItemDao,
+//                db,
+//                pm,
+//                GET_DISABLED
+//            ),
             pagingSourceFactory = {
                 appItemDao.getDisable(query, sort)
             }
@@ -77,6 +77,6 @@ class AppRepository @Inject constructor(
 
 
     companion object {
-        private const val PAGE_SIZE = 12
+        private const val PAGE_SIZE = 20
     }
 }
