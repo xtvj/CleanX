@@ -19,10 +19,6 @@ import github.xtvj.cleanx.utils.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-/*
-使用AppRemoteMediator请求数据
-弃用WorkManager 保留此类待以后修改
- */
 @HiltWorker
 class AppWorker @AssistedInject constructor(
     @Assisted val context: Context,
@@ -61,12 +57,14 @@ class AppWorker @AssistedInject constructor(
 //                                    appInfo.applicationInfo.deviceProtectedDataDir
 //                                val publicSourceDir = appInfo.applicationInfo.publicSourceDir
                                 val icon = appInfo.applicationInfo.icon
-                                val isRunning = (appInfo.applicationInfo.flags and FLAG_STOPPED) == 0
-                                val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                                    appInfo.longVersionCode
-                                } else {
-                                    appInfo.versionCode.toLong()
-                                }
+                                val isRunning =
+                                    (appInfo.applicationInfo.flags and FLAG_STOPPED) == 0
+                                val versionCode =
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                        appInfo.longVersionCode
+                                    } else {
+                                        appInfo.versionCode.toLong()
+                                    }
                                 val item = AppItem(
                                     i,
                                     name,

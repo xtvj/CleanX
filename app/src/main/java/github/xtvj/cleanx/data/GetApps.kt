@@ -6,11 +6,11 @@ import android.os.Build
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.utils.log
 
-object GetApps{
+object GetApps {
 
-    val FLAG_STOPPED = 1 shl 21
+    private const val FLAG_STOPPED = 1 shl 21
 
-    fun getAppsByCode(pm: PackageManager,code: String): List<AppItem> {
+    fun getAppsByCode(pm: PackageManager, code: String): List<AppItem> {
         if (code.isNotEmpty()) {
             log("get app list by RemoteMediator $code")
             //获取应用列表

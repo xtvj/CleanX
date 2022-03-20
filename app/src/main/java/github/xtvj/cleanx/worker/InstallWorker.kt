@@ -15,7 +15,7 @@ class InstallWorker @AssistedInject constructor(
     @Assisted val context: Context,
     @Assisted val workerParams: WorkerParameters,
     private val appItemDao: AppItemDao,
-)  : CoroutineWorker(context, workerParams) {
+) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {

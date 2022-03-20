@@ -9,9 +9,10 @@ import github.xtvj.cleanx.data.License
 import github.xtvj.cleanx.databinding.ItemFragmentLicensesBinding
 import javax.inject.Inject
 
-open class LicensesAdapter @Inject constructor(): PagingDataAdapter<License, LicensesAdapter.ItemViewHolder>(diff) {
+open class LicensesAdapter @Inject constructor() :
+    PagingDataAdapter<License, LicensesAdapter.ItemViewHolder>(diff) {
 
-    var onItemClick: ((License)->Unit) ?= null
+    var onItemClick: ((License) -> Unit)? = null
 
     companion object {
         val diff = object : DiffUtil.ItemCallback<License>() {
@@ -24,7 +25,8 @@ open class LicensesAdapter @Inject constructor(): PagingDataAdapter<License, Lic
         }
     }
 
-    inner class ItemViewHolder(private val binding:  ItemFragmentLicensesBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ItemViewHolder(private val binding: ItemFragmentLicensesBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(item: License) {
             binding.about.text = item.about
             binding.address.text = item.address
@@ -40,7 +42,7 @@ open class LicensesAdapter @Inject constructor(): PagingDataAdapter<License, Lic
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = getItem(position)
-        if (item != null){
+        if (item != null) {
             holder.bind(item)
         }
     }

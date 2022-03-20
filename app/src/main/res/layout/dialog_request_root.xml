@@ -3,9 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/size_20dp">
+
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:linksClickable="true"
-        android:id="@+id/tv_quest_root"/>
+        android:id="@+id/tv_quest_root" />
 </androidx.appcompat.widget.LinearLayoutCompat>

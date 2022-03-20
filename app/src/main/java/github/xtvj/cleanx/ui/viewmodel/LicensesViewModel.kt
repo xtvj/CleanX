@@ -10,7 +10,7 @@ import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.License
 
 
-class LicensesViewModel (application: Application): AndroidViewModel(application) {
+class LicensesViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getList(): List<License> {
         val moshi = Moshi.Builder().build()

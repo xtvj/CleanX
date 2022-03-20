@@ -13,7 +13,7 @@ class StartInitializer : Initializer<Unit> {
     override fun create(context: Context) {
         //初始化操作
 
-        CoroutineScope(Dispatchers.IO).launch{
+        CoroutineScope(Dispatchers.IO).launch {
             //启动主题
             val dataStoreManager = DataStoreManager(context)
             ThemeHelper.applyTheme(dataStoreManager.fetchInitialPreferences().darkModel)

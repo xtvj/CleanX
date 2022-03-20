@@ -5,9 +5,6 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import github.xtvj.cleanx.utils.GET_DISABLED
-import github.xtvj.cleanx.utils.GET_SYS
-import github.xtvj.cleanx.utils.GET_USER
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -7,7 +7,6 @@
     <color name="textColorSecondary">#FFBEBEBE</color>
 
 
-
     <!--    以下颜色区分明暗主题-->
     <color name="action_mode_background">#5C5A5A</color>
     <color name="card_View_selected">#5C5A5A</color>

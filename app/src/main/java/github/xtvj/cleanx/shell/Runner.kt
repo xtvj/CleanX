@@ -5,7 +5,6 @@ import android.text.TextUtils
 import androidx.annotation.WorkerThread
 import github.xtvj.cleanx.utils.log
 import java.io.InputStream
-import java.util.*
 
 abstract class Runner protected constructor() {
     class Result(

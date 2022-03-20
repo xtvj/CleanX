@@ -6,16 +6,10 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import github.xtvj.cleanx.data.GetApps
-import github.xtvj.cleanx.data.AppItemDao
-import github.xtvj.cleanx.data.AppDatabase
-import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.utils.GET_DISABLED
 import github.xtvj.cleanx.utils.GET_SYS
 import github.xtvj.cleanx.utils.GET_USER
 import github.xtvj.cleanx.utils.log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.IOException
 
 @ExperimentalPagingApi

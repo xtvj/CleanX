@@ -6,17 +6,20 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
     tools:context=".ui.MainActivity">
+
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/abl_main"
         android:fitsSystemWindows="true"
         app:layout_constraintTop_toTopOf="parent">
+
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tb_main"
             android:layout_width="match_parent"
             app:layout_scrollFlags="scroll|enterAlways"
-            android:layout_height="?android:actionBarSize"/>
+            android:layout_height="?android:actionBarSize" />
+
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tl_main"
             style="@style/Widget.MaterialComponents.TabLayout.Colored"

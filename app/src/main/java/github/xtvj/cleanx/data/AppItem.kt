@@ -1,9 +1,12 @@
 package github.xtvj.cleanx.data
 
+import android.net.Uri
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import github.xtvj.cleanx.R
+import github.xtvj.cleanx.utils.DateUtil
 import kotlinx.parcelize.Parcelize
 
 @Entity(
@@ -20,7 +23,7 @@ data class AppItem(
     var lastUpdateTime: Long,
     var dataDir: String,
     var sourceDir: String,
-    var icon:Int,
+    var icon: Int,
     var isRunning: Boolean,
 
     @ColumnInfo(defaultValue = "1")
@@ -31,6 +34,18 @@ data class AppItem(
 
 ) : Parcelable {
 
+
+    fun getFormatUpdateTime(): String {
+        return DateUtil.format(lastUpdateTime)
+    }
+
+    fun getIconUri(): Any {
+        return if (icon != 0) {
+            Uri.parse("android.resource://$id/$icon")
+        } else {
+            R.drawable.ic_default_round
+        }
+    }
 
 }
 

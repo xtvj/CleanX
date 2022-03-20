@@ -14,8 +14,8 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
-import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.data.AppItem
+import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.databinding.DialogBottomAppBinding
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
 import github.xtvj.cleanx.shell.Runner
@@ -87,14 +87,9 @@ class SheetDialog : BottomSheetDialogFragment() {
         layoutBinding.tvAppVersion.text =
             getString(R.string.version) + item.version + " (" + item.versionCode + ")"
         layoutBinding.tvUpdateTime.text =
-            getString(R.string.update_time) + DateUtil.format(item.lastUpdateTime)
+            getString(R.string.update_time) + item.getFormatUpdateTime()
 
-        if (item.icon != 0) {
-            val uri = Uri.parse("android.resource://" + item.id + "/" + item.icon)
-            layoutBinding.ivIcon.loadImage(uri)
-        } else {
-            layoutBinding.ivIcon.loadImage(R.drawable.ic_default_round)
-        }
+        layoutBinding.ivIcon.loadImage(item.getIconUri())
 
         layoutBinding.ivIsEnable.visibility = if (item.isEnable) View.INVISIBLE else View.VISIBLE
 //        binding.btnRunning.visibility = if (item.isRunning) View.VISIBLE else View.GONE

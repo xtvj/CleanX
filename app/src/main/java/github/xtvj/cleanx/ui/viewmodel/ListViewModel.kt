@@ -10,8 +10,8 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import dagger.hilt.android.lifecycle.HiltViewModel
-import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.data.AppItem
+import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.data.AppRepository
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.utils.*
@@ -35,9 +35,11 @@ class ListViewModel @Inject constructor(
     companion object {
         private const val SORT_BY = "sortBy"
     }
+
     val sortByColumnFlow: MutableStateFlow<String> = MutableStateFlow(
         state.get(SORT_BY) ?: APPS_BY_NAME
     )
+
     init {
         viewModelScope.launch {
             sortByColumnFlow.collect { newSort ->
@@ -49,27 +51,27 @@ class ListViewModel @Inject constructor(
     @ExperimentalCoroutinesApi
     val userList = sortByColumnFlow.flatMapLatest { query ->
         if (query == APPS_BY_LAST_UPDATE_TIME) {
-            appRepository.getUser(query,false).cachedIn(viewModelScope)
+            appRepository.getUser(query, false).cachedIn(viewModelScope)
         } else {
-            appRepository.getUser(query,true).cachedIn(viewModelScope)
+            appRepository.getUser(query, true).cachedIn(viewModelScope)
         }
     }
 
     @ExperimentalCoroutinesApi
     val systemList = sortByColumnFlow.flatMapLatest { query ->
         if (query == APPS_BY_LAST_UPDATE_TIME) {
-            appRepository.getSys(query,false).cachedIn(viewModelScope)
+            appRepository.getSys(query, false).cachedIn(viewModelScope)
         } else {
-            appRepository.getSys(query,true).cachedIn(viewModelScope)
+            appRepository.getSys(query, true).cachedIn(viewModelScope)
         }
     }
 
     @ExperimentalCoroutinesApi
     val disableList = sortByColumnFlow.flatMapLatest { query ->
         if (query == APPS_BY_LAST_UPDATE_TIME) {
-            appRepository.getDisable(query,false).cachedIn(viewModelScope)
+            appRepository.getDisable(query, false).cachedIn(viewModelScope)
         } else {
-            appRepository.getDisable(query,true).cachedIn(viewModelScope)
+            appRepository.getDisable(query, true).cachedIn(viewModelScope)
         }
     }
 
@@ -83,18 +85,18 @@ class ListViewModel @Inject constructor(
             val result = Runner.runCommand(Runner.rootInstance(), builder.toString())
             log(result.output)
             if (result.isSuccessful) {
-                when(code){
-                    PM_ENABLE ->{
+                when (code) {
+                    PM_ENABLE -> {
                         for (item in list) {
                             appItemDao.updateEnable(item.id, true)
                         }
                     }
-                    PM_DISABLE ->{
+                    PM_DISABLE -> {
                         for (item in list) {
                             appItemDao.updateEnable(item.id, false)
                         }
                     }
-                    FORCE_STOP ->{
+                    FORCE_STOP -> {
                         for (item in list) {
                             appItemDao.updateRunning(item.id, false)
                         }

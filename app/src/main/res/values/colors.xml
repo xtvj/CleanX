@@ -9,7 +9,7 @@
     <color name="white">#ffffff</color>
     <color name="sand_shadow">#BE620B</color>
 
-<!--    以下颜色区分明暗主题-->
+    <!--    以下颜色区分明暗主题-->
     <color name="action_mode_background">#A0EBC5</color>
     <color name="card_View_selected">#A0EBC5</color>
     <color name="card_View_no_selected">#ffffff</color>

@@ -2,13 +2,13 @@ package github.xtvj.cleanx.ui
 
 import android.content.Intent
 import android.net.Uri
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.PagingData
@@ -42,7 +42,7 @@ class LicensesFragment : Fragment() {
         viewModel = ViewModelProvider(this)[LicensesViewModel::class.java]
 
         binding.rvLicenses.adapter = adapter
-        adapter.onItemClick = {license ->
+        adapter.onItemClick = { license ->
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse(license.address)
             activity?.startActivity(intent)

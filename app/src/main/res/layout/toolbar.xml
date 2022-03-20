@@ -3,16 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/abl_custom"
         android:fitsSystemWindows="true"
         app:layout_constraintTop_toTopOf="parent">
+
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tb_custom"
             android:layout_width="match_parent"
             app:layout_scrollFlags="scroll|enterAlways"
-            android:layout_height="?android:actionBarSize"/>
+            android:layout_height="?android:actionBarSize" />
     </com.google.android.material.appbar.AppBarLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

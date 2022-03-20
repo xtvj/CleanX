@@ -30,7 +30,7 @@ enum class DarkModel {
 data class UserPreferences(
     val sortOrder: SortOrder,
     val darkModel: DarkModel,
-    val asc : Boolean,//正反排序
+    val asc: Boolean,//正反排序
 )
 
 @Singleton
@@ -60,19 +60,19 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
             mapUserPreferences(preferences)
         }
 
-    suspend fun updateDarkModel(model: DarkModel){
+    suspend fun updateDarkModel(model: DarkModel) {
         dataStore.edit {
             it[PreferencesKeys.DARK_MODEL] = model.name
         }
     }
 
-    suspend fun updateSortOrder(sortOrder: SortOrder){
+    suspend fun updateSortOrder(sortOrder: SortOrder) {
         dataStore.edit {
             it[PreferencesKeys.SORT_ORDER] = sortOrder.name
         }
     }
 
-    suspend fun updateASCOrder(asc: Boolean){
+    suspend fun updateASCOrder(asc: Boolean) {
         dataStore.edit {
             it[PreferencesKeys.ASC_MODEL] = asc
         }
@@ -98,6 +98,6 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         //默认正序
         val asc = preferences[PreferencesKeys.ASC_MODEL] ?: true
 
-        return UserPreferences(sortOrder,darkModel,asc)
+        return UserPreferences(sortOrder, darkModel, asc)
     }
 }

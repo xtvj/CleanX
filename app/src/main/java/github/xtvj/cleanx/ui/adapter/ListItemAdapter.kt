@@ -2,7 +2,6 @@ package github.xtvj.cleanx.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
-import github.xtvj.cleanx.utils.DateUtil
 import github.xtvj.cleanx.utils.loadImage
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -91,14 +89,8 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
                 context.getString(R.string.version) + item.version + " (" + item.versionCode + ")"
 
             holderBinding.tvUpdateTime.text =
-                context.getString(R.string.update_time) + DateUtil.format(item.lastUpdateTime)
-
-            if (item.icon != 0) {
-                val uri = Uri.parse("android.resource://" + item.id + "/" + item.icon)
-                holderBinding.ivIcon.loadImage(uri)
-            } else {
-                holderBinding.ivIcon.loadImage(R.drawable.ic_default_round)
-            }
+                context.getString(R.string.update_time) + item.getFormatUpdateTime()
+            holderBinding.ivIcon.loadImage(item.getIconUri())
 
             //bindSelectedState
             holderBinding.cvAppItem.isChecked =
@@ -118,7 +110,7 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
 
 
             holderBinding.cvAppItem.setOnClickListener {
-                itemClickListener?.invoke(item,bindingAdapterPosition)
+                itemClickListener?.invoke(item, bindingAdapterPosition)
             }
         }
 

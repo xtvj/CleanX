@@ -10,12 +10,11 @@
         android:width="200dp"
         android:height="200dp"
         android:gravity="center"
-        android:drawable="@drawable/ic_launcher_c">
-    </item>
+        android:drawable="@drawable/ic_launcher_c"></item>
     <item
         android:top="200dp"
         android:drawable="@drawable/text_cleanx"
         android:width="194dp"
         android:height="74dp"
-        android:gravity="center"/>
+        android:gravity="center" />
 </layer-list>

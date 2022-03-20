@@ -3,12 +3,10 @@ package github.xtvj.cleanx.ui
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.*
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,7 +14,6 @@ import github.xtvj.cleanx.R
 import github.xtvj.cleanx.databinding.ActivityMainBinding
 import github.xtvj.cleanx.receiver.InstallReceiver
 import github.xtvj.cleanx.ui.adapter.MainViewPageAdapter
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -26,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: MainViewPageAdapter
+
     @Inject
     lateinit var installReceiver: InstallReceiver
 

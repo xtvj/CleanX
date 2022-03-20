@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
@@ -23,16 +22,18 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
+import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.data.DataStoreManager
 import github.xtvj.cleanx.data.SortOrder
-import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.ui.adapter.ListItemAdapter
 import github.xtvj.cleanx.ui.viewmodel.ListViewModel
 import github.xtvj.cleanx.utils.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 
@@ -49,10 +50,10 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
             }
     }
 
-    private val fragmentViewModel: ListViewModel by viewModels() //Fragment自己的ViewModel
-//    private lateinit var fragmentViewModel: ListViewModel //Fragment自己的ViewModel
+    //    private val fragmentViewModel: ListViewModel by viewModels() //Fragment自己的ViewModel
+    private lateinit var fragmentViewModel: ListViewModel //Fragment自己的ViewModel
 
-    //private val viewModel: MainViewModel by activityViewModels() //与Activity共用的ViewModel
+    //    private val fragmentViewModel: ListViewModel by activityViewModels() //共用的ViewModel
     private var type = -1
     private lateinit var binding: FragmentAppListBinding
     private val lifecycleScope = lifecycle.coroutineScope
@@ -129,27 +130,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
             })
         binding.rvApp.layoutManager = LinearLayoutManager(context)
         binding.srlFragmentList.setOnRefreshListener(this)
-
-//        fragmentViewModel = ViewModelProvider(this)[ListViewModel::class.java]
-//        adapter.addLoadStateListener {
-//            if (it.refresh is LoadState.Loading) {
-////                if (adapter.itemCount == 0) {
-//                //可以显示加载progress或者显示retryButton
-//                binding.pgbLoading.visibility = View.VISIBLE
-////                }
-//                binding.tvNoData.visibility = View.INVISIBLE
-//            } else {
-//                binding.tvNoData.visibility =
-//                    if (adapter.itemCount == 0) View.VISIBLE else View.INVISIBLE
-//                binding.pgbLoading.visibility = View.INVISIBLE
-//                binding.srlFragmentList.isRefreshing = false
-//            }
-//        }
-//        查询不到数据时，点击刷新
-//        binding.tvNoData.setOnClickListener {
-//            adapter.refresh()
-//        }
-
+        fragmentViewModel = ViewModelProvider(requireActivity())[ListViewModel::class.java]
         initDialog()
     }
 
@@ -157,26 +138,28 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     override fun onResume() {
         super.onResume()
         if (firstLoad) {
+            firstLoad = false
             lifecycleScope.launch {
                 fragmentViewModel.run {
-                    launch {
-                        dataStoreManager.userPreferencesFlow.collectLatest {
-                            log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
-                            when (it.sortOrder) {
-                                SortOrder.BY_ID -> {
-                                    sortByColumnFlow.update { APPS_BY_ID }
-                                }
-                                SortOrder.BY_NAME -> {
-                                    sortByColumnFlow.update { APPS_BY_NAME }
-                                }
-                                SortOrder.BY_UPDATE_TIME -> {
-                                    sortByColumnFlow.update { APPS_BY_LAST_UPDATE_TIME }
+                    if (type == 0) {
+                        launch {
+                            dataStoreManager.userPreferencesFlow.collectLatest {
+                                log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
+                                when (it.sortOrder) {
+                                    SortOrder.BY_ID -> {
+                                        sortByColumnFlow.update { APPS_BY_ID }
+                                    }
+                                    SortOrder.BY_NAME -> {
+                                        sortByColumnFlow.update { APPS_BY_NAME }
+                                    }
+                                    SortOrder.BY_UPDATE_TIME -> {
+                                        sortByColumnFlow.update { APPS_BY_LAST_UPDATE_TIME }
+                                    }
                                 }
                             }
                         }
                     }
                     launch {
-                        refreshData()
                         when (type) {
                             0 -> {
                                 observeApps(userList)
@@ -188,6 +171,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                                 observeApps(disableList)
                             }
                         }
+                        refreshData()
                     }
                 }
             }
@@ -294,16 +278,11 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                     binding.pgbLoading.visibility = View.INVISIBLE
                     binding.tvNoData.visibility = View.INVISIBLE
                     binding.srlFragmentList.isRefreshing = false
-                    if (!firstLoad) {
-                        toastUtils.toast(getString(R.string.refresh_success))
-                    }
-                    firstLoad = false
                 }
                 WorkInfo.State.FAILED -> {
                     binding.srlFragmentList.isRefreshing = false
                     binding.pgbLoading.visibility = View.INVISIBLE
                     binding.tvNoData.visibility = View.VISIBLE
-                    firstLoad = false
                 }
                 WorkInfo.State.RUNNING -> {
                     //正在获取数据
