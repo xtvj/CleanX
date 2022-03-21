@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.selection.ItemDetailsLookup
@@ -12,10 +11,8 @@ import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.databinding.ItemFragmentAppListBinding
-import github.xtvj.cleanx.utils.loadImage
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -24,8 +21,6 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
 
 
     private lateinit var selectionTracker: SelectionTracker<AppItem>
-
-    private lateinit var binding: ItemFragmentAppListBinding
 
     private var type by Delegates.notNull<Int>()
 
@@ -52,7 +47,7 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        binding =
+        val binding =
             ItemFragmentAppListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding)
     }
@@ -61,6 +56,7 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
         val item = getItem(position)
         if (item != null) {
             holder.bind(item)
+            holder.getBinding().executePendingBindings()
         }
     }
 
@@ -78,35 +74,39 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
 
 
     inner class ItemViewHolder(private val holderBinding: ItemFragmentAppListBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+        RecyclerView.ViewHolder(holderBinding.root) {
         private val details = getItemDetails()
 
         @SuppressLint("SetTextI18n", "ResourceAsColor")
         fun bind(item: AppItem) {
-            holderBinding.tvAppId.text = item.id
-            holderBinding.tvAppName.text = item.name
-            holderBinding.tvAppVersion.text =
-                context.getString(R.string.version) + item.version + " (" + item.versionCode + ")"
-
-            holderBinding.tvUpdateTime.text =
-                context.getString(R.string.update_time) + item.getFormatUpdateTime()
-            holderBinding.ivIcon.loadImage(item.getIconUri())
+            holderBinding.item = item
+            holderBinding.type = type
+            holderBinding.selectionTracker = selectionTracker
+            holderBinding.details = details
+//            holderBinding.tvAppId.text = item.id
+//            holderBinding.tvAppName.text = item.name
+//            holderBinding.tvAppVersion.text =
+//                context.getString(R.string.version) + item.version + " (" + item.versionCode + ")"
+//
+//            holderBinding.tvUpdateTime.text =
+//                context.getString(R.string.update_time) + item.getFormatUpdateTime()
+//            holderBinding.ivIcon.loadImage(item.getIconUri())
 
             //bindSelectedState
-            holderBinding.cvAppItem.isChecked =
-                this@ListItemAdapter.selectionTracker.isSelected(details.selectionKey)
+//            holderBinding.cvAppItem.isChecked =
+//                this@ListItemAdapter.selectionTracker.isSelected(details.selectionKey)
 
-            if (!holderBinding.cvAppItem.isChecked && item.isRunning) {
-                holderBinding.clAppItem.setBackgroundResource(R.color.card_View_running)
-            } else {
-                holderBinding.clAppItem.setBackgroundResource(android.R.color.transparent)
-            }
+//            if (!holderBinding.cvAppItem.isChecked && item.isRunning) {
+//                holderBinding.clAppItem.setBackgroundResource(R.color.card_View_running)
+//            } else {
+//                holderBinding.clAppItem.setBackgroundResource(android.R.color.transparent)
+//            }
 
-            if (!item.isEnable && !holderBinding.cvAppItem.isChecked && type != 2) {
-                holderBinding.ivIsEnable.visibility = View.VISIBLE
-            } else {
-                holderBinding.ivIsEnable.visibility = View.INVISIBLE
-            }
+//            if (!item.isEnable && !holderBinding.cvAppItem.isChecked && type != 2) {
+//                holderBinding.ivIsEnable.visibility = View.VISIBLE
+//            } else {
+//                holderBinding.ivIsEnable.visibility = View.INVISIBLE
+//            }
 
 
             holderBinding.cvAppItem.setOnClickListener {
@@ -119,6 +119,9 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
                 override fun getPosition(): Int = bindingAdapterPosition
                 override fun getSelectionKey(): AppItem? = getItem(bindingAdapterPosition)
             }
+        fun getBinding() : ItemFragmentAppListBinding{
+            return holderBinding
+        }
     }
 
 

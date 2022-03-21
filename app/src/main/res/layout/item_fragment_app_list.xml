@@ -1,106 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cv_app_item"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:checkable="true"
-    android:clickable="true"
-    android:focusable="true"
-    app:cardBackgroundColor="@color/selector_card_view_background"
-    app:cardCornerRadius="0dp"
-    app:cardElevation="0dp"
-    app:checkedIconTint="@color/colorAccent"
-    app:strokeWidth="0dp">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_app_item"
+    <data>
+
+        <import type="android.view.View" />
+        <import type="com.google.android.material.card.MaterialCardView" />
+        <import type="github.xtvj.cleanx.R" />
+
+        <variable
+            name="item"
+            type="github.xtvj.cleanx.data.AppItem" />
+
+        <variable
+            name="type"
+            type="Integer" />
+        <variable
+            name="selectionTracker"
+            type="androidx.recyclerview.selection.SelectionTracker&lt;github.xtvj.cleanx.data.AppItem>" />
+        <variable
+            name="details"
+            type="androidx.recyclerview.selection.ItemDetailsLookup.ItemDetails&lt;github.xtvj.cleanx.data.AppItem>" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_app_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="6dp">
+        android:checkable="true"
+        android:clickable="true"
+        android:checked="@{selectionTracker.isSelected(details.selectionKey)}"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/selector_card_view_background"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0dp"
+        app:checkedIconTint="@color/colorAccent"
+        app:strokeWidth="0dp">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_icon"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_launcher_c" />
-
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_appName"
-            style="@style/MaterialAlertDialog.MaterialComponents.Title.Text"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_app_item"
+            android:layout_width="match_parent"
+            app:backgroundResource="@{(!cvAppItem.checked &amp;&amp; item.running)? R.color.card_View_running : android.R.color.transparent}"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:ellipsize="end"
-            android:gravity="center|start"
-            android:lines="1"
-            app:layout_constraintBottom_toTopOf="@id/tv_appId"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_icon"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/app_name" />
+            android:padding="6dp">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_appId"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:gravity="center|start"
-            android:lines="1"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toTopOf="@+id/tv_updateTime"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tv_appName"
-            app:layout_constraintTop_toBottomOf="@+id/tv_appName"
-            tools:text="github.xtvj.cleanx" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_icon"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                app:imageUri="@{item.iconUri}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/ic_launcher_c" />
 
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_appVersion"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:ellipsize="end"
-            android:gravity="center|start"
-            android:maxLines="2"
-            android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_updateTime"
-            app:layout_constraintStart_toStartOf="@+id/tv_appId"
-            app:layout_constraintTop_toBottomOf="@+id/tv_appId"
-            tools:ignore="SmallSp"
-            tools:text="版本：1.0beta" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_appName"
+                style="@style/MaterialAlertDialog.MaterialComponents.Title.Text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:ellipsize="end"
+                android:gravity="center|start"
+                android:lines="1"
+                android:text="@{item.name}"
+                app:layout_constraintBottom_toTopOf="@id/tv_appId"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/iv_icon"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/app_name" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_updateTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:gravity="center|start"
-            android:lines="1"
-            android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_appVersion"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_appVersion"
-            app:layout_constraintTop_toTopOf="@+id/tv_appVersion"
-            tools:ignore="SmallSp"
-            tools:text="2021年11月23日" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_appId"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center|start"
+                android:lines="1"
+                android:text="@{item.id}"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/tv_updateTime"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tv_appName"
+                app:layout_constraintTop_toBottomOf="@+id/tv_appName"
+                tools:text="github.xtvj.cleanx" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_isEnable"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_disable_right"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_appVersion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:ellipsize="end"
+                android:gravity="center|start"
+                android:maxLines="2"
+                android:text="@{@string/version + item.version}"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_updateTime"
+                app:layout_constraintStart_toStartOf="@+id/tv_appId"
+                app:layout_constraintTop_toBottomOf="@+id/tv_appId"
+                tools:ignore="SmallSp"
+                tools:text="版本：1.0beta" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_updateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center|start"
+                android:lines="1"
+                android:text="@{@string/update_time + item.formatUpdateTime}"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_appVersion"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_appVersion"
+                app:layout_constraintTop_toTopOf="@+id/tv_appVersion"
+                tools:ignore="SmallSp"
+                tools:text="2021年11月23日" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_isEnable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_disable_right"
+                android:visibility="@{(!cvAppItem.checked &amp;&amp; !item.enable  &amp;&amp; type != 2)? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>
 
 

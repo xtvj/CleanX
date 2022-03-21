@@ -80,27 +80,29 @@ class SheetDialog : BottomSheetDialogFragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        layoutBinding.item = item
+        layoutBinding.executePendingBindings()
         layoutBinding.root.isClickable = false
-        layoutBinding.tvAppId.text = item.id
-        layoutBinding.tvAppName.text = item.name
-        layoutBinding.tvAppVersion.text =
-            getString(R.string.version) + item.version + " (" + item.versionCode + ")"
-        layoutBinding.tvUpdateTime.text =
-            getString(R.string.update_time) + item.getFormatUpdateTime()
+        layoutBinding.clAppItem.setBackgroundResource(android.R.color.transparent)
+//        layoutBinding.tvAppId.text = item.id
+//        layoutBinding.tvAppName.text = item.name
+//        layoutBinding.tvAppVersion.text =
+//            getString(R.string.version) + item.version + " (" + item.versionCode + ")"
+//        layoutBinding.tvUpdateTime.text =
+//            getString(R.string.update_time) + item.getFormatUpdateTime()
+//
+//        layoutBinding.ivIcon.loadImage(item.getIconUri())
 
-        layoutBinding.ivIcon.loadImage(item.getIconUri())
-
-        layoutBinding.ivIsEnable.visibility = if (item.isEnable) View.INVISIBLE else View.VISIBLE
+//        layoutBinding.ivIsEnable.visibility = if (item.isEnable) View.INVISIBLE else View.VISIBLE
 //        binding.btnRunning.visibility = if (item.isRunning) View.VISIBLE else View.GONE
 //        binding.btnUnInstall.visibility = if (item.isSystem) View.GONE else View.VISIBLE
-        binding.btnFreeze.visibility =
-            if (RunnerUtils.isRootAvailable()) View.VISIBLE else View.GONE
+//        binding.btnFreeze.visibility =
+//            if (RunnerUtils.isRootAvailable()) View.VISIBLE else View.GONE
 
-        binding.btnFreeze.text =
-            if (item.isEnable) getString(R.string.disable) else getString(
-                R.string.enable
-            )
+//        binding.btnFreeze.text =
+//            if (item.isEnable) getString(R.string.disable) else getString(
+//                R.string.enable
+//            )
 
         binding.btnOpen.setOnClickListener {
             if (item.isEnable) {
