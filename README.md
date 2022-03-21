@@ -46,6 +46,7 @@
 - Paging 3
 - DataStore
 - Workmanager
+- DataBinding
 
 ## Screenshot:
 

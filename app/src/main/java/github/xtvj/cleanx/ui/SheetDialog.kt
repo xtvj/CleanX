@@ -99,10 +99,10 @@ class SheetDialog : BottomSheetDialogFragment() {
 //        binding.btnFreeze.visibility =
 //            if (RunnerUtils.isRootAvailable()) View.VISIBLE else View.GONE
 
-//        binding.btnFreeze.text =
-//            if (item.isEnable) getString(R.string.disable) else getString(
-//                R.string.enable
-//            )
+        binding.btnFreeze.text =
+            if (item.isEnable) getString(R.string.disable) else getString(
+                R.string.enable
+            )
 
         binding.btnOpen.setOnClickListener {
             if (item.isEnable) {
