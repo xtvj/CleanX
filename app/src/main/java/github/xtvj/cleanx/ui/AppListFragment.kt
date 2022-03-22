@@ -1,5 +1,6 @@
 package github.xtvj.cleanx.ui
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.*
@@ -23,9 +24,11 @@ import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.AppItem
+import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.data.DataStoreManager
 import github.xtvj.cleanx.data.SortOrder
 import github.xtvj.cleanx.databinding.FragmentAppListBinding
+import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.ui.adapter.ListItemAdapter
 import github.xtvj.cleanx.ui.viewmodel.ListViewModel
@@ -65,11 +68,19 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     private var firstLoad = true
     private lateinit var workInfo: LiveData<WorkInfo>
 
+    private lateinit var sheetDialog: SheetDialog
+
     @Inject
     lateinit var adapter: ListItemAdapter
 
     @Inject
     lateinit var dataStoreManager: DataStoreManager
+
+    @Inject
+    lateinit var pm: PackageManager
+
+    @Inject
+    lateinit var appItemDao: AppItemDao
 
     @Inject
     lateinit var toastUtils: ToastUtils
@@ -91,16 +102,11 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter.setAdapterType(type)
+        sheetDialog = SheetDialog(requireContext())
+        sheetDialog.clickListener = clickListener
         adapter.itemClickListener = { item, _ ->
-            val fragment = SheetDialog.create(item)
-            fragment.clickListener = {
-                lifecycleScope.launch {
-                    if (!rootDialog.isShowing) {
-                        rootDialog.show()
-                    }
-                }
-            }
-            fragment.show(childFragmentManager, "bottom_dialog")
+            sheetDialog.setItem(item)
+            sheetDialog.show()
         }
         binding.rvApp.adapter = adapter
         selectionTracker = SelectionTracker.Builder(
@@ -292,6 +298,70 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                 else -> {}
             }
         }
+    }
+
+    private var clickListener: ((item: AppItem, open_run_or_enable: Int, newStatus: Boolean) -> Unit)? =
+        { item, open_run_or_enable, newStatus ->
+            when (open_run_or_enable) {
+                1 -> {
+                    val intent = pm.getLaunchIntentForPackage(item.id)
+                    if (item.isEnable && intent != null) {
+                        startActivity(intent)
+                        lifecycleScope.launch {
+                            appItemDao.updateRunning(item.id,newStatus)
+                        }
+                    } else {
+                        toastUtils.toast(getString(R.string.can_not_open) + item.name)
+                    }
+                }
+                2 -> {
+                    lifecycleScope.launch {
+                        if (hasRoot()) {
+                            val result = Runner.runCommand(
+                                Runner.rootInstance(),
+                                FORCE_STOP + item.id
+                            )
+                            if (result.isSuccessful) {
+                                appItemDao.updateRunning(item.id,newStatus)
+                            }
+                            withContext(Dispatchers.Main){
+                                toastUtils.toast(
+                                    if (result.isSuccessful) getString(R.string.stop_success)
+                                    else getString(R.string.stop_failed)
+                                )
+                            }
+                        }
+                    }
+                }
+                3 -> {
+                    lifecycleScope.launch {
+                        if (hasRoot()) {
+                            val cmd = (if (item.isEnable) PM_DISABLE else PM_ENABLE) + item.id
+                            val result = Runner.runCommand(Runner.rootInstance(), cmd)
+                            if (result.isSuccessful) {
+                                appItemDao.updateEnable(item.id,newStatus)
+                            }
+                            val toast =
+                                (if (item.isEnable) getString(R.string.disable) else getString(
+                                    R.string.enable
+                                )) + item.name + (if (result.isSuccessful) getString(
+                                    R.string.success
+                                ) else getString(R.string.fail))
+                            toastUtils.toast(toast)
+                        }
+                    }
+                }
+            }
+        }
+
+    private suspend fun hasRoot() : Boolean{
+        val hasRoot = RunnerUtils.isRootGiven()
+        if (!hasRoot && !rootDialog.isShowing){
+            withContext(Dispatchers.Main){
+                rootDialog.show()
+            }
+        }
+        return hasRoot
     }
 
 }

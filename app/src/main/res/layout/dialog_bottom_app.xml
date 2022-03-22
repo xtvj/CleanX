@@ -1,97 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:toos="http://schemas.android.com/tools">
 
-    <include
-        android:id="@+id/layout_dialog"
-        layout="@layout/item_fragment_app_list" />
+    <data>
+        <variable
+            name="item"
+            type="github.xtvj.cleanx.data.AppItem" />
+    </data>
 
-    <com.google.android.flexbox.FlexboxLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/bottom_sheet"
-        android:orientation="vertical"
-        android:padding="5dp"
-        app:alignContent="center"
-        app:alignItems="center"
-        app:flexWrap="wrap"
-        app:justifyContent="space_between"
-        app:layout_constraintTop_toBottomOf="@id/layout_dialog">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_open"
-            style="@style/MaterialButton"
-            android:layout_width="wrap_content"
+        <include
+            android:id="@+id/layout_dialog"
+            layout="@layout/item_fragment_app_list" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:text="@string/dialog_open"
-            android:textColor="@color/bottom_sheet_text"
-            app:drawableTopCompat="@drawable/ic_open"
-            app:layout_flexGrow="1" />
+            android:background="@color/bottom_sheet"
+            android:orientation="vertical"
+            android:padding="5dp"
+            app:alignContent="center"
+            app:alignItems="center"
+            app:flexWrap="wrap"
+            app:justifyContent="space_between"
+            app:layout_constraintTop_toBottomOf="@id/layout_dialog">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_share"
-            style="@style/MaterialButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:text="@string/dialog_share"
-            android:textColor="@color/bottom_sheet_text"
-            app:drawableTopCompat="@drawable/ic_share"
-            app:layout_flexGrow="1" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_open"
+                style="@style/MaterialButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/dialog_open"
+                android:textColor="@color/bottom_sheet_text"
+                app:drawableTopCompat="@drawable/ic_open"
+                app:layout_flexGrow="1" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_detail"
-            style="@style/MaterialButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:text="@string/dialog_system_info"
-            android:textColor="@color/bottom_sheet_text"
-            app:drawableTopCompat="@drawable/ic_sys"
-            app:layout_flexGrow="1" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_share"
+                style="@style/MaterialButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/dialog_share"
+                android:textColor="@color/bottom_sheet_text"
+                app:drawableTopCompat="@drawable/ic_share"
+                app:layout_flexGrow="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_detail"
+                style="@style/MaterialButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/dialog_system_info"
+                android:textColor="@color/bottom_sheet_text"
+                app:drawableTopCompat="@drawable/ic_sys"
+                app:layout_flexGrow="1" />
 
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_unInstall"
-            style="@style/MaterialButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:text="@string/dialog_uninstall"
-            android:textColor="@color/bottom_sheet_text"
-            app:drawableTopCompat="@drawable/ic_uninstall"
-            app:layout_flexGrow="1" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_unInstall"
+                style="@style/MaterialButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/dialog_uninstall"
+                android:textColor="@color/bottom_sheet_text"
+                app:drawableTopCompat="@drawable/ic_uninstall"
+                app:layout_flexGrow="1" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_running"
-            style="@style/MaterialButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:text="@string/stop"
-            android:textColor="@color/bottom_sheet_text"
-            app:drawableTopCompat="@drawable/ic_stop"
-            app:layout_flexGrow="1" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_running"
+                style="@style/MaterialButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/stop"
+                android:textColor="@color/bottom_sheet_text"
+                app:drawableTopCompat="@drawable/ic_stop"
+                app:layout_flexGrow="1" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_freeze"
-            style="@style/MaterialButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:text="@string/enable"
-            android:textColor="@color/bottom_sheet_text"
-            app:drawableTopCompat="@drawable/ic_freeze"
-            app:layout_flexGrow="1" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_freeze"
+                style="@style/MaterialButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@{item.isEnable? @string/disable : @string/enable}"
+                android:textColor="@color/bottom_sheet_text"
+                app:drawableTopCompat="@drawable/ic_freeze"
+                app:layout_flexGrow="1"
+                toos:text="@string/enable" />
 
-    </com.google.android.flexbox.FlexboxLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

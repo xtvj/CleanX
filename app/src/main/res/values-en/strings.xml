@@ -27,7 +27,7 @@
     <string name="setting">Setting</string>
     <string name="stop_success">Stopped successfully</string>
     <string name="stop_failed">Stop failed</string>
-    <string name="disabled_can_not_open">Is disabled and cannot be opened</string>
+    <string name="can_not_open">Cannot open </string>
     <string name="setting_auto">auto</string>
     <string name="setting_light">light</string>
     <string name="setting_night">night</string>
