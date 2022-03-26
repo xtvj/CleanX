@@ -1,5 +1,6 @@
 package github.xtvj.cleanx.ui
 
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -9,9 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -135,11 +134,13 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                 }
             })
         binding.rvApp.layoutManager = LinearLayoutManager(context)
+        binding.rvApp.setHasFixedSize(true)
         binding.srlFragmentList.setOnRefreshListener(this)
         fragmentViewModel = ViewModelProvider(requireActivity())[ListViewModel::class.java]
         initDialog()
     }
 
+    @SuppressLint("RepeatOnLifecycleWrongUsage", "UnsafeRepeatOnLifecycleDetector")
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun onResume() {
         super.onResume()
@@ -149,17 +150,19 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                 fragmentViewModel.run {
                     if (type == 0) {
                         launch {
-                            dataStoreManager.userPreferencesFlow.collectLatest {
-                                log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
-                                when (it.sortOrder) {
-                                    SortOrder.BY_ID -> {
-                                        sortByColumnFlow.update { APPS_BY_ID }
-                                    }
-                                    SortOrder.BY_NAME -> {
-                                        sortByColumnFlow.update { APPS_BY_NAME }
-                                    }
-                                    SortOrder.BY_UPDATE_TIME -> {
-                                        sortByColumnFlow.update { APPS_BY_LAST_UPDATE_TIME }
+                            repeatOnLifecycle(Lifecycle.State.STARTED){
+                                dataStoreManager.userPreferencesFlow.collectLatest {
+                                    log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
+                                    when (it.sortOrder) {
+                                        SortOrder.BY_ID -> {
+                                            sortByColumnFlow.update { APPS_BY_ID }
+                                        }
+                                        SortOrder.BY_NAME -> {
+                                            sortByColumnFlow.update { APPS_BY_NAME }
+                                        }
+                                        SortOrder.BY_UPDATE_TIME -> {
+                                            sortByColumnFlow.update { APPS_BY_LAST_UPDATE_TIME }
+                                        }
                                     }
                                 }
                             }
@@ -184,12 +187,15 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         }
     }
 
+    @SuppressLint("RepeatOnLifecycleWrongUsage", "UnsafeRepeatOnLifecycleDetector")
     private fun observeApps(apps: Flow<PagingData<AppItem>>) {
         log("observer Apps type =$type")
         job?.cancel()
         job = lifecycleScope.launch {
-            apps.collectLatest {
-                adapter.submitData(lifecycle, it)
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                apps.collectLatest {
+                    adapter.submitData(lifecycle, it)
+                }
             }
         }
     }
