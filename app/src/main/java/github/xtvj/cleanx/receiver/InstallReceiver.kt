@@ -15,22 +15,29 @@ class InstallReceiver @Inject constructor(private val workManager: WorkManager) 
     BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent?.action == Intent.ACTION_PACKAGE_REMOVED || intent?.action == Intent.ACTION_PACKAGE_FULLY_REMOVED) {
+        if (intent?.action == Intent.ACTION_PACKAGE_REMOVED) {
             //卸载应用监听
             val packageName = intent.dataString?.substring(8)?.lowercase(Locale.getDefault())
-            log("packageName: $packageName")
+            log("packageName remove: $packageName")
             if (!packageName.isNullOrBlank()) {
                 val request = OneTimeWorkRequestBuilder<InstallWorker>()
-                    .setInputData(workDataOf(InstallWorker.KEY_CODE to packageName))
+                    .setInputData(workDataOf(InstallWorker.KEY_ID to packageName,InstallWorker.KEY_CODE to true))
                     .build()
                 workManager.enqueue(request)
             }
         }
-//        else if (intent?.action == Intent.ACTION_PACKAGE_ADDED || intent?.action == Intent.ACTION_INSTALL_PACKAGE){
-//            //安装应用监听
-//            //刷新界面即可
-//
-//        }
+        else if (intent?.action == Intent.ACTION_PACKAGE_ADDED){
+            //安装应用监听
+            //刷新界面即可
+            val packageName = intent.dataString?.substring(8)?.lowercase(Locale.getDefault())
+            log("packageName install: $packageName")
+            if (!packageName.isNullOrBlank()) {
+                val request = OneTimeWorkRequestBuilder<InstallWorker>()
+                    .setInputData(workDataOf(InstallWorker.KEY_ID to packageName,InstallWorker.KEY_CODE to false))
+                    .build()
+                workManager.enqueue(request)
+            }
+        }
     }
 
 }

@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
     private fun initReceiver() {
         val filter = IntentFilter().apply {
             addAction(Intent.ACTION_PACKAGE_REMOVED)
-            addAction(Intent.ACTION_PACKAGE_FULLY_REMOVED)
+            addAction(Intent.ACTION_PACKAGE_ADDED)
             addDataScheme("package")
         }
         registerReceiver(installReceiver, filter)

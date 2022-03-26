@@ -21,46 +21,9 @@ object GetApps {
                 }.sorted()
                 val list = mutableListOf<AppItem>()
                 for (i in temp) {
-                    try {
-                        val appInfo = pm.getPackageInfo(i, PackageManager.GET_META_DATA)
-                        val name = appInfo.applicationInfo.loadLabel(pm).toString()
-                        val version = appInfo.versionName
-                        val isSystem =
-                            (appInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
-                        val isEnable = appInfo.applicationInfo.enabled
-                        val firstInstallTime = appInfo.firstInstallTime
-                        val lastUpdateTime = appInfo.lastUpdateTime
-                        val dataDir = appInfo.applicationInfo.dataDir
-                        val sourceDir = appInfo.applicationInfo.sourceDir
-//                        val deviceProtectedDataDir =
-//                            appInfo.applicationInfo.deviceProtectedDataDir
-//                        val publicSourceDir = appInfo.applicationInfo.publicSourceDir
-                        val icon = appInfo.applicationInfo.icon
-                        val isRunning = (appInfo.applicationInfo.flags and FLAG_STOPPED) == 0
-                        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                            appInfo.longVersionCode
-                        } else {
-                            appInfo.versionCode.toLong()
-                        }
-                        val item = AppItem(
-                            i,
-                            name,
-                            version,
-                            isSystem,
-                            isEnable,
-                            firstInstallTime,
-                            lastUpdateTime,
-                            dataDir,
-                            sourceDir,
-//                          deviceProtectedDataDir,
-//                          publicSourceDir,
-                            icon,
-                            isRunning,
-                            versionCode
-                        )
+                    val item = getItem(pm, i)
+                    if (item != null) {
                         list.add(item)
-                    } catch (e: PackageManager.NameNotFoundException) {
-                        log(e.toString())
                     }
                 }
                 return list
@@ -71,4 +34,51 @@ object GetApps {
         }
         return emptyList()
     }
+
+    fun getItem(pm: PackageManager, appId: String): AppItem? {
+        try {
+            val appInfo = pm.getPackageInfo(appId, PackageManager.GET_META_DATA)
+            val name = appInfo.applicationInfo.loadLabel(pm).toString()
+            val version = appInfo.versionName
+            val isSystem =
+                (appInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
+            val isEnable = appInfo.applicationInfo.enabled
+            val firstInstallTime = appInfo.firstInstallTime
+            val lastUpdateTime = appInfo.lastUpdateTime
+            val dataDir = appInfo.applicationInfo.dataDir
+            val sourceDir = appInfo.applicationInfo.sourceDir
+//                        val deviceProtectedDataDir =
+//                            appInfo.applicationInfo.deviceProtectedDataDir
+//                        val publicSourceDir = appInfo.applicationInfo.publicSourceDir
+            val icon = appInfo.applicationInfo.icon
+            val isRunning = (appInfo.applicationInfo.flags and FLAG_STOPPED) == 0
+            val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                appInfo.longVersionCode
+            } else {
+                appInfo.versionCode.toLong()
+            }
+            val item = AppItem(
+                appId,
+                name,
+                version,
+                isSystem,
+                isEnable,
+                firstInstallTime,
+                lastUpdateTime,
+                dataDir,
+                sourceDir,
+//                          deviceProtectedDataDir,
+//                          publicSourceDir,
+                icon,
+                isRunning,
+                versionCode
+            )
+            return item
+        } catch (e: PackageManager.NameNotFoundException) {
+            log(e.toString())
+            return null
+        }
+    }
+
+
 }
