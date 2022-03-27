@@ -6,7 +6,9 @@
     <data>
 
         <import type="android.view.View" />
+
         <import type="com.google.android.material.card.MaterialCardView" />
+
         <import type="github.xtvj.cleanx.R" />
 
         <variable
@@ -16,9 +18,11 @@
         <variable
             name="type"
             type="Integer" />
+
         <variable
             name="selectionTracker"
             type="androidx.recyclerview.selection.SelectionTracker&lt;github.xtvj.cleanx.data.AppItem>" />
+
         <variable
             name="details"
             type="androidx.recyclerview.selection.ItemDetailsLookup.ItemDetails&lt;github.xtvj.cleanx.data.AppItem>" />
@@ -29,8 +33,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:checkable="true"
-        android:clickable="true"
         android:checked="@{selectionTracker.isSelected(details.selectionKey)}"
+        android:clickable="true"
         android:focusable="true"
         app:cardBackgroundColor="@color/selector_card_view_background"
         app:cardCornerRadius="0dp"
@@ -41,9 +45,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_app_item"
             android:layout_width="match_parent"
-            app:backgroundResource="@{(!cvAppItem.checked &amp;&amp; item.running)? R.color.card_View_running : android.R.color.transparent}"
             android:layout_height="wrap_content"
-            android:padding="6dp">
+            android:padding="6dp"
+            app:backgroundResource="@{(!cvAppItem.checked &amp;&amp; item.running)? R.color.card_View_running : android.R.color.transparent}">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_icon"
@@ -96,7 +100,7 @@
                 android:ellipsize="end"
                 android:gravity="center|start"
                 android:maxLines="2"
-                android:text="@{@string/version + item.version}"
+                android:text="@{@string/version + item.version + ' ' + '(' + item.versionCode + ')'}"
                 android:textSize="10sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tv_updateTime"
