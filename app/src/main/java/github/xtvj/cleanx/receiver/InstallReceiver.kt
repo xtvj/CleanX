@@ -15,7 +15,7 @@ class InstallReceiver @Inject constructor(private val workManager: WorkManager) 
     BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent?.action == Intent.ACTION_PACKAGE_REMOVED) {
+        if (intent?.action == Intent.ACTION_PACKAGE_REMOVED || intent?.action == Intent.ACTION_PACKAGE_FULLY_REMOVED) {
             //卸载应用监听
             val packageName = intent.dataString?.substring(8)?.lowercase(Locale.getDefault())
             log("packageName remove: $packageName")
@@ -28,7 +28,6 @@ class InstallReceiver @Inject constructor(private val workManager: WorkManager) 
         }
         else if (intent?.action == Intent.ACTION_PACKAGE_ADDED){
             //安装应用监听
-            //刷新界面即可
             val packageName = intent.dataString?.substring(8)?.lowercase(Locale.getDefault())
             log("packageName install: $packageName")
             if (!packageName.isNullOrBlank()) {

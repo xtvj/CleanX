@@ -57,7 +57,7 @@ object GetApps {
             } else {
                 appInfo.versionCode.toLong()
             }
-            val item = AppItem(
+            return AppItem(
                 appId,
                 name,
                 version,
@@ -73,7 +73,6 @@ object GetApps {
                 isRunning,
                 versionCode
             )
-            return item
         } catch (e: PackageManager.NameNotFoundException) {
             log(e.toString())
             return null
