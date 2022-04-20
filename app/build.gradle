@@ -81,7 +81,7 @@ dependencies {
     implementation 'androidx.hilt:hilt-work:1.0.0'
 
     //coroutines
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1-native-mt'
 
     //work Kotlin + coroutines
     implementation "androidx.work:work-runtime-ktx:2.7.1"
@@ -118,7 +118,7 @@ dependencies {
     implementation "com.github.topjohnwu.libsu:core:3.2.1"
 
     //LeakCanary
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8.1'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9'
 
     //preference
     implementation 'androidx.preference:preference-ktx:1.2.0'
@@ -127,7 +127,7 @@ dependencies {
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     // Navigation
-    def nav_version = "2.4.1"
+    def nav_version = '2.4.2'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"

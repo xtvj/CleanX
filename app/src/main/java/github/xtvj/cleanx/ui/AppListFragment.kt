@@ -283,7 +283,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                 workInfo = fragmentViewModel.getAppsByCode(GET_DISABLED)
             }
         }
-        workInfo.observe(viewLifecycleOwner) {
+        workInfo.observe(viewLifecycleOwner, Observer {
             when (it.state) {
                 WorkInfo.State.SUCCEEDED -> {
                     //获取数据完成
@@ -303,7 +303,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                 }
                 else -> {}
             }
-        }
+        })
     }
 
     private var clickListener: ((item: AppItem, open_run_or_enable: Int, newStatus: Boolean) -> Unit)? =
