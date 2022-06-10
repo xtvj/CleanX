@@ -2,7 +2,7 @@
   {
     "name": "material-components-android",
     "author": "material-components",
-    "version": "1.5.0",
+    "version": "1.6.1",
     "address": "https://github.com/material-components/material-components-android",
     "license": "Apache-2.0 License",
     "about": "Modular and customizable Material Design UI components for Android"
@@ -10,7 +10,7 @@
   {
     "name": "kotlinx.coroutines",
     "author": "Kotlin",
-    "version": "1.6.1-native-mt",
+    "version": "1.6.2",
     "address": "https://github.com/Kotlin/kotlinx.coroutines",
     "license": "Apache-2.0 License",
     "about": "Library support for Kotlin coroutines"
@@ -26,7 +26,7 @@
   {
     "name": "glide",
     "author": "bumptech",
-    "version": "4.13.1",
+    "version": "4.13.2",
     "address": "https://github.com/bumptech/glide",
     "license": "BSD, part MIT and Apache 2.0",
     "about": "An image loading and caching library for Android focused on smooth scrolling"
@@ -50,7 +50,7 @@
   {
     "name": "leakcanary",
     "author": "square",
-    "version": "2.9",
+    "version": "2.9.1",
     "address": "https://github.com/square/leakcanary",
     "license": "Apache-2.0 License",
     "about": "A memory leak detection library for Android."
