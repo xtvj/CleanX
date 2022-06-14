@@ -10,7 +10,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-@OptIn(ExperimentalPagingApi::class)
 class AppRepository @Inject constructor(
     private val appItemDao: AppItemDao,
     private val db: AppDatabase,

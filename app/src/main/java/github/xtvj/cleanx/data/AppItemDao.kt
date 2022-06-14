@@ -41,7 +41,10 @@ interface AppItemDao {
     suspend fun updateName(appID: String, newName: String)
 
     @Query("SELECT * FROM appItem WHERE name LIKE :search OR id LIKE :search")
-    fun findWithNameOrId(search: String): PagingSource<Int, AppItem>
+    fun findWithNameOrID(search: String): PagingSource<Int, AppItem>
+
+    @Query("SELECT * FROM appItem WHERE id = :appID")
+    suspend fun findWithID(appID: String): AppItem
 
     @Delete
     suspend fun delete(appItem: AppItem)

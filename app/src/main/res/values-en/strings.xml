@@ -18,7 +18,7 @@
     <string name="version">Version：</string>
     <string name="update_time">update：</string>
     <string name="share_apk">Share Apk</string>
-    <string name="need_to_open_root">You need to manually open the Root management program settings, if you have given permission, please restart the APP</string>
+    <string name="need_to_open_root">If already obtained permission, please restart the APP</string>
     <string name="user_app">User applications</string>
     <string name="system_app">System applications</string>
     <string name="disabled_app">Disabled</string>
