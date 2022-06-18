@@ -43,4 +43,12 @@
     <string name="project_address">Open source address</string>
     <string name="third_party_licenses">Third party licenses</string>
     <string name="refresh_success">Refresh Success</string>
+    <string name="filters">Filters</string>
+    <string name="disabled_or_not">Disabled or not</string>
+    <string name="all">All</string>
+    <string name="is_disabled">Disabled</string>
+    <string name="enabled">Enabled</string>
+    <string name="is_running">Is running</string>
+    <string name="running">Running</string>
+    <string name="not_running">Not Running</string>
 </resources>

@@ -113,4 +113,8 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
+    <style name="CustomTabText" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
+        <item name="android:textSize">8sp</item>
+    </style>
+
 </resources>

@@ -135,7 +135,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
             firstLoad = false
             lifecycleScope.launch {
                 fragmentViewModel.run {
-                    if (type == 0) {
+                    if (type == 0) {//三个fragment共用一个ViewModel，只需要第运行一次
                         launch {
                             repeatOnLifecycle(Lifecycle.State.STARTED) {
                                 dataStoreManager.userPreferencesFlow.collectLatest {
@@ -151,6 +151,8 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                                             sortByColumnFlow.update { APPS_BY_LAST_UPDATE_TIME }
                                         }
                                     }
+                                    filterEnable.value = it.enable
+                                    filterRunning.value = it.running
                                 }
                             }
                         }

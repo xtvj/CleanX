@@ -28,9 +28,11 @@ enum class DarkModel {
 }
 
 data class UserPreferences(
-    val sortOrder: SortOrder,
-    val darkModel: DarkModel,
+    val sortOrder: SortOrder,//列表排序方式
+    val darkModel: DarkModel,//夜间模式
     val asc: Boolean,//正反排序
+    val enable: Int,//0:不过滤数据 1:过滤掉禁用/运行的 2:过滤掉启用/不运行的
+    val running: Int//0:不过滤数据 1:过滤掉禁用/运行的 2:过滤掉启用/不运行的
 )
 
 @Singleton
@@ -42,6 +44,8 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         val SORT_ORDER = stringPreferencesKey("sort_order")
         val DARK_MODEL = stringPreferencesKey("dark_model")
         val ASC_MODEL = booleanPreferencesKey("asc_model")
+        val ENABLE = intPreferencesKey("enable")
+        val RUNNING = intPreferencesKey("running")
     }
 
     /**
@@ -78,6 +82,18 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         }
     }
 
+    suspend fun updateEnable(enable: Int) {
+        dataStore.edit {
+            it[PreferencesKeys.ENABLE] = enable
+        }
+    }
+
+    suspend fun updateRunning(running: Int) {
+        dataStore.edit {
+            it[PreferencesKeys.RUNNING] = running
+        }
+    }
+
     suspend fun fetchInitialPreferences() =
         mapUserPreferences(dataStore.data.first().toPreferences())
 
@@ -98,6 +114,10 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         //默认正序
         val asc = preferences[PreferencesKeys.ASC_MODEL] ?: true
 
-        return UserPreferences(sortOrder, darkModel, asc)
+        //默认不过滤是否禁用或运行
+        val enable = preferences[PreferencesKeys.ENABLE] ?: 0
+        val running = preferences[PreferencesKeys.RUNNING] ?: 0
+
+        return UserPreferences(sortOrder, darkModel, asc, enable, running)
     }
 }

@@ -42,6 +42,14 @@
     <string name="project_address">开源地址</string>
     <string name="third_party_licenses">第三方开源许可</string>
     <string name="refresh_success">刷新成功</string>
+    <string name="filters">过滤器</string>
+    <string name="disabled_or_not">是否已禁用</string>
+    <string name="all">全部</string>
+    <string name="is_disabled">已禁用</string>
+    <string name="enabled">未禁用</string>
+    <string name="is_running">是否正在运行</string>
+    <string name="running">已运行</string>
+    <string name="not_running">未运行</string>
 
 
 </resources>
