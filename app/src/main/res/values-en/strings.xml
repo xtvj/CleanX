@@ -51,4 +51,7 @@
     <string name="is_running">Is running</string>
     <string name="running">Running</string>
     <string name="not_running">Not Running</string>
+    <string name="list_sorting">List sorting</string>
+    <string name="positive">Positive</string>
+    <string name="reverse">Reverse</string>
 </resources>

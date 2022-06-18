@@ -46,8 +46,9 @@ class ListViewModel @Inject constructor(
     )
 
     //0:不过滤数据 1:过滤掉禁用/运行的 2:过滤掉启用/不运行的
-    val filterEnable = MutableStateFlow<Int>(1)
-    val filterRunning = MutableStateFlow<Int>(2)
+    val filterEnable = MutableStateFlow<Int>(0)
+    val filterRunning = MutableStateFlow<Int>(0)
+    val asc = MutableStateFlow<Boolean>(true)
 
     init {
         viewModelScope.launch {
@@ -61,28 +62,22 @@ class ListViewModel @Inject constructor(
 
     @ExperimentalCoroutinesApi
     val userList = sortByColumnFlow.flatMapLatest { query ->
-        if (query == APPS_BY_LAST_UPDATE_TIME) {
-            filterEnableOrRunning(appRepository.getUser(query, false).cachedIn(viewModelScope))
-        } else {
-            filterEnableOrRunning(appRepository.getUser(query, true).cachedIn(viewModelScope))
+        asc.flatMapLatest {
+            filterEnableOrRunning(appRepository.getUser(query, it).cachedIn(viewModelScope))
         }
     }
 
     @ExperimentalCoroutinesApi
     val systemList = sortByColumnFlow.flatMapLatest { query ->
-        if (query == APPS_BY_LAST_UPDATE_TIME) {
-            filterEnableOrRunning(appRepository.getSys(query, false).cachedIn(viewModelScope))
-        } else {
-            filterEnableOrRunning(appRepository.getSys(query, true).cachedIn(viewModelScope))
+        asc.flatMapLatest {
+            filterEnableOrRunning(appRepository.getSys(query, it).cachedIn(viewModelScope))
         }
     }
 
     @ExperimentalCoroutinesApi
     val disableList = sortByColumnFlow.flatMapLatest { query ->
-        if (query == APPS_BY_LAST_UPDATE_TIME) {
-            filterEnableOrRunning(appRepository.getDisable(query, false).cachedIn(viewModelScope))
-        } else {
-            filterEnableOrRunning(appRepository.getDisable(query, true).cachedIn(viewModelScope))
+        asc.flatMapLatest {
+            filterEnableOrRunning(appRepository.getDisable(query, it).cachedIn(viewModelScope))
         }
     }
 
@@ -130,11 +125,11 @@ class ListViewModel @Inject constructor(
         return list
             .combine(filterEnable) { pagingData, filters ->
                 pagingData.filter {
-                    when(filters){
-                        1 ->{
+                    when (filters) {
+                        1 -> {
                             !it.isEnable
                         }
-                        2 ->{
+                        2 -> {
                             it.isEnable
                         }
                         else -> {
@@ -144,11 +139,11 @@ class ListViewModel @Inject constructor(
                 }
             }.combine(filterRunning) { pagingData, filters ->
                 pagingData.filter {
-                    when(filters){
-                        1 ->{
+                    when (filters) {
+                        1 -> {
                             it.isRunning
                         }
-                        2 ->{
+                        2 -> {
                             !it.isRunning
                         }
                         else -> {

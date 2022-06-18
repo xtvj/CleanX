@@ -98,7 +98,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/materialTextView2">
 
                 <com.google.android.material.tabs.TabItem
@@ -119,7 +118,54 @@
                     android:icon="@drawable/ic_menu_filter"
                     android:text="@string/not_running" />
             </com.google.android.material.tabs.TabLayout>
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/size_8dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tab_menu_main2" />
 
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/materialTextView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/size_16dp"
+                android:layout_marginEnd="@dimen/size_16dp"
+                android:layout_marginTop="@dimen/size_8dp"
+                android:text="@string/list_sorting"
+                android:textSize="@dimen/text_16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider2" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_menu_main3"
+                app:tabIndicatorGravity="bottom"
+                android:layout_margin="@dimen/size_16dp"
+                style="@style/Widget.MaterialComponents.TabLayout.Colored"
+                app:tabTextAppearance="@style/CustomTabText"
+                android:layout_width="wrap_content"
+                android:minWidth="200dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/materialTextView3">
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:icon="@drawable/ic_menu_filter"
+                    android:text="@string/positive" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:icon="@drawable/ic_menu_filter"
+                    android:text="@string/reverse" />
+            </com.google.android.material.tabs.TabLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </androidx.appcompat.widget.LinearLayoutCompat>

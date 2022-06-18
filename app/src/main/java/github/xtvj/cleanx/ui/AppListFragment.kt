@@ -153,6 +153,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                                     }
                                     filterEnable.value = it.enable
                                     filterRunning.value = it.running
+                                    asc.value = it.asc
                                 }
                             }
                         }

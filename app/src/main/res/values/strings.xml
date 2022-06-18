@@ -50,6 +50,9 @@
     <string name="is_running">是否正在运行</string>
     <string name="running">已运行</string>
     <string name="not_running">未运行</string>
+    <string name="list_sorting">列表排序</string>
+    <string name="positive">正序</string>
+    <string name="reverse">反序</string>
 
 
 </resources>

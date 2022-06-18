@@ -224,6 +224,24 @@ class MainActivity : AppCompatActivity() {
 
                 }
             )
+            popBinding.tabMenuMain3.selectTab(popBinding.tabMenuMain3.getTabAt(if (data.asc) 0 else 1))
+            popBinding.tabMenuMain3.addOnTabSelectedListener(
+                object : TabLayout.OnTabSelectedListener {
+                    override fun onTabSelected(tab: TabLayout.Tab?) {
+                        lifecycleScope.launch {
+                            log("enable ${tab?.position}")
+                            dataStoreManager.updateASCOrder(tab?.position == 0)
+                        }
+                    }
+
+                    override fun onTabUnselected(tab: TabLayout.Tab?) {
+                    }
+
+                    override fun onTabReselected(tab: TabLayout.Tab?) {
+                    }
+
+                }
+            )
             val pop = popBinding.root
             val popupWindow = PopupWindow()
             popupWindow.height = ViewGroup.LayoutParams.WRAP_CONTENT
