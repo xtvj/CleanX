@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
-        app:cardBackgroundColor="@color/colorPrimaryDark"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/size_10dp"
         android:layout_margin="@dimen/size_20dp"
+        app:cardBackgroundColor="@color/colorPrimaryDark"
+        app:cardCornerRadius="@dimen/size_10dp"
         app:cardElevation="@dimen/size_20dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,8 +21,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/size_16dp"
-                android:layout_marginEnd="@dimen/size_16dp"
                 android:layout_marginTop="@dimen/size_8dp"
+                android:layout_marginEnd="@dimen/size_16dp"
                 android:text="@string/disabled_or_not"
                 android:textSize="@dimen/text_16sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -30,21 +30,21 @@
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_menu_main"
-                android:layout_marginTop="@dimen/size_16dp"
-                android:layout_marginStart="@dimen/size_16dp"
-                android:layout_marginEnd="@dimen/size_16dp"
                 style="@style/Widget.MaterialComponents.TabLayout.Colored"
                 android:layout_width="wrap_content"
-                android:minWidth="200dp"
                 android:layout_height="wrap_content"
-                app:tabMode="fixed"
-                app:tabTextAppearance="@style/CustomTabText"
+                android:layout_marginStart="@dimen/size_16dp"
+                android:layout_marginTop="@dimen/size_16dp"
+                android:layout_marginEnd="@dimen/size_16dp"
+                android:minWidth="200dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/materialTextView"
                 app:tabGravity="fill"
                 app:tabIndicatorAnimationMode="elastic"
                 app:tabIndicatorGravity="bottom"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/materialTextView">
+                app:tabMode="fixed"
+                app:tabTextAppearance="@style/CustomTabText">
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
@@ -80,8 +80,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/size_16dp"
-                android:layout_marginEnd="@dimen/size_16dp"
                 android:layout_marginTop="@dimen/size_8dp"
+                android:layout_marginEnd="@dimen/size_16dp"
                 android:text="@string/is_running"
                 android:textSize="@dimen/text_16sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -89,16 +89,17 @@
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_menu_main2"
-                app:tabIndicatorGravity="bottom"
-                android:layout_margin="@dimen/size_16dp"
                 style="@style/Widget.MaterialComponents.TabLayout.Colored"
-                app:tabTextAppearance="@style/CustomTabText"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/size_16dp"
                 android:minWidth="200dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/materialTextView2">
+                app:layout_constraintTop_toBottomOf="@+id/materialTextView2"
+                app:tabGravity="fill"
+                app:tabIndicatorGravity="bottom"
+                app:tabTextAppearance="@style/CustomTabText">
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
@@ -118,6 +119,7 @@
                     android:icon="@drawable/ic_pop_stop"
                     android:text="@string/not_running" />
             </com.google.android.material.tabs.TabLayout>
+
             <View
                 android:id="@+id/divider2"
                 android:layout_width="match_parent"
@@ -133,8 +135,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/size_16dp"
-                android:layout_marginEnd="@dimen/size_16dp"
                 android:layout_marginTop="@dimen/size_8dp"
+                android:layout_marginEnd="@dimen/size_16dp"
                 android:text="@string/list_sorting"
                 android:textSize="@dimen/text_16sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -142,17 +144,18 @@
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_menu_main3"
-                app:tabIndicatorGravity="bottom"
-                android:layout_margin="@dimen/size_16dp"
                 style="@style/Widget.MaterialComponents.TabLayout.Colored"
-                app:tabTextAppearance="@style/CustomTabText"
                 android:layout_width="wrap_content"
-                android:minWidth="200dp"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_margin="@dimen/size_16dp"
+                android:minWidth="200dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/materialTextView3">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/materialTextView3"
+                app:tabGravity="fill"
+                app:tabIndicatorGravity="bottom"
+                app:tabTextAppearance="@style/CustomTabText">
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
@@ -168,4 +171,4 @@
             </com.google.android.material.tabs.TabLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
-</androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.core.widget.NestedScrollView>
