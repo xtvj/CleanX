@@ -13,6 +13,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
@@ -69,6 +71,12 @@ class SheetDialog() : BottomSheetDialogFragment() {
         layoutBinding = binding.layoutDialog
         binding.lifecycleOwner = this
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        //设置默认也是展开的，以免横屏时需要上拉才能显示按钮。
+        (dialog as BottomSheetDialog).behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     @Inject
