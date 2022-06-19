@@ -49,19 +49,19 @@
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:icon="@drawable/ic_menu_filter"
+                    android:icon="@drawable/ic_pop_all"
                     android:text="@string/all" />
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:icon="@drawable/ic_menu_filter"
+                    android:icon="@drawable/ic_menu_disable"
                     android:text="@string/is_disabled" />
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:icon="@drawable/ic_menu_filter"
+                    android:icon="@drawable/ic_menu_enable"
                     android:text="@string/enabled" />
             </com.google.android.material.tabs.TabLayout>
 
@@ -103,19 +103,19 @@
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:icon="@drawable/ic_menu_filter"
+                    android:icon="@drawable/ic_pop_all"
                     android:text="@string/all" />
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:icon="@drawable/ic_menu_filter"
+                    android:icon="@drawable/ic_pop_running"
                     android:text="@string/running" />
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:icon="@drawable/ic_menu_filter"
+                    android:icon="@drawable/ic_pop_stop"
                     android:text="@string/not_running" />
             </com.google.android.material.tabs.TabLayout>
             <View
@@ -157,13 +157,13 @@
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:icon="@drawable/ic_menu_filter"
+                    android:icon="@drawable/ic_pop_positive"
                     android:text="@string/positive" />
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:icon="@drawable/ic_menu_filter"
+                    android:icon="@drawable/ic_pop_reverse"
                     android:text="@string/reverse" />
             </com.google.android.material.tabs.TabLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
