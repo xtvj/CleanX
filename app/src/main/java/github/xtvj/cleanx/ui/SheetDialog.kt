@@ -79,6 +79,10 @@ class SheetDialog() : BottomSheetDialogFragment() {
         (dialog as BottomSheetDialog).behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
+    override fun getTheme(): Int {
+        return R.style.Theme_BottomSheetDialog_Rounded
+    }
+
     @Inject
     lateinit var sheetViewModelFactory: SheetViewModel.SheetViewModelFactory
 

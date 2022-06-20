@@ -11,6 +11,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        android:background="@drawable/rounded_top_small"
+        android:paddingTop="@dimen/size_16dp"
         android:layout_height="wrap_content">
 
         <include

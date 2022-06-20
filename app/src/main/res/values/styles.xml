@@ -101,6 +101,18 @@
         <item name="shapeAppearanceOverlay">@null</item>
     </style>
 
+    <style name="Theme.BottomSheetDialog.Rounded" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="bottomSheetStyle">@style/Theme.BottomSheetModal.Rounded</item>
+    </style>
+    <style name="Theme.BottomSheetModal.Rounded" parent="Widget.MaterialComponents.BottomSheet.Modal">
+<!--        此两项放入layout根目录，可在展开状态下也为圆角。-->
+<!--        <item name="android:paddingTop">@dimen/padding_medium</item>-->
+<!--        <item name="android:background">@drawable/rounded_top_small</item>-->
+        <item name="shapeAppearance">@null</item>
+        <item name="shapeAppearanceOverlay">@null</item>
+    </style>
+
     <style name="MaterialButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <!--        <item name="android:translationZ">5dp</item>-->
         <item name="android:textSize">8sp</item>
