@@ -1,9 +1,7 @@
 package github.xtvj.cleanx.worker
 
 import android.content.Context
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.os.Build
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -11,6 +9,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.data.AppItemDao
+import github.xtvj.cleanx.data.GetApps
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.utils.GET_DISABLED
 import github.xtvj.cleanx.utils.GET_SYS
@@ -30,7 +29,6 @@ class AppWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
-                val FLAG_STOPPED = 1 shl 21
                 val code = inputData.getString(KEY_CODE)
                 if (code != null) {
                     log("get app list by worker $code")
@@ -42,48 +40,9 @@ class AppWorker @AssistedInject constructor(
                         }.sorted()
                         val list = mutableListOf<AppItem>()
                         for (i in temp) {
-                            try {
-                                val appInfo = pm.getPackageInfo(i, PackageManager.GET_META_DATA)
-                                val name = appInfo.applicationInfo.loadLabel(pm).toString()
-                                val version = appInfo.versionName
-                                val isSystem =
-                                    (appInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
-                                val isEnable = appInfo.applicationInfo.enabled
-                                val firstInstallTime = appInfo.firstInstallTime
-                                val lastUpdateTime = appInfo.lastUpdateTime
-                                val dataDir = appInfo.applicationInfo.dataDir
-                                val sourceDir = appInfo.applicationInfo.sourceDir
-//                                val deviceProtectedDataDir =
-//                                    appInfo.applicationInfo.deviceProtectedDataDir
-//                                val publicSourceDir = appInfo.applicationInfo.publicSourceDir
-                                val icon = appInfo.applicationInfo.icon
-                                val isRunning =
-                                    (appInfo.applicationInfo.flags and FLAG_STOPPED) == 0
-                                val versionCode =
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                                        appInfo.longVersionCode
-                                    } else {
-                                        appInfo.versionCode.toLong()
-                                    }
-                                val item = AppItem(
-                                    i,
-                                    name,
-                                    version,
-                                    isSystem,
-                                    isEnable,
-                                    firstInstallTime,
-                                    lastUpdateTime,
-                                    dataDir,
-                                    sourceDir,
-//                                    deviceProtectedDataDir,
-//                                    publicSourceDir,
-                                    icon,
-                                    isRunning,
-                                    versionCode
-                                )
+                            val item = GetApps.getItem(pm, i)
+                            if (item != null) {
                                 list.add(item)
-                            } catch (e: PackageManager.NameNotFoundException) {
-                                log(e.toString())
                             }
                         }
                         when (code) {
