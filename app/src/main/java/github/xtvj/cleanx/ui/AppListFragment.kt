@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.paging.PagingData
@@ -13,6 +14,7 @@ import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.WorkInfo
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +26,7 @@ import github.xtvj.cleanx.data.SortOrder
 import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.ui.adapter.ListItemAdapter
 import github.xtvj.cleanx.ui.viewmodel.ListViewModel
+import github.xtvj.cleanx.ui.viewmodel.MainViewModel
 import github.xtvj.cleanx.utils.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -49,6 +52,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
     //    private val fragmentViewModel: ListViewModel by viewModels() //Fragment自己的ViewModel
     private lateinit var fragmentViewModel: ListViewModel //Fragment自己的ViewModel
+    lateinit var mainViewModel: MainViewModel
 
     //    private val fragmentViewModel: ListViewModel by activityViewModels() //与Activity共用的ViewModel
     private var type = -1
@@ -109,6 +113,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
             object : SelectionTracker.SelectionObserver<AppItem>() {
                 override fun onSelectionChanged() {
                     if (selectionTracker.hasSelection()) {
+                        binding.groupSelect.visibility = View.VISIBLE
                         binding.srlFragmentList.isEnabled = false
                         if (actionMode == null) {
                             actionMode =
@@ -116,6 +121,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                         }
                         actionMode?.title = selectionTracker.selection.size().toString()
                     } else {
+                        binding.groupSelect.visibility = View.INVISIBLE
                         actionMode?.finish()
                         binding.srlFragmentList.isEnabled = true
                     }
@@ -123,8 +129,13 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
             })
         binding.rvApp.layoutManager = LinearLayoutManager(context)
         binding.rvApp.setHasFixedSize(true)
+        binding.rvApp.addOnScrollListener(scrollListener)
         binding.srlFragmentList.setOnRefreshListener(this)
+        binding.btSelectAll.setOnClickListener(selectAll)
+        binding.btReverseSelect.setOnClickListener(reverseSelect)
         fragmentViewModel = ViewModelProvider(requireActivity())[ListViewModel::class.java]
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        observeLoading()
     }
 
     @SuppressLint("RepeatOnLifecycleWrongUsage", "UnsafeRepeatOnLifecycleDetector")
@@ -254,7 +265,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                 }
                 WorkInfo.State.RUNNING -> {
                     //正在获取数据
-                    if (firstLoad){
+                    if (firstLoad) {
                         binding.pgbLoading.visibility = View.VISIBLE
                     }
                     binding.tvNoData.visibility = View.INVISIBLE
@@ -262,6 +273,53 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                 else -> {}
             }
         })
+    }
+
+    private fun observeLoading() {
+        lifecycleScope.launch {
+            fragmentViewModel.loading.collectLatest {
+                binding.pgbLoading.visibility = if (it) View.VISIBLE else View.INVISIBLE
+            }
+        }
+    }
+
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            binding.btReverseSelect.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                setMargins(
+                    0, 0, 0, mainViewModel.offset.value
+                )
+            }
+            binding.btSelectAll.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                setMargins(
+                    0, 0, 0, mainViewModel.offset.value
+                )
+            }
+        }
+    }
+
+    private val selectAll = View.OnClickListener {
+        val itemsArray = arrayListOf<AppItem>()
+        adapter.snapshot().items.forEach {
+            if (!selectionTracker.isSelected(it))
+                itemsArray.add(it)
+        }
+        selectionTracker.setItemsSelected(itemsArray.asIterable(), true)
+    }
+
+    private val reverseSelect = View.OnClickListener {
+        val select = arrayListOf<AppItem>()
+        val cancel = arrayListOf<AppItem>()
+        adapter.snapshot().items.forEach {
+            if (!selectionTracker.isSelected(it)) {
+                select.add(it)
+            } else {
+                cancel.add(it)
+            }
+        }
+        selectionTracker.setItemsSelected(select.asIterable(), true)
+        selectionTracker.setItemsSelected(cancel.asIterable(), false)
     }
 
 }

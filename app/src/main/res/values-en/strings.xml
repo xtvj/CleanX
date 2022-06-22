@@ -54,4 +54,6 @@
     <string name="list_sorting">List sorting</string>
     <string name="positive">Positive</string>
     <string name="reverse">Reverse</string>
+    <string name="select_all">All</string>
+    <string name="reverse_select">Reverse</string>
 </resources>

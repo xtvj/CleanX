@@ -8,13 +8,13 @@
         android:icon="@drawable/ic_menu_filter"
         android:title="@string/filters"
         android:titleCondensed="@string/filters"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/item_setting"
         android:icon="@drawable/ic_menu_setting"
         android:title="@string/setting"
         android:titleCondensed="@string/setting"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="ifRoom" />
 
 </menu>

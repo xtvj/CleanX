@@ -20,10 +20,7 @@ import github.xtvj.cleanx.utils.*
 import github.xtvj.cleanx.worker.AppWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -49,6 +46,8 @@ class ListViewModel @Inject constructor(
     val filterEnable = MutableStateFlow<Int>(0)
     val filterRunning = MutableStateFlow<Int>(0)
     val asc = MutableStateFlow<Boolean>(true)
+
+    val loading = MutableStateFlow<Boolean>(true)
 
     init {
         viewModelScope.launch {
@@ -83,7 +82,7 @@ class ListViewModel @Inject constructor(
 
     fun setApps(code: String, list: List<AppItem>) {
         viewModelScope.launch(Dispatchers.IO) {
-            //可以添加弹窗提示正在执行中。由于执行时间过于短暂，暂时不添加
+            loading.value = true
             val builder = StringBuilder()
             for (item in list) {
                 builder.append(code + item.id + "\n")
@@ -109,6 +108,7 @@ class ListViewModel @Inject constructor(
                     }
                 }
             }
+            loading.value = false
         }
 
     }
@@ -150,6 +150,10 @@ class ListViewModel @Inject constructor(
                             true
                         }
                     }
+                }
+            }.map { pagingData ->
+                pagingData.filter {
+                    it.id.isNotEmpty()
                 }
             }
     }

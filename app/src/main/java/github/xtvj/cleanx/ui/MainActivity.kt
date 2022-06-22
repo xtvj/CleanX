@@ -105,6 +105,11 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        binding.ablMain.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            val toolBarHeight = binding.tbMain.measuredHeight
+            val appBarHeight = appBarLayout.measuredHeight
+            viewModel.offset.value = appBarHeight - toolBarHeight + verticalOffset
+        }
     }
 
     private fun initReceiver() {
@@ -193,9 +198,9 @@ class MainActivity : AppCompatActivity() {
                 object : TabLayout.OnTabSelectedListener {
                     override fun onTabSelected(tab: TabLayout.Tab?) {
                         lifecycleScope.launch {
-                                log("enable ${tab?.position}")
-                                dataStoreManager.updateEnable(tab?.position?:0)
-                            }
+                            log("enable ${tab?.position}")
+                            dataStoreManager.updateEnable(tab?.position ?: 0)
+                        }
                     }
 
                     override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -212,7 +217,7 @@ class MainActivity : AppCompatActivity() {
                     override fun onTabSelected(tab: TabLayout.Tab?) {
                         lifecycleScope.launch {
                             log("enable ${tab?.position}")
-                            dataStoreManager.updateRunning(tab?.position?:0)
+                            dataStoreManager.updateRunning(tab?.position ?: 0)
                         }
                     }
 

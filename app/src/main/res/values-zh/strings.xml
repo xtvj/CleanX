@@ -54,6 +54,8 @@
     <string name="list_sorting">列表排序</string>
     <string name="positive">正序</string>
     <string name="reverse">反序</string>
+    <string name="select_all">全选</string>
+    <string name="reverse_select">反选</string>
 
 
 </resources>
