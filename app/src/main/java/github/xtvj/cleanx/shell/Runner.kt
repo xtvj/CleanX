@@ -13,10 +13,6 @@ abstract class Runner protected constructor() {
         private val exitCode: Int
     ) {
 
-
-        constructor(exitCode: Int = 1) : this(emptyList<String>(), emptyList<String>(), exitCode) {
-        }
-
         val isSuccessful: Boolean
             get() = exitCode == 0
 
@@ -47,7 +43,7 @@ abstract class Runner protected constructor() {
         inputStreams.add(inputStream)
     }
 
-    fun clear() {
+    private fun clear() {
         commands.clear()
         inputStreams.clear()
     }
@@ -55,10 +51,14 @@ abstract class Runner protected constructor() {
     @WorkerThread
     abstract fun runCommand(): Result
     private fun run(command: String, inputStream: InputStream?): Result {
-        clear()
-        addCommand(command)
-        inputStream?.let { add(it) }
-        return runCommand()
+        try {
+            clear()
+            addCommand(command)
+            inputStream?.let { add(it) }
+            return runCommand()
+        }finally {
+            clear()
+        }
     }
 
 

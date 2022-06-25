@@ -31,10 +31,10 @@ object RunnerUtils {
         if (pathEnv != null) {
             for (pathDir in pathEnv.split(":").toTypedArray()) {
                 try {
-                    if (File(pathDir, "su").exists()) {
+                    if (File(pathDir, "su").canExecute()) {
                         return true
                     }
-                } catch (ignore: NullPointerException) {
+                } catch (ignore: Exception) {
                 }
             }
         }

@@ -8,12 +8,11 @@ internal class UserShellRunner : Runner() {
     @WorkerThread
     @Synchronized
     override fun runCommand(): Result {
-        val shell = Shell.sh(*commands.toTypedArray())
+        val shell: Shell.Job = Shell.cmd(*commands.toTypedArray())
         for (input in inputStreams) {
             shell.add(input)
         }
         val result = shell.exec()
-        clear()
         return Result(result.out, result.err, result.code)
     }
 }
