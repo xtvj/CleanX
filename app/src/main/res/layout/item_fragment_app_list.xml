@@ -14,7 +14,6 @@
         <variable
             name="item"
             type="github.xtvj.cleanx.data.AppItem" />
-
         <variable
             name="type"
             type="Integer" />

@@ -3,6 +3,7 @@ package github.xtvj.cleanx.initializer
 import android.content.Context
 import androidx.startup.Initializer
 import github.xtvj.cleanx.data.DataStoreManager
+import github.xtvj.cleanx.utils.CoilHolder
 import github.xtvj.cleanx.utils.ThemeHelper
 import github.xtvj.cleanx.utils.initLog
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +19,8 @@ class StartInitializer : Initializer<Unit> {
             val dataStoreManager = DataStoreManager(context)
             ThemeHelper.applyTheme(dataStoreManager.fetchInitialPreferences().darkModel)
         }
+
+        CoilHolder.init(context)
 
         //初始化log工具
         initLog()

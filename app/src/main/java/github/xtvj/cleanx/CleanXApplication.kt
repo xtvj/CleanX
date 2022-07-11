@@ -10,14 +10,6 @@ import javax.inject.Inject
 class CleanXApplication : Application(), Configuration.Provider {
 
 
-    override fun onCreate() {
-        super.onCreate()
-
-//        CoilHolder.init(this)
-
-    }
-
-
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 

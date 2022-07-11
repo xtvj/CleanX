@@ -31,11 +31,6 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
             override fun areItemsTheSame(oldItem: AppItem, newItem: AppItem): Boolean {
                 return oldItem.id == newItem.id
             }
-
-            /**
-             * Note that in kotlin, == checking on data classes compares all contents, but in Java,
-             * typically you'll implement Object#equals, and use it to compare object contents.
-             */
             override fun areContentsTheSame(oldItem: AppItem, newItem: AppItem): Boolean {
                 return oldItem == newItem
             }
@@ -83,32 +78,6 @@ open class ListItemAdapter @Inject constructor(val context: Context) :
             holderBinding.type = type
             holderBinding.selectionTracker = selectionTracker
             holderBinding.details = details
-//            holderBinding.tvAppId.text = item.id
-//            holderBinding.tvAppName.text = item.name
-//            holderBinding.tvAppVersion.text =
-//                context.getString(R.string.version) + item.version + " (" + item.versionCode + ")"
-//
-//            holderBinding.tvUpdateTime.text =
-//                context.getString(R.string.update_time) + item.getFormatUpdateTime()
-//            holderBinding.ivIcon.loadImage(item.getIconUri())
-
-            //bindSelectedState
-//            holderBinding.cvAppItem.isChecked =
-//                this@ListItemAdapter.selectionTracker.isSelected(details.selectionKey)
-
-//            if (!holderBinding.cvAppItem.isChecked && item.isRunning) {
-//                holderBinding.clAppItem.setBackgroundResource(R.color.card_View_running)
-//            } else {
-//                holderBinding.clAppItem.setBackgroundResource(android.R.color.transparent)
-//            }
-
-//            if (!item.isEnable && !holderBinding.cvAppItem.isChecked && type != 2) {
-//                holderBinding.ivIsEnable.visibility = View.VISIBLE
-//            } else {
-//                holderBinding.ivIsEnable.visibility = View.INVISIBLE
-//            }
-
-
             holderBinding.cvAppItem.setOnClickListener {
                 itemClickListener?.invoke(item, bindingAdapterPosition)
             }

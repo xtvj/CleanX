@@ -28,6 +28,7 @@ import github.xtvj.cleanx.ui.adapter.ListItemAdapter
 import github.xtvj.cleanx.ui.viewmodel.ListViewModel
 import github.xtvj.cleanx.ui.viewmodel.MainViewModel
 import github.xtvj.cleanx.utils.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -128,7 +129,8 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                 }
             })
         binding.rvApp.layoutManager = LinearLayoutManager(context)
-        binding.rvApp.setHasFixedSize(true)
+//        binding.rvApp.setHasFixedSize(true)
+//        (binding.rvApp.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         binding.rvApp.addOnScrollListener(scrollListener)
         binding.srlFragmentList.setOnRefreshListener(this)
         binding.btSelectAll.setOnClickListener(selectAll)
@@ -136,54 +138,55 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         fragmentViewModel = ViewModelProvider(requireActivity())[ListViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         observeLoading()
+        lifecycleScope.launch(Dispatchers.IO) {
+            viewLifecycleOwner.whenResumed {
+                if (firstLoad) {
+                    collectData()
+                }
+            }
+        }
     }
 
-    @SuppressLint("RepeatOnLifecycleWrongUsage", "UnsafeRepeatOnLifecycleDetector")
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun onResume() {
-        super.onResume()
-        if (firstLoad) {
-            firstLoad = false
-            lifecycleScope.launch {
-                fragmentViewModel.run {
-                    if (type == 0) {//三个fragment共用一个ViewModel，只需要第运行一次
-                        launch {
-                            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                                dataStoreManager.userPreferencesFlow.collectLatest {
-                                    log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
-                                    when (it.sortOrder) {
-                                        SortOrder.BY_ID -> {
-                                            sortByColumnFlow.update { APPS_BY_ID }
-                                        }
-                                        SortOrder.BY_NAME -> {
-                                            sortByColumnFlow.update { APPS_BY_NAME }
-                                        }
-                                        SortOrder.BY_UPDATE_TIME -> {
-                                            sortByColumnFlow.update { APPS_BY_LAST_UPDATE_TIME }
-                                        }
-                                    }
-                                    filterEnable.value = it.enable
-                                    filterRunning.value = it.running
-                                    asc.value = it.asc
+    private fun collectData() {
+        firstLoad = false
+        fragmentViewModel.run {
+            if (type == 0) {//三个fragment共用一个ViewModel，只需要第运行一次
+                lifecycleScope.launch(Dispatchers.IO) {
+                    repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                        dataStoreManager.userPreferencesFlow.collectLatest {
+                            log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
+                            when (it.sortOrder) {
+                                SortOrder.BY_ID -> {
+                                    sortByColumnFlow.update { APPS_BY_ID }
+                                }
+                                SortOrder.BY_NAME -> {
+                                    sortByColumnFlow.update { APPS_BY_NAME }
+                                }
+                                SortOrder.BY_UPDATE_TIME -> {
+                                    sortByColumnFlow.update { APPS_BY_LAST_UPDATE_TIME }
                                 }
                             }
+                            filterEnable.value = it.enable
+                            filterRunning.value = it.running
+                            asc.value = it.asc
                         }
-                    }
-                    launch {
-                        when (type) {
-                            0 -> {
-                                observeApps(userList)
-                            }
-                            1 -> {
-                                observeApps(systemList)
-                            }
-                            2 -> {
-                                observeApps(disableList)
-                            }
-                        }
-                        refreshData()
                     }
                 }
+            }
+            lifecycleScope.launch(Dispatchers.IO) {
+                when (type) {
+                    0 -> {
+                        observeApps(userList)
+                    }
+                    1 -> {
+                        observeApps(systemList)
+                    }
+                    2 -> {
+                        observeApps(disableList)
+                    }
+                }
+                refreshData()
             }
         }
     }
@@ -192,8 +195,8 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     private fun observeApps(apps: Flow<PagingData<AppItem>>) {
         log("observer Apps type =$type")
         job?.cancel()
-        job = lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+        job = lifecycleScope.launch(Dispatchers.Main) {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 apps.collectLatest {
                     adapter.submitData(lifecycle, it)
                 }
@@ -250,35 +253,42 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                 workInfo = fragmentViewModel.getAppsByCode(GET_DISABLED)
             }
         }
-        workInfo.observe(viewLifecycleOwner, Observer {
-            when (it.state) {
-                WorkInfo.State.SUCCEEDED -> {
-                    //获取数据完成
-                    binding.pgbLoading.visibility = View.INVISIBLE
-                    binding.tvNoData.visibility = View.INVISIBLE
-                    binding.srlFragmentList.isRefreshing = false
-                }
-                WorkInfo.State.FAILED -> {
-                    binding.srlFragmentList.isRefreshing = false
-                    binding.pgbLoading.visibility = View.INVISIBLE
-                    binding.tvNoData.visibility = View.VISIBLE
-                }
-                WorkInfo.State.RUNNING -> {
-                    //正在获取数据
-                    if (firstLoad) {
-                        binding.pgbLoading.visibility = View.VISIBLE
+        lifecycleScope.launch(Dispatchers.Main) {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                workInfo.observe(viewLifecycleOwner, Observer {
+                    log(it.state.name)
+                    when (it.state) {
+                        WorkInfo.State.SUCCEEDED -> {
+                            //获取数据完成
+                            fragmentViewModel.loading.value = false
+                            binding.tvNoData.visibility = View.INVISIBLE
+                            binding.srlFragmentList.isRefreshing = false
+                        }
+                        WorkInfo.State.FAILED -> {
+                            binding.srlFragmentList.isRefreshing = false
+                            fragmentViewModel.loading.value = false
+                            binding.tvNoData.visibility = View.VISIBLE
+                        }
+                        WorkInfo.State.RUNNING -> {
+                            //正在获取数据
+                            if (firstLoad) {
+                                fragmentViewModel.loading.value = true
+                            }
+                            binding.tvNoData.visibility = View.INVISIBLE
+                        }
+                        else -> {}
                     }
-                    binding.tvNoData.visibility = View.INVISIBLE
-                }
-                else -> {}
+                })
             }
-        })
+        }
     }
 
     private fun observeLoading() {
-        lifecycleScope.launch {
-            fragmentViewModel.loading.collectLatest {
-                binding.pgbLoading.visibility = if (it) View.VISIBLE else View.INVISIBLE
+        lifecycleScope.launch(Dispatchers.Main) {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                fragmentViewModel.loading.collectLatest {
+                    binding.pgbLoading.visibility = if (it) View.VISIBLE else View.INVISIBLE
+                }
             }
         }
     }
