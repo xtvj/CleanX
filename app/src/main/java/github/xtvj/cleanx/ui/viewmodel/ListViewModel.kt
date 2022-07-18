@@ -12,18 +12,13 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import dagger.hilt.android.lifecycle.HiltViewModel
-import github.xtvj.cleanx.data.AppItem
-import github.xtvj.cleanx.data.AppItemDao
-import github.xtvj.cleanx.data.AppRepository
+import github.xtvj.cleanx.data.*
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.utils.*
 import github.xtvj.cleanx.worker.AppWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,29 +29,49 @@ class ListViewModel @Inject constructor(
     private val appItemDao: AppItemDao,
     private val appRepository: AppRepository,
     private val state: SavedStateHandle,
-    private val workManager: WorkManager
+    private val workManager: WorkManager,
+    private val dataStoreManager:DataStoreManager
 ) : ViewModel() {
 
     companion object {
         private const val SORT_BY = "sortBy"
     }
 
-    val sortByColumnFlow: MutableStateFlow<String> = MutableStateFlow(
+    private val sortByColumnFlow: MutableStateFlow<String> = MutableStateFlow(
         state[SORT_BY] ?: APPS_BY_NAME
     )
 
     //0:不过滤数据 1:过滤掉禁用/运行的 2:过滤掉启用/不运行的
-    val filterEnable = MutableStateFlow<Int>(0)
-    val filterRunning = MutableStateFlow<Int>(0)
-    val asc = MutableStateFlow<Boolean>(true)
+    private val filterEnable = MutableStateFlow<Int>(0)
+    private val filterRunning = MutableStateFlow<Int>(0)
+    private val asc = MutableStateFlow<Boolean>(true)
 
     val loading = MutableStateFlow<Boolean>(true)
 
     init {
         viewModelScope.launch {
-            launch {
+            launch(Dispatchers.IO) {
                 sortByColumnFlow.collect { newSort ->
                     state[SORT_BY] = newSort
+                }
+            }
+            launch(Dispatchers.IO) {
+                dataStoreManager.userPreferencesFlow.collectLatest {
+                    log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
+                    when (it.sortOrder) {
+                        SortOrder.BY_ID -> {
+                            sortByColumnFlow.update { APPS_BY_ID }
+                        }
+                        SortOrder.BY_NAME -> {
+                            sortByColumnFlow.update { APPS_BY_NAME }
+                        }
+                        SortOrder.BY_UPDATE_TIME -> {
+                            sortByColumnFlow.update { APPS_BY_LAST_UPDATE_TIME }
+                        }
+                    }
+                    filterEnable.value = it.enable
+                    filterRunning.value = it.running
+                    asc.value = it.asc
                 }
             }
         }

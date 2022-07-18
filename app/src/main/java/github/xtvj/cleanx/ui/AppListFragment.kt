@@ -21,8 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.AppItem
 import github.xtvj.cleanx.data.AppItemDao
-import github.xtvj.cleanx.data.DataStoreManager
-import github.xtvj.cleanx.data.SortOrder
 import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.ui.adapter.ListItemAdapter
 import github.xtvj.cleanx.ui.viewmodel.ListViewModel
@@ -33,7 +31,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -69,9 +66,6 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
     @Inject
     lateinit var adapter: ListItemAdapter
-
-    @Inject
-    lateinit var dataStoreManager: DataStoreManager
 
     @Inject
     lateinit var pm: PackageManager
@@ -138,56 +132,25 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         fragmentViewModel = ViewModelProvider(requireActivity())[ListViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         observeLoading()
-        lifecycleScope.launch(Dispatchers.IO) {
-            viewLifecycleOwner.whenResumed {
-                if (firstLoad) {
-                    collectData()
-                }
-            }
-        }
+        collectData()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun collectData() {
         firstLoad = false
         fragmentViewModel.run {
-            if (type == 0) {//三个fragment共用一个ViewModel，只需要第运行一次
-                lifecycleScope.launch(Dispatchers.IO) {
-                    repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                        dataStoreManager.userPreferencesFlow.collectLatest {
-                            log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
-                            when (it.sortOrder) {
-                                SortOrder.BY_ID -> {
-                                    sortByColumnFlow.update { APPS_BY_ID }
-                                }
-                                SortOrder.BY_NAME -> {
-                                    sortByColumnFlow.update { APPS_BY_NAME }
-                                }
-                                SortOrder.BY_UPDATE_TIME -> {
-                                    sortByColumnFlow.update { APPS_BY_LAST_UPDATE_TIME }
-                                }
-                            }
-                            filterEnable.value = it.enable
-                            filterRunning.value = it.running
-                            asc.value = it.asc
-                        }
-                    }
+            when (type) {
+                0 -> {
+                    observeApps(userList)
+                }
+                1 -> {
+                    observeApps(systemList)
+                }
+                2 -> {
+                    observeApps(disableList)
                 }
             }
-            lifecycleScope.launch(Dispatchers.IO) {
-                when (type) {
-                    0 -> {
-                        observeApps(userList)
-                    }
-                    1 -> {
-                        observeApps(systemList)
-                    }
-                    2 -> {
-                        observeApps(disableList)
-                    }
-                }
-                refreshData()
-            }
+            refreshData()
         }
     }
 
@@ -254,7 +217,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
             }
         }
         lifecycleScope.launch(Dispatchers.Main) {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 workInfo.observe(viewLifecycleOwner, Observer {
                     log(it.state.name)
                     when (it.state) {
@@ -285,7 +248,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
     private fun observeLoading() {
         lifecycleScope.launch(Dispatchers.Main) {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 fragmentViewModel.loading.collectLatest {
                     binding.pgbLoading.visibility = if (it) View.VISIBLE else View.INVISIBLE
                 }
