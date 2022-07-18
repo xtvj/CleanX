@@ -137,7 +137,6 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun collectData() {
-        firstLoad = false
         fragmentViewModel.run {
             when (type) {
                 0 -> {
@@ -226,11 +225,13 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                             fragmentViewModel.loading.value = false
                             binding.tvNoData.visibility = View.INVISIBLE
                             binding.srlFragmentList.isRefreshing = false
+                            firstLoad = false
                         }
                         WorkInfo.State.FAILED -> {
                             binding.srlFragmentList.isRefreshing = false
                             fragmentViewModel.loading.value = false
                             binding.tvNoData.visibility = View.VISIBLE
+                            firstLoad = false
                         }
                         WorkInfo.State.RUNNING -> {
                             //正在获取数据

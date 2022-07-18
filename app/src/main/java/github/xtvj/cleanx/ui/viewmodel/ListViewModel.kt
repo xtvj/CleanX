@@ -1,7 +1,6 @@
 package github.xtvj.cleanx.ui.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -28,18 +27,13 @@ import javax.inject.Inject
 class ListViewModel @Inject constructor(
     private val appItemDao: AppItemDao,
     private val appRepository: AppRepository,
-    private val state: SavedStateHandle,
+//    private val state: SavedStateHandle,
     private val workManager: WorkManager,
     private val dataStoreManager:DataStoreManager
 ) : ViewModel() {
 
-    companion object {
-        private const val SORT_BY = "sortBy"
-    }
-
-    private val sortByColumnFlow: MutableStateFlow<String> = MutableStateFlow(
-        state[SORT_BY] ?: APPS_BY_NAME
-    )
+    //大部分系统应用的安装时间是同一个值，按时间排序的时候就可能出现第二次进入画面时禁用的被排在后面。待查。
+    private val sortByColumnFlow: MutableStateFlow<String> = MutableStateFlow(APPS_BY_NAME)
 
     //0:不过滤数据 1:过滤掉禁用/运行的 2:过滤掉启用/不运行的
     private val filterEnable = MutableStateFlow<Int>(0)
@@ -51,13 +45,7 @@ class ListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             launch(Dispatchers.IO) {
-                sortByColumnFlow.collect { newSort ->
-                    state[SORT_BY] = newSort
-                }
-            }
-            launch(Dispatchers.IO) {
                 dataStoreManager.userPreferencesFlow.collectLatest {
-                    log("sortOrder: " + it.sortOrder.name + "-----" + "darkModel: " + it.darkModel.name)
                     when (it.sortOrder) {
                         SortOrder.BY_ID -> {
                             sortByColumnFlow.update { APPS_BY_ID }
