@@ -3,22 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/item_stop"
-        android:icon="@drawable/ic_menu_stop"
-        android:title="@string/stop"
-        android:titleCondensed="@string/stop"
+        android:id="@+id/item_select_all"
+        android:icon="@drawable/ic_select_all"
+        android:title="@string/select_all"
+        android:titleCondensed="@string/select_all"
         app:showAsAction="always" />
     <item
-        android:id="@+id/item_enable"
-        android:icon="@drawable/ic_menu_enable"
-        android:title="@string/enable"
-        android:titleCondensed="@string/enable"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/item_disable"
-        android:icon="@drawable/ic_menu_disable"
-        android:title="@string/disable"
-        android:titleCondensed="@string/disable"
+        android:id="@+id/item_invert_select"
+        android:icon="@drawable/ic_unselected"
+        android:title="@string/reverse_select"
+        android:titleCondensed="@string/reverse_select"
         app:showAsAction="ifRoom" />
 
 </menu>

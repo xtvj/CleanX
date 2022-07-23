@@ -1,20 +1,15 @@
 package github.xtvj.cleanx.ui.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import androidx.work.workDataOf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.xtvj.cleanx.data.*
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.utils.*
-import github.xtvj.cleanx.worker.AppWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -119,13 +114,13 @@ class ListViewModel @Inject constructor(
 
     }
 
-    fun getAppsByCode(code: String): LiveData<WorkInfo> {
-        val request = OneTimeWorkRequestBuilder<AppWorker>()
-            .setInputData(workDataOf(AppWorker.KEY_CODE to code))
-            .build()
-        workManager.enqueue(request)
-        return workManager.getWorkInfoByIdLiveData(request.id)
-    }
+//    fun getAppsByCode(code: String): LiveData<WorkInfo> {
+//        val request = OneTimeWorkRequestBuilder<AppWorker>()
+//            .setInputData(workDataOf(AppWorker.KEY_CODE to code))
+//            .build()
+//        workManager.enqueue(request)
+//        return workManager.getWorkInfoByIdLiveData(request.id)
+//    }
 
     private fun filterEnableOrRunning(list: Flow<PagingData<AppItem>>): Flow<PagingData<AppItem>> {
         return combine(list, filterEnable, filterRunning) { temp, enable, running ->

@@ -33,6 +33,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ProgressBar
         android:id="@+id/pgb_loading"
         android:layout_width="80dp"
@@ -42,33 +53,53 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_select"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/groupSelect"
+        android:layout_width="match_parent"
+        android:background="@color/colorPrimary"
+        android:layout_height="80dp"
         android:visibility="invisible"
-        app:constraint_referenced_ids="bt_select_all,bt_reverse_select" />
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/bt_select_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableTop="@drawable/ic_select_all"
-        android:text="@string/select_all"
-        android:textSize="@dimen/text_10sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/bt_reverse_select"
-        app:layout_constraintStart_toStartOf="parent" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/mb_stop"
+            style="@style/MaterialButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stop"
+            android:textColor="@color/bottom_sheet_text"
+            app:drawableTopCompat="@drawable/ic_stop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/mb_enable"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/bt_reverse_select"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableTop="@drawable/ic_unselected"
-        android:text="@string/reverse_select"
-        android:textSize="@dimen/text_10sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/bt_select_all" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/mb_enable"
+            style="@style/MaterialButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/enable"
+            android:textColor="@color/bottom_sheet_text"
+            app:drawableTopCompat="@drawable/ic_menu_enable"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/mb_disable"
+            app:layout_constraintStart_toEndOf="@id/mb_stop"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/mb_disable"
+            style="@style/MaterialButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/disable"
+            android:textColor="@color/bottom_sheet_text"
+            app:drawableTopCompat="@drawable/ic_disabled"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/mb_enable"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

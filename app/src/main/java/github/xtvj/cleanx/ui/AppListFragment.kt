@@ -6,9 +6,12 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -16,7 +19,6 @@ import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.work.WorkInfo
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.AppItem
@@ -25,7 +27,10 @@ import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.ui.adapter.ListItemAdapter
 import github.xtvj.cleanx.ui.viewmodel.ListViewModel
 import github.xtvj.cleanx.ui.viewmodel.MainViewModel
-import github.xtvj.cleanx.utils.*
+import github.xtvj.cleanx.utils.FORCE_STOP
+import github.xtvj.cleanx.utils.PM_DISABLE
+import github.xtvj.cleanx.utils.PM_ENABLE
+import github.xtvj.cleanx.utils.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -48,11 +53,12 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
             }
     }
 
-    //    private val fragmentViewModel: ListViewModel by viewModels() //Fragment自己的ViewModel
+    //private val fragmentViewModel: ListViewModel by viewModels()
+    //by viewModels() Fragment自己的ViewModel
+    //by activityViewModels() 与Activity共用的ViewModel
     private lateinit var fragmentViewModel: ListViewModel //Fragment自己的ViewModel
     lateinit var mainViewModel: MainViewModel
 
-    //    private val fragmentViewModel: ListViewModel by activityViewModels() //与Activity共用的ViewModel
     private var type = -1
     private lateinit var binding: FragmentAppListBinding
     private val lifecycleScope = lifecycle.coroutineScope
@@ -62,7 +68,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
     private var job: Job? = null
     private var firstLoad = true
-    private lateinit var workInfo: LiveData<WorkInfo>
+//    private lateinit var workInfo: LiveData<WorkInfo>
 
     @Inject
     lateinit var adapter: ListItemAdapter
@@ -91,7 +97,6 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         super.onViewCreated(view, savedInstanceState)
         adapter.setAdapterType(type)
         adapter.itemClickListener = { item, _ ->
-
             SheetDialog(item.id).showNow(childFragmentManager, "Product $item.id")
         }
         binding.rvApp.adapter = adapter
@@ -122,17 +127,34 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                     }
                 }
             })
+        adapter.addLoadStateListener {
+            adapterLoad(it)
+        }
         binding.rvApp.layoutManager = LinearLayoutManager(context)
 //        binding.rvApp.setHasFixedSize(true)
 //        (binding.rvApp.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         binding.rvApp.addOnScrollListener(scrollListener)
         binding.srlFragmentList.setOnRefreshListener(this)
-        binding.btSelectAll.setOnClickListener(selectAll)
-        binding.btReverseSelect.setOnClickListener(reverseSelect)
         fragmentViewModel = ViewModelProvider(requireActivity())[ListViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        binding.mbStop.setOnClickListener {
+            fragmentViewModel.setApps(FORCE_STOP, adapter.getSelectItems())
+            actionMode?.finish()
+        }
+        binding.mbEnable.setOnClickListener {
+            fragmentViewModel.setApps(PM_ENABLE, adapter.getSelectItems())
+            actionMode?.finish()
+        }
+        binding.mbDisable.setOnClickListener {
+            fragmentViewModel.setApps(PM_DISABLE, adapter.getSelectItems())
+            actionMode?.finish()
+        }
         observeLoading()
-        collectData()
+        lifecycleScope.launch {
+            lifecycle.whenResumed {
+                collectData()
+            }
+        }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -149,7 +171,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                     observeApps(disableList)
                 }
             }
-            refreshData()
+//            refreshData()
         }
     }
 
@@ -157,9 +179,10 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     private fun observeApps(apps: Flow<PagingData<AppItem>>) {
         log("observer Apps type =$type")
         job?.cancel()
-        job = lifecycleScope.launch(Dispatchers.Main) {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                apps.collectLatest {
+        job = lifecycleScope.launch {
+            //使用Started，如果使用RESUMED，每次页面显示都要重新加载
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                apps.collect {
                     adapter.submitData(lifecycle, it)
                 }
             }
@@ -182,70 +205,82 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.item_disable -> {
-                fragmentViewModel.setApps(PM_DISABLE, adapter.getSelectItems())
-                mode?.finish()
+            R.id.item_select_all -> {
+                val itemsArray = arrayListOf<AppItem>()
+                adapter.snapshot().items.forEach {
+                    if (!selectionTracker.isSelected(it))
+                        itemsArray.add(it)
+                }
+                selectionTracker.setItemsSelected(itemsArray.asIterable(), true)
             }
-            R.id.item_enable -> {
-                fragmentViewModel.setApps(PM_ENABLE, adapter.getSelectItems())
-                mode?.finish()
+            R.id.item_invert_select -> {
+                val select = arrayListOf<AppItem>()
+                val cancel = arrayListOf<AppItem>()
+                adapter.snapshot().items.forEach {
+                    if (!selectionTracker.isSelected(it)) {
+                        select.add(it)
+                    } else {
+                        cancel.add(it)
+                    }
+                }
+                selectionTracker.setItemsSelected(select.asIterable(), true)
+                selectionTracker.setItemsSelected(cancel.asIterable(), false)
             }
-            R.id.item_stop -> {
-                fragmentViewModel.setApps(FORCE_STOP, adapter.getSelectItems())
-                mode?.finish()
-            }
+        }
+        if (!selectionTracker.hasSelection()) {
+            mode?.finish()
         }
         return false
     }
 
     override fun onRefresh() {
-//        adapter.refresh()
-        refreshData()
+        adapter.refresh()
+//        refreshData()
     }
 
-    private fun refreshData() {
-        when (type) {
-            0 -> {
-                workInfo = fragmentViewModel.getAppsByCode(GET_USER)
-            }
-            1 -> {
-                workInfo = fragmentViewModel.getAppsByCode(GET_SYS)
-            }
-            2 -> {
-                workInfo = fragmentViewModel.getAppsByCode(GET_DISABLED)
-            }
-        }
-        lifecycleScope.launch(Dispatchers.Main) {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                workInfo.observe(viewLifecycleOwner, Observer {
-                    log(it.state.name)
-                    when (it.state) {
-                        WorkInfo.State.SUCCEEDED -> {
-                            //获取数据完成
-                            fragmentViewModel.loading.value = false
-                            binding.tvNoData.visibility = View.INVISIBLE
-                            binding.srlFragmentList.isRefreshing = false
-                            firstLoad = false
-                        }
-                        WorkInfo.State.FAILED -> {
-                            binding.srlFragmentList.isRefreshing = false
-                            fragmentViewModel.loading.value = false
-                            binding.tvNoData.visibility = View.VISIBLE
-                            firstLoad = false
-                        }
-                        WorkInfo.State.RUNNING -> {
-                            //正在获取数据
-                            if (firstLoad) {
-                                fragmentViewModel.loading.value = true
-                            }
-                            binding.tvNoData.visibility = View.INVISIBLE
-                        }
-                        else -> {}
-                    }
-                })
-            }
-        }
-    }
+//    private fun refreshData() {
+//        when (type) {
+//            0 -> {
+//                workInfo = fragmentViewModel.getAppsByCode(GET_USER)
+//            }
+//            1 -> {
+//                workInfo = fragmentViewModel.getAppsByCode(GET_SYS)
+//            }
+//            2 -> {
+//                workInfo = fragmentViewModel.getAppsByCode(GET_DISABLED)
+//            }
+//        }
+//        lifecycleScope.launch(Dispatchers.Main) {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                workInfo.observe(viewLifecycleOwner, Observer {
+//                    log(it.state.name)
+//                    when (it.state) {
+//                        WorkInfo.State.SUCCEEDED -> {
+//                            //获取数据完成
+//                            fragmentViewModel.loading.value = false
+//                            binding.tvNoData.visibility = View.INVISIBLE
+//                            binding.srlFragmentList.isRefreshing = false
+//                            firstLoad = false
+//                        }
+//                        WorkInfo.State.FAILED -> {
+//                            binding.srlFragmentList.isRefreshing = false
+//                            fragmentViewModel.loading.value = false
+//                            binding.tvNoData.visibility = View.VISIBLE
+//                            firstLoad = false
+//                        }
+//                        WorkInfo.State.RUNNING -> {
+//                            //正在获取数据
+//                            if (firstLoad) {
+//                                fragmentViewModel.loading.value = true
+//                            }
+//                            binding.tvNoData.visibility = View.INVISIBLE
+//                        }
+//                        else -> {}
+//                    }
+//                })
+//            }
+//        }
+//    }
 
     private fun observeLoading() {
         lifecycleScope.launch(Dispatchers.Main) {
@@ -260,12 +295,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            binding.btReverseSelect.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                setMargins(
-                    0, 0, 0, mainViewModel.offset.value
-                )
-            }
-            binding.btSelectAll.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            binding.groupSelect.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 setMargins(
                     0, 0, 0, mainViewModel.offset.value
                 )
@@ -273,27 +303,33 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         }
     }
 
-    private val selectAll = View.OnClickListener {
-        val itemsArray = arrayListOf<AppItem>()
-        adapter.snapshot().items.forEach {
-            if (!selectionTracker.isSelected(it))
-                itemsArray.add(it)
-        }
-        selectionTracker.setItemsSelected(itemsArray.asIterable(), true)
-    }
-
-    private val reverseSelect = View.OnClickListener {
-        val select = arrayListOf<AppItem>()
-        val cancel = arrayListOf<AppItem>()
-        adapter.snapshot().items.forEach {
-            if (!selectionTracker.isSelected(it)) {
-                select.add(it)
-            } else {
-                cancel.add(it)
+    private fun adapterLoad(loadStates: CombinedLoadStates) {
+        if (loadStates.mediator?.refresh is LoadState.Loading) {
+            if (adapter.snapshot().isEmpty()) {
+                binding.tvNoData.visibility = View.VISIBLE
+            }
+            if (firstLoad) {
+                fragmentViewModel.loading.value = true
+            }
+            binding.tvError.isVisible = false
+        } else {
+            fragmentViewModel.loading.value = firstLoad
+            binding.srlFragmentList.isRefreshing = false
+            binding.tvNoData.isVisible = adapter.snapshot().isEmpty()
+            firstLoad = false
+            binding.tvError.isVisible = false
+            val error = when {
+                loadStates.mediator?.prepend is LoadState.Error -> loadStates.mediator?.prepend as LoadState.Error
+                loadStates.mediator?.append is LoadState.Error -> loadStates.mediator?.append as LoadState.Error
+                loadStates.mediator?.refresh is LoadState.Error -> loadStates.mediator?.refresh as LoadState.Error
+                else -> null
+            }
+            error?.let {
+                if (adapter.snapshot().isEmpty()) {
+                    binding.tvError.isVisible = true
+                    binding.tvError.text = it.error.localizedMessage
+                }
             }
         }
-        selectionTracker.setItemsSelected(select.asIterable(), true)
-        selectionTracker.setItemsSelected(cancel.asIterable(), false)
     }
-
 }
