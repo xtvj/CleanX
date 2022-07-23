@@ -10,7 +10,6 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
-import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.selection.SelectionPredicates
@@ -68,7 +67,8 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
     private var job: Job? = null
     private var firstLoad = true
-//    private lateinit var workInfo: LiveData<WorkInfo>
+
+    //    private lateinit var workInfo: LiveData<WorkInfo>
 
     @Inject
     lateinit var adapter: ListItemAdapter
@@ -127,9 +127,6 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                     }
                 }
             })
-        adapter.addLoadStateListener {
-            adapterLoad(it)
-        }
         binding.rvApp.layoutManager = LinearLayoutManager(context)
 //        binding.rvApp.setHasFixedSize(true)
 //        (binding.rvApp.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
@@ -149,7 +146,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
             fragmentViewModel.setApps(PM_DISABLE, adapter.getSelectItems())
             actionMode?.finish()
         }
-        observeLoading()
+        observeUI()
         lifecycleScope.launch {
             lifecycle.whenResumed {
                 collectData()
@@ -160,17 +157,21 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun collectData() {
         fragmentViewModel.run {
-            when (type) {
+            val list = when (type) {
                 0 -> {
-                    observeApps(userList)
+                    userList
                 }
                 1 -> {
-                    observeApps(systemList)
+                    systemList
                 }
                 2 -> {
-                    observeApps(disableList)
+                    disableList
+                }
+                else -> {
+                    throw Exception("异常 type: $type")
                 }
             }
+            observeApps(list)
 //            refreshData()
         }
     }
@@ -179,10 +180,10 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     private fun observeApps(apps: Flow<PagingData<AppItem>>) {
         log("observer Apps type =$type")
         job?.cancel()
-        job = lifecycleScope.launch {
+        job = lifecycleScope.launch(Dispatchers.IO) {
             //使用Started，如果使用RESUMED，每次页面显示都要重新加载
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                apps.collect {
+                apps.collectLatest {
                     adapter.submitData(lifecycle, it)
                 }
             }
@@ -282,11 +283,30 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 //        }
 //    }
 
-    private fun observeLoading() {
-        lifecycleScope.launch(Dispatchers.Main) {
+    private fun observeUI() {
+        lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                fragmentViewModel.loading.collectLatest {
-                    binding.pgbLoading.visibility = if (it) View.VISIBLE else View.INVISIBLE
+                launch(Dispatchers.Main) {
+                    fragmentViewModel.loading.collectLatest {
+                        binding.pgbLoading.isVisible = it
+                    }
+                }
+                launch(Dispatchers.Main) {
+                    adapter.loadStateFlow.collect { loadStates ->
+                        val refresher = loadStates.refresh
+                        log("refresher: ${refresher.toString()}")
+//                        binding.tvNoData.isVisible = (refresher is LoadState.NotLoading && adapter.itemCount < 1)
+                        binding.srlFragmentList.isRefreshing = refresher is LoadState.Loading
+                        fragmentViewModel.loading.value = firstLoad
+                        binding.tvError.isVisible = false
+                        if (refresher !is LoadState.Loading){
+                            firstLoad = false
+                        }
+                        if (refresher is LoadState.Error){
+                            binding.tvError.isVisible = true
+                            binding.tvError.text = refresher.error.localizedMessage
+                        }
+                    }
                 }
             }
         }
@@ -303,33 +323,4 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         }
     }
 
-    private fun adapterLoad(loadStates: CombinedLoadStates) {
-        if (loadStates.mediator?.refresh is LoadState.Loading) {
-            if (adapter.snapshot().isEmpty()) {
-                binding.tvNoData.visibility = View.VISIBLE
-            }
-            if (firstLoad) {
-                fragmentViewModel.loading.value = true
-            }
-            binding.tvError.isVisible = false
-        } else {
-            fragmentViewModel.loading.value = firstLoad
-            binding.srlFragmentList.isRefreshing = false
-            binding.tvNoData.isVisible = adapter.snapshot().isEmpty()
-            firstLoad = false
-            binding.tvError.isVisible = false
-            val error = when {
-                loadStates.mediator?.prepend is LoadState.Error -> loadStates.mediator?.prepend as LoadState.Error
-                loadStates.mediator?.append is LoadState.Error -> loadStates.mediator?.append as LoadState.Error
-                loadStates.mediator?.refresh is LoadState.Error -> loadStates.mediator?.refresh as LoadState.Error
-                else -> null
-            }
-            error?.let {
-                if (adapter.snapshot().isEmpty()) {
-                    binding.tvError.isVisible = true
-                    binding.tvError.text = it.error.localizedMessage
-                }
-            }
-        }
-    }
 }

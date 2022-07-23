@@ -35,6 +35,7 @@ class ListViewModel @Inject constructor(
     private val filterRunning = MutableStateFlow<Int>(0)
     private val asc = MutableStateFlow<Boolean>(true)
 
+    //些处loading为三个页面共用了，不合适，以后再改。
     val loading = MutableStateFlow<Boolean>(true)
 
     init {
