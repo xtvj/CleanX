@@ -175,7 +175,6 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                 }
             }
             observeApps(list)
-//            refreshData()
         }
     }
 
@@ -184,8 +183,9 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         log("observer Apps type =$type")
         job?.cancel()
         job = lifecycleScope.launch(Dispatchers.IO) {
-            //使用Started，如果使用RESUMED，每次页面显示都要重新加载
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            //使用Created，如果使用Resumed，每次页面显示都要重新加载
+            //如果使用Started，页面返回后台再进入会进入onStart会重新加载数据
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
                 apps.collectLatest {
                     adapter.submitData(lifecycle, it)
                 }
@@ -239,52 +239,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
     override fun onRefresh() {
         adapter.refresh()
-//        refreshData()
     }
-
-//    private fun refreshData() {
-//        when (type) {
-//            0 -> {
-//                workInfo = fragmentViewModel.getAppsByCode(GET_USER)
-//            }
-//            1 -> {
-//                workInfo = fragmentViewModel.getAppsByCode(GET_SYS)
-//            }
-//            2 -> {
-//                workInfo = fragmentViewModel.getAppsByCode(GET_DISABLED)
-//            }
-//        }
-//        lifecycleScope.launch(Dispatchers.Main) {
-//            repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                workInfo.observe(viewLifecycleOwner, Observer {
-//                    log(it.state.name)
-//                    when (it.state) {
-//                        WorkInfo.State.SUCCEEDED -> {
-//                            //获取数据完成
-//                            loading.value = false
-//                            binding.tvNoData.visibility = View.INVISIBLE
-//                            binding.srlFragmentList.isRefreshing = false
-//                            firstLoad = false
-//                        }
-//                        WorkInfo.State.FAILED -> {
-//                            binding.srlFragmentList.isRefreshing = false
-//                            loading.value = false
-//                            binding.tvNoData.visibility = View.VISIBLE
-//                            firstLoad = false
-//                        }
-//                        WorkInfo.State.RUNNING -> {
-//                            //正在获取数据
-//                            if (firstLoad) {
-//                                loading.value = true
-//                            }
-//                            binding.tvNoData.visibility = View.INVISIBLE
-//                        }
-//                        else -> {}
-//                    }
-//                })
-//            }
-//        }
-//    }
 
     private fun observeUI() {
         lifecycleScope.launch {
@@ -305,8 +260,9 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
             launch(Dispatchers.Main) {
                 adapter.loadStateFlow.collect { loadStates ->
                     val refresher = loadStates.refresh
-//                        binding.tvNoData.isVisible = (refresher is LoadState.NotLoading && adapter.itemCount == 0)
-                    binding.srlFragmentList.isRefreshing = refresher is LoadState.Loading
+                    if (!firstLoad){
+                        binding.srlFragmentList.isRefreshing = refresher is LoadState.Loading
+                    }
                     loading.value = firstLoad
                     firstLoad = false
                     binding.tvError.isVisible = false
@@ -350,5 +306,4 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
             }
         }
     }
-
 }

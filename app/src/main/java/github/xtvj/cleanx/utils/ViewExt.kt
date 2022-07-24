@@ -9,5 +9,5 @@ import coil.load
 fun ImageView.loadImage(
     resId: Any?
 ) {
-    load(resId)
+    resId?.let { load(it) }
 }

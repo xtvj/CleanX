@@ -22,8 +22,7 @@ class AppRemoteMediator(
     RemoteMediator<Int, AppItem>() {
 
     override suspend fun initialize(): InitializeAction {
-        // Require that remote REFRESH is launched on initial load and succeeds before launching
-        //默认就是此值
+        //设置此值，防止每次onStart的时候数据刷新
         return InitializeAction.LAUNCH_INITIAL_REFRESH
     }
 
