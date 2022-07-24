@@ -24,16 +24,15 @@ class ListViewModel @Inject constructor(
     private val appRepository: AppRepository,
 //    private val state: SavedStateHandle,
     private val workManager: WorkManager,
-    private val dataStoreManager:DataStoreManager
+    private val dataStoreManager: DataStoreManager
 ) : ViewModel() {
 
     //大部分系统应用的安装时间是同一个值，按时间排序的时候就可能出现第二次进入画面时禁用的被排在后面。待查。
-    private val sortByColumnFlow: MutableStateFlow<String> = MutableStateFlow(APPS_BY_NAME)
+    private val sortByColumnFlow: MutableStateFlow<SortInstance> = MutableStateFlow(SortInstance(APPS_BY_NAME, true))
 
     //0:不过滤数据 1:过滤掉禁用/运行的 2:过滤掉启用/不运行的
     private val filterEnable = MutableStateFlow<Int>(0)
     private val filterRunning = MutableStateFlow<Int>(0)
-    private val asc = MutableStateFlow<Boolean>(true)
 
     //些处loading为三个页面共用了，不合适，以后再改。
 //    val loading = MutableStateFlow<Boolean>(true)
@@ -41,21 +40,21 @@ class ListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             launch(Dispatchers.IO) {
-                dataStoreManager.userPreferencesFlow.collectLatest {
-                    when (it.sortOrder) {
+                dataStoreManager.userPreferencesFlow.collectLatest { preferences ->
+                    when (preferences.sortOrder) {
                         SortOrder.BY_ID -> {
-                            sortByColumnFlow.update { APPS_BY_ID }
+                            sortByColumnFlow.update { SortInstance(APPS_BY_ID, preferences.asc) }
                         }
                         SortOrder.BY_NAME -> {
-                            sortByColumnFlow.update { APPS_BY_NAME }
+                            sortByColumnFlow.update { SortInstance(APPS_BY_NAME, preferences.asc) }
                         }
                         SortOrder.BY_UPDATE_TIME -> {
-                            sortByColumnFlow.update { APPS_BY_LAST_UPDATE_TIME }
+                            sortByColumnFlow.update { SortInstance(APPS_BY_LAST_UPDATE_TIME, preferences.asc) }
                         }
                     }
-                    filterEnable.value = it.enable
-                    filterRunning.value = it.running
-                    asc.value = it.asc
+                    filterEnable.value = preferences.enable
+                    filterRunning.value = preferences.running
+//                    asc.value = preferences.asc
                 }
             }
         }
@@ -63,26 +62,20 @@ class ListViewModel @Inject constructor(
 
     @ExperimentalCoroutinesApi
     val userList = sortByColumnFlow.flatMapLatest { query ->
-        asc.flatMapLatest {
-            filterEnableOrRunning(appRepository.getUser(query, it).cachedIn(viewModelScope))
-        }
+        filterEnableOrRunning(appRepository.getUser(query.sortByColumn, query.asc).flowOn(Dispatchers.IO).cachedIn(viewModelScope))
     }
 
     @ExperimentalCoroutinesApi
     val systemList = sortByColumnFlow.flatMapLatest { query ->
-        asc.flatMapLatest {
-            filterEnableOrRunning(appRepository.getSys(query, it).cachedIn(viewModelScope))
-        }
+        filterEnableOrRunning(appRepository.getSys(query.sortByColumn, query.asc).flowOn(Dispatchers.IO).cachedIn(viewModelScope))
     }
 
     @ExperimentalCoroutinesApi
     val disableList = sortByColumnFlow.flatMapLatest { query ->
-        asc.flatMapLatest {
-            filterEnableOrRunning(appRepository.getDisable(query, it).cachedIn(viewModelScope))
-        }
+        filterEnableOrRunning(appRepository.getDisable(query.sortByColumn, query.asc).flowOn(Dispatchers.IO).cachedIn(viewModelScope))
     }
 
-    fun setApps(code: String, list: List<AppItem>,loading: MutableStateFlow<Boolean>) {
+    fun setApps(code: String, list: List<AppItem>, loading: MutableStateFlow<Boolean>) {
         viewModelScope.launch(Dispatchers.IO) {
             loading.value = true
             val builder = StringBuilder()

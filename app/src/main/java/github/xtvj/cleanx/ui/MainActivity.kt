@@ -197,7 +197,7 @@ class MainActivity : AppCompatActivity() {
             popBinding.tabMenuMain.addOnTabSelectedListener(
                 object : TabLayout.OnTabSelectedListener {
                     override fun onTabSelected(tab: TabLayout.Tab?) {
-                        lifecycleScope.launch {
+                        lifecycleScope.launch(Dispatchers.IO) {
                             log("enable ${tab?.position}")
                             dataStoreManager.updateEnable(tab?.position ?: 0)
                         }
@@ -215,7 +215,7 @@ class MainActivity : AppCompatActivity() {
             popBinding.tabMenuMain2.addOnTabSelectedListener(
                 object : TabLayout.OnTabSelectedListener {
                     override fun onTabSelected(tab: TabLayout.Tab?) {
-                        lifecycleScope.launch {
+                        lifecycleScope.launch(Dispatchers.IO) {
                             log("enable ${tab?.position}")
                             dataStoreManager.updateRunning(tab?.position ?: 0)
                         }
@@ -233,7 +233,7 @@ class MainActivity : AppCompatActivity() {
             popBinding.tabMenuMain3.addOnTabSelectedListener(
                 object : TabLayout.OnTabSelectedListener {
                     override fun onTabSelected(tab: TabLayout.Tab?) {
-                        lifecycleScope.launch {
+                        lifecycleScope.launch(Dispatchers.IO) {
                             log("enable ${tab?.position}")
                             dataStoreManager.updateASCOrder(tab?.position == 0)
                         }
