@@ -22,7 +22,6 @@ class AppRemoteMediator(
     RemoteMediator<Int, AppItem>() {
 
     override suspend fun initialize(): InitializeAction {
-        //设置此值，防止每次onStart的时候数据刷新
         return InitializeAction.LAUNCH_INITIAL_REFRESH
     }
 
