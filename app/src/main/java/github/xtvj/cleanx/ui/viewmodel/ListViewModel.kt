@@ -36,7 +36,7 @@ class ListViewModel @Inject constructor(
     private val asc = MutableStateFlow<Boolean>(true)
 
     //些处loading为三个页面共用了，不合适，以后再改。
-    val loading = MutableStateFlow<Boolean>(true)
+//    val loading = MutableStateFlow<Boolean>(true)
 
     init {
         viewModelScope.launch {
@@ -82,7 +82,7 @@ class ListViewModel @Inject constructor(
         }
     }
 
-    fun setApps(code: String, list: List<AppItem>) {
+    fun setApps(code: String, list: List<AppItem>,loading: MutableStateFlow<Boolean>) {
         viewModelScope.launch(Dispatchers.IO) {
             loading.value = true
             val builder = StringBuilder()
@@ -148,6 +148,6 @@ class ListViewModel @Inject constructor(
                     }
                 }
             }
-        }
+        }.distinctUntilChanged()
     }
 }

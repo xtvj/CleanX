@@ -33,8 +33,7 @@ import github.xtvj.cleanx.utils.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -69,6 +68,10 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     private var firstLoad = true
 
     //    private lateinit var workInfo: LiveData<WorkInfo>
+
+    //viewModel为三个页面共用，状态值临时放在这里
+    private val isEmpty = MutableStateFlow(true)
+    private val loading = MutableStateFlow<Boolean>(true)
 
     @Inject
     lateinit var adapter: ListItemAdapter
@@ -135,15 +138,15 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         fragmentViewModel = ViewModelProvider(requireActivity())[ListViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         binding.mbStop.setOnClickListener {
-            fragmentViewModel.setApps(FORCE_STOP, adapter.getSelectItems())
+            fragmentViewModel.setApps(FORCE_STOP, adapter.getSelectItems(), loading)
             actionMode?.finish()
         }
         binding.mbEnable.setOnClickListener {
-            fragmentViewModel.setApps(PM_ENABLE, adapter.getSelectItems())
+            fragmentViewModel.setApps(PM_ENABLE, adapter.getSelectItems(), loading)
             actionMode?.finish()
         }
         binding.mbDisable.setOnClickListener {
-            fragmentViewModel.setApps(PM_DISABLE, adapter.getSelectItems())
+            fragmentViewModel.setApps(PM_DISABLE, adapter.getSelectItems(), loading)
             actionMode?.finish()
         }
         observeUI()
@@ -258,21 +261,21 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 //                    when (it.state) {
 //                        WorkInfo.State.SUCCEEDED -> {
 //                            //获取数据完成
-//                            fragmentViewModel.loading.value = false
+//                            loading.value = false
 //                            binding.tvNoData.visibility = View.INVISIBLE
 //                            binding.srlFragmentList.isRefreshing = false
 //                            firstLoad = false
 //                        }
 //                        WorkInfo.State.FAILED -> {
 //                            binding.srlFragmentList.isRefreshing = false
-//                            fragmentViewModel.loading.value = false
+//                            loading.value = false
 //                            binding.tvNoData.visibility = View.VISIBLE
 //                            firstLoad = false
 //                        }
 //                        WorkInfo.State.RUNNING -> {
 //                            //正在获取数据
 //                            if (firstLoad) {
-//                                fragmentViewModel.loading.value = true
+//                                loading.value = true
 //                            }
 //                            binding.tvNoData.visibility = View.INVISIBLE
 //                        }
@@ -287,26 +290,51 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch(Dispatchers.Main) {
-                    fragmentViewModel.loading.collectLatest {
+                    loading.collectLatest {
                         binding.pgbLoading.isVisible = it
                     }
                 }
                 launch(Dispatchers.Main) {
-                    adapter.loadStateFlow.collect { loadStates ->
-                        val refresher = loadStates.refresh
-                        log("refresher: ${refresher.toString()}")
-//                        binding.tvNoData.isVisible = (refresher is LoadState.NotLoading && adapter.itemCount < 1)
-                        binding.srlFragmentList.isRefreshing = refresher is LoadState.Loading
-                        fragmentViewModel.loading.value = firstLoad
-                        binding.tvError.isVisible = false
-                        if (refresher !is LoadState.Loading){
-                            firstLoad = false
-                        }
-                        if (refresher is LoadState.Error){
-                            binding.tvError.isVisible = true
-                            binding.tvError.text = refresher.error.localizedMessage
-                        }
+                    isEmpty.collectLatest {
+                        binding.tvNoData.isVisible = it
                     }
+                }
+            }
+        }
+        lifecycleScope.launchWhenCreated {
+            launch(Dispatchers.Main) {
+                adapter.loadStateFlow.collect { loadStates ->
+                    val refresher = loadStates.refresh
+//                        binding.tvNoData.isVisible = (refresher is LoadState.NotLoading && adapter.itemCount == 0)
+                    binding.srlFragmentList.isRefreshing = refresher is LoadState.Loading
+                    loading.value = firstLoad
+                    firstLoad = false
+                    binding.tvError.isVisible = false
+                    val errorState = loadStates.source.append as? LoadState.Error
+                        ?: loadStates.source.prepend as? LoadState.Error
+                        ?: loadStates.append as? LoadState.Error
+                        ?: loadStates.prepend as? LoadState.Error
+                    errorState?.let {
+                        binding.tvError.isVisible = true
+                        binding.tvError.text = errorState.error.localizedMessage
+                    }
+                }
+            }
+            launch {
+                //数据变更后划动到第一项
+                adapter.loadStateFlow
+                    // Only emit when REFRESH LoadState for RemoteMediator changes.
+                    .distinctUntilChangedBy { it.refresh }
+                    // Only react to cases where REFRESH completes, such as NotLoading.
+                    .filter { it.refresh is LoadState.NotLoading }
+                    // Scroll to top is synchronous with UI updates, even if remote load was
+                    // triggered.
+                    .collect { binding.rvApp.scrollToPosition(0) }
+            }
+            launch {
+                adapter.onPagesUpdatedFlow.collectLatest {
+                    log("列表数据大小为：${adapter.itemCount}")
+                    isEmpty.value = adapter.itemCount == 0
                 }
             }
         }
