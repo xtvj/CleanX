@@ -1,6 +1,7 @@
 package github.xtvj.cleanx.utils
 
 import android.content.Context
+import android.content.res.Resources
 import android.widget.Toast
 import androidx.annotation.StringRes
 
@@ -13,3 +14,7 @@ import androidx.annotation.StringRes
     fun Context.toastLong(message: CharSequence?) =
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 
+
+    fun Context.screenWidth() = Resources.getSystem().displayMetrics.widthPixels
+
+    fun Context.screenHeight() = Resources.getSystem().displayMetrics.heightPixels

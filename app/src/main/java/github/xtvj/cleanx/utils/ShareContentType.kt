@@ -9,7 +9,7 @@ import androidx.annotation.StringDef
     ShareContentType.VIDEO,
     ShareContentType.FILE
 )
-@kotlin.annotation.Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.SOURCE)
 annotation class ShareContentType {
     companion object {
         /**

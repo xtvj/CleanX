@@ -26,7 +26,7 @@ object RunnerUtils {
         return false
     }
 
-    fun isRootAvailable(): Boolean {
+    private fun isRootAvailable(): Boolean {
         val pathEnv = System.getenv("PATH")
         if (pathEnv != null) {
             for (pathDir in pathEnv.split(":").toTypedArray()) {

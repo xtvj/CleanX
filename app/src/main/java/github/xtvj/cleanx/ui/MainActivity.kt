@@ -29,6 +29,7 @@ import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.ui.adapter.MainViewPageAdapter
 import github.xtvj.cleanx.ui.viewmodel.MainViewModel
 import github.xtvj.cleanx.utils.log
+import github.xtvj.cleanx.utils.screenWidth
 import github.xtvj.cleanx.utils.toastLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -144,11 +145,6 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onBackPressed() {
-        moveTaskToBack(true)
-    }
-
-
     private fun initDialog() {
 
         val dialogView = layoutInflater.inflate(R.layout.dialog_request_root, null)
@@ -255,12 +251,10 @@ class MainActivity : AppCompatActivity() {
             popupWindow.contentView = pop
             popupWindow.isFocusable = true
             popupWindow.isOutsideTouchable = true
-            //        val view  = findViewById<View>(R.id.item_filter)
-            //        popupWindow.showAsDropDown(view)
             popupWindow.showAtLocation(
                 binding.root,
                 Gravity.NO_GRAVITY,
-                windowManager.currentWindowMetrics.bounds.width(),
+                applicationContext.screenWidth(),
                 0
             )
         }

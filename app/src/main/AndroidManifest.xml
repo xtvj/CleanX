@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="github.xtvj.cleanx">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
@@ -45,13 +44,8 @@
             android:exported="false"
             tools:node="merge">
             <meta-data
-                android:name="github.xtvj.cleanx.initializer.StartInitializer"
+                android:name="${applicationId}.initializer.StartInitializer"
                 android:value="androidx.startup" />
-            <!--            https://developer.android.com/topic/libraries/architecture/workmanager/advanced/custom-configuration-->
-            <meta-data
-                android:name="androidx.work.WorkManagerInitializer"
-                android:value="androidx.startup"
-                tools:node="remove" />
         </provider>
     </application>
 

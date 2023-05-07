@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
-import androidx.work.WorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.xtvj.cleanx.data.*
 import github.xtvj.cleanx.shell.Runner
@@ -22,8 +21,6 @@ import javax.inject.Inject
 class ListViewModel @Inject constructor(
     private val appItemDao: AppItemDao,
     private val appRepository: AppRepository,
-//    private val state: SavedStateHandle,
-    private val workManager: WorkManager,
     private val dataStoreManager: DataStoreManager
 ) : ViewModel() {
 
@@ -107,14 +104,6 @@ class ListViewModel @Inject constructor(
         }
 
     }
-
-//    fun getAppsByCode(code: String): LiveData<WorkInfo> {
-//        val request = OneTimeWorkRequestBuilder<AppWorker>()
-//            .setInputData(workDataOf(AppWorker.KEY_CODE to code))
-//            .build()
-//        workManager.enqueue(request)
-//        return workManager.getWorkInfoByIdLiveData(request.id)
-//    }
 
     private fun filterEnableOrRunning(list: Flow<PagingData<AppItem>>): Flow<PagingData<AppItem>> {
         return combine(list, filterEnable, filterRunning) { temp, enable, running ->

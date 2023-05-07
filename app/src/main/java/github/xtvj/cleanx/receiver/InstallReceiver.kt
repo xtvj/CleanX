@@ -3,15 +3,19 @@ package github.xtvj.cleanx.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
+import android.content.pm.PackageManager
+import github.xtvj.cleanx.data.AppDatabase
+import github.xtvj.cleanx.data.GetApps
 import github.xtvj.cleanx.utils.log
-import github.xtvj.cleanx.worker.InstallWorker
-import java.util.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import java.util.Locale
 import javax.inject.Inject
 
-class InstallReceiver @Inject constructor(private val workManager: WorkManager) :
+class InstallReceiver @Inject constructor(
+    private val appDatabase: AppDatabase,
+    private val packageManager: PackageManager
+) :
     BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -20,22 +24,19 @@ class InstallReceiver @Inject constructor(private val workManager: WorkManager) 
             val packageName = intent.dataString?.substring(8)?.lowercase(Locale.getDefault())
             log("packageName remove: $packageName")
             if (!packageName.isNullOrBlank()) {
-                val request = OneTimeWorkRequestBuilder<InstallWorker>()
-                    .setInputData(workDataOf(InstallWorker.KEY_ID to packageName,InstallWorker.KEY_CODE to true))
-                    .build()
-                workManager.enqueue(request)
+                runBlocking(Dispatchers.IO) {
+                    appDatabase.appItemDao().deleteByID(packageName)
+                }
             }
-        }
-        else if (intent?.action == Intent.ACTION_PACKAGE_ADDED){
+        } else if (intent?.action == Intent.ACTION_PACKAGE_ADDED) {
             //安装应用监听
             val packageName = intent.dataString?.substring(8)?.lowercase(Locale.getDefault())
             log("packageName install: $packageName")
-            if (!packageName.isNullOrBlank()) {
-                val request = OneTimeWorkRequestBuilder<InstallWorker>()
-                    .setInputData(workDataOf(InstallWorker.KEY_ID to packageName,InstallWorker.KEY_CODE to false))
-                    .build()
-                workManager.enqueue(request)
+            runBlocking(Dispatchers.IO) {
+                val item = packageName?.let { GetApps.getItem(packageManager, it) }
+                item?.let { appDatabase.appItemDao().insertAll(it) }
             }
+
         }
     }
 

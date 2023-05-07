@@ -49,8 +49,8 @@ class LicensesFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            launch {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.RESUMED){
                     activity?.title = getString(R.string.third_party_licenses)
                 }
             }

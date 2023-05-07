@@ -9,12 +9,13 @@ import github.xtvj.cleanx.utils.initLog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class StartInitializer : Initializer<Unit> {
     override fun create(context: Context) {
         //初始化操作
 
-        CoroutineScope(Dispatchers.IO).launch {
+        runBlocking {
             //启动主题
             val dataStoreManager = DataStoreManager(context)
             ThemeHelper.applyTheme(dataStoreManager.fetchInitialPreferences().darkModel)

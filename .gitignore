@@ -1,0 +1,14 @@
+/app/build/generated/source/kapt/debug/androidx/databinding/
+/app/build/generated/source/kapt/debug/dagger/hilt/internal/aggregatedroot/codegen/
+/app/src/androidTest/java/github/xtvj/cleanx/
+/app/build/generated/source/kapt/debug/github/xtvj/cleanx/
+/app/src/test/java/github/xtvj/cleanx/
+/app/build/generated/source/navigation-args/debug/github/xtvj/cleanx/ui/
+/app/build/generated/source/kapt/debug/hilt_aggregated_deps/
+/app/build/generated/source/kaptKotlin/debug/
+/app/build/generated/source/buildConfig/debug/
+/app/build/generated/ap_generated_sources/debug/out/
+/.gradle/
+/.idea/
+/local.properties
+/app/build/

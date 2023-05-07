@@ -8,9 +8,9 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -26,13 +26,20 @@ import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.ui.viewmodel.MainViewModel
 import github.xtvj.cleanx.ui.viewmodel.SheetViewModel
-import github.xtvj.cleanx.utils.*
+import github.xtvj.cleanx.utils.FORCE_STOP
+import github.xtvj.cleanx.utils.FileUtils
+import github.xtvj.cleanx.utils.PM_DISABLE
+import github.xtvj.cleanx.utils.PM_ENABLE
+import github.xtvj.cleanx.utils.ShareContentType
+import github.xtvj.cleanx.utils.log
+import github.xtvj.cleanx.utils.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.lang.Exception
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -86,14 +93,13 @@ class SheetDialog() : BottomSheetDialogFragment() {
     @Inject
     lateinit var sheetViewModelFactory: SheetViewModel.SheetViewModelFactory
 
-    val viewModel: SheetViewModel by viewModels {
+    private val viewModel: SheetViewModel by viewModels {
         SheetViewModel.provideFactory(sheetViewModelFactory, this, arguments, packageName)
     }
-    lateinit var mainViewModel: MainViewModel
+    private val mainViewModel by activityViewModels<MainViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         initData()
         initClick()
     }
@@ -123,7 +129,11 @@ class SheetDialog() : BottomSheetDialogFragment() {
         binding.btnOpen.setOnClickListener {
             val intent = pm.getLaunchIntentForPackage(sheetItem.id)
             if (sheetItem.isEnable && intent != null) {
-                startActivity(intent)
+                try {
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    log(e.localizedMessage ?: "")
+                }
                 lifecycleScope.launch {
                     appItemDao.updateRunning(sheetItem.id, true)
                 }

@@ -2,6 +2,7 @@ package github.xtvj.cleanx.data
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.os.Build
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.utils.log
 
@@ -46,12 +47,13 @@ object GetApps {
             val lastUpdateTime = appInfo.lastUpdateTime
             val dataDir = appInfo.applicationInfo.dataDir
             val sourceDir = appInfo.applicationInfo.sourceDir
-//                        val deviceProtectedDataDir =
-//                            appInfo.applicationInfo.deviceProtectedDataDir
-//                        val publicSourceDir = appInfo.applicationInfo.publicSourceDir
             val icon = appInfo.applicationInfo.icon
             val isRunning = (appInfo.applicationInfo.flags and FLAG_STOPPED) == 0
-            val versionCode = appInfo.longVersionCode
+            val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                appInfo.longVersionCode
+            } else {
+                appInfo.versionCode.toLong()
+            }
 
             return AppItem(
                 appId,
