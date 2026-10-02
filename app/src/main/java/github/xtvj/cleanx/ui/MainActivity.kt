@@ -10,6 +10,7 @@ import android.widget.PopupWindow
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -29,6 +30,7 @@ import github.xtvj.cleanx.shell.RunnerUtils
 import github.xtvj.cleanx.ui.adapter.MainViewPageAdapter
 import github.xtvj.cleanx.ui.viewmodel.MainViewModel
 import github.xtvj.cleanx.utils.log
+import github.xtvj.cleanx.utils.applySystemBarPadding
 import github.xtvj.cleanx.utils.screenWidth
 import github.xtvj.cleanx.utils.toastLong
 import kotlinx.coroutines.Dispatchers
@@ -56,7 +58,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(binding.root)
+        binding.root.applySystemBarPadding()
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         initView()
         initDialog()
@@ -159,7 +163,7 @@ class MainActivity : AppCompatActivity() {
             .setView(dialogView)
             .setPositiveButton(getString(R.string.request_root_ok)) { dialog, _ ->
                 lifecycleScope.launch {
-                    val isRoot = RunnerUtils.isRootGiven()
+                    val isRoot = withContext(Dispatchers.IO) { RunnerUtils.isRootGiven() }
                     if (isRoot) {
                         toastLong(R.string.got_root)
                     } else {

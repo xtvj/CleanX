@@ -105,16 +105,14 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
     private fun mapUserPreferences(preferences: Preferences): UserPreferences {
         // Get the sort order from preferences and convert it to a [SortOrder] object
         //默认包名排序
-        val sortOrder =
-            SortOrder.valueOf(
-                preferences[PreferencesKeys.SORT_ORDER] ?: SortOrder.BY_NAME.name
-            )
+        val sortOrder = SortOrder.entries.firstOrNull {
+            it.name == preferences[PreferencesKeys.SORT_ORDER]
+        } ?: SortOrder.BY_NAME
 
         //默认自动
-        val darkModel =
-            DarkModel.valueOf(
-                preferences[PreferencesKeys.DARK_MODEL] ?: DarkModel.AUTO.name
-            )
+        val darkModel = DarkModel.entries.firstOrNull {
+            it.name == preferences[PreferencesKeys.DARK_MODEL]
+        } ?: DarkModel.AUTO
 
         //默认正序
         val asc = preferences[PreferencesKeys.ASC_MODEL] ?: true

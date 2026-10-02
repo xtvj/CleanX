@@ -1,11 +1,12 @@
 package github.xtvj.cleanx.ui.viewmodel
 
-import android.os.Bundle
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.savedstate.SavedStateRegistryOwner
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -39,19 +40,11 @@ class SheetViewModel @AssistedInject constructor(
     companion object {
         fun provideFactory(
             assistedFactory: SheetViewModelFactory,
-            owner: SavedStateRegistryOwner,
-            defaultArgs: Bundle? = null,
             packageName: String
-        ): AbstractSavedStateViewModelFactory =
-            object : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(
-                    key: String,
-                    modelClass: Class<T>,
-                    handle: SavedStateHandle
-                ): T {
-                    return assistedFactory.create(handle, packageName) as T
-                }
+        ): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                assistedFactory.create(createSavedStateHandle(), packageName)
             }
+        }
     }
 }

@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import github.xtvj.cleanx.shell.Runner
 import github.xtvj.cleanx.utils.log
+import java.io.IOException
 
 object GetApps {
 
@@ -16,9 +17,13 @@ object GetApps {
             //获取应用列表
             val result = Runner.runCommand(Runner.userInstance(), code)
             if (result.isSuccessful) {
-                val temp = result.getOutputAsList(0).map { s ->
-                    s.substring(8)
-                }.sorted()
+                val temp = result.getOutputAsList(0)
+                    .mapNotNull { line ->
+                        line.trim().takeIf { it.startsWith("package:") }
+                            ?.removePrefix("package:")
+                            ?.takeIf { it.isNotBlank() }
+                    }
+                    .sorted()
                 val list = mutableListOf<AppItem>()
                 for (i in temp) {
                     val item = getItem(pm, i)
@@ -28,8 +33,7 @@ object GetApps {
                 }
                 return list
             } else {
-                log(result.toString())
-                return emptyList()
+                throw IOException("Package list command failed: $code")
             }
         }
         return emptyList()
@@ -38,20 +42,22 @@ object GetApps {
     fun getItem(pm: PackageManager, appId: String): AppItem? {
         try {
             val appInfo = pm.getPackageInfo(appId, PackageManager.GET_META_DATA)
-            val name = appInfo.applicationInfo.loadLabel(pm).toString()
+            val applicationInfo = appInfo.applicationInfo ?: return null
+            val name = applicationInfo.loadLabel(pm).toString()
             val version = appInfo.versionName ?: "null"
             val isSystem =
-                (appInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
-            val isEnable = appInfo.applicationInfo.enabled
+                (applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
+            val isEnable = applicationInfo.enabled
             val firstInstallTime = appInfo.firstInstallTime
             val lastUpdateTime = appInfo.lastUpdateTime
-            val dataDir = appInfo.applicationInfo.dataDir
-            val sourceDir = appInfo.applicationInfo.sourceDir
-            val icon = appInfo.applicationInfo.icon
-            val isRunning = (appInfo.applicationInfo.flags and FLAG_STOPPED) == 0
+            val dataDir = applicationInfo.dataDir
+            val sourceDir = applicationInfo.sourceDir
+            val icon = applicationInfo.icon
+            val isRunning = (applicationInfo.flags and FLAG_STOPPED) == 0
             val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 appInfo.longVersionCode
             } else {
+                @Suppress("DEPRECATION")
                 appInfo.versionCode.toLong()
             }
 
@@ -65,8 +71,6 @@ object GetApps {
                 lastUpdateTime,
                 dataDir,
                 sourceDir,
-//                          deviceProtectedDataDir,
-//                          publicSourceDir,
                 icon,
                 isRunning,
                 versionCode

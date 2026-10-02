@@ -1,7 +1,5 @@
 package github.xtvj.cleanx.ui
 
-import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +19,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dagger.hilt.android.AndroidEntryPoint
 import github.xtvj.cleanx.R
 import github.xtvj.cleanx.data.AppItem
-import github.xtvj.cleanx.data.AppItemDao
 import github.xtvj.cleanx.databinding.FragmentAppListBinding
 import github.xtvj.cleanx.ui.adapter.ListItemAdapter
 import github.xtvj.cleanx.ui.viewmodel.ListViewModel
@@ -59,7 +56,6 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
     private var type = -1
     private lateinit var binding: FragmentAppListBinding
-    private val lifecycleScope = lifecycle.coroutineScope
 
     private var actionMode: ActionMode? = null
     private lateinit var selectionTracker: SelectionTracker<AppItem>
@@ -75,12 +71,6 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
 
     @Inject
     lateinit var adapter: ListItemAdapter
-
-    @Inject
-    lateinit var pm: PackageManager
-
-    @Inject
-    lateinit var appItemDao: AppItemDao
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -150,11 +140,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
             actionMode?.finish()
         }
         observeUI()
-        lifecycleScope.launch {
-            lifecycle.whenResumed {
-                collectData()
-            }
-        }
+        collectData()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -178,17 +164,14 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
         }
     }
 
-    @SuppressLint("RepeatOnLifecycleWrongUsage", "UnsafeRepeatOnLifecycleDetector")
     private fun observeApps(apps: Flow<PagingData<AppItem>>) {
         log("observer Apps type =$type")
         job?.cancel()
-        job = lifecycleScope.launch(Dispatchers.IO) {
+        job = viewLifecycleOwner.lifecycleScope.launch {
             //使用Created，如果使用Resumed，每次页面显示都要重新加载
             //如果使用Started，页面返回后台再进入会进入onStart会重新加载数据
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                apps.collectLatest {
-                    adapter.submitData(lifecycle, it)
-                }
+            apps.collectLatest {
+                adapter.submitData(it)
             }
         }
     }
@@ -242,7 +225,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
     }
 
     private fun observeUI() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch(Dispatchers.Main) {
                     loading.collectLatest {
@@ -256,7 +239,7 @@ class AppListFragment : Fragment(), ActionMode.Callback, SwipeRefreshLayout.OnRe
                 }
             }
         }
-        lifecycleScope.launchWhenCreated {
+        viewLifecycleOwner.lifecycleScope.launch {
             launch(Dispatchers.Main) {
                 adapter.loadStateFlow.collect { loadStates ->
                     val refresher = loadStates.refresh

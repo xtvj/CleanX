@@ -30,7 +30,6 @@ import github.xtvj.cleanx.utils.FORCE_STOP
 import github.xtvj.cleanx.utils.FileUtils
 import github.xtvj.cleanx.utils.PM_DISABLE
 import github.xtvj.cleanx.utils.PM_ENABLE
-import github.xtvj.cleanx.utils.ShareContentType
 import github.xtvj.cleanx.utils.log
 import github.xtvj.cleanx.utils.toast
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +37,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -94,7 +92,7 @@ class SheetDialog() : BottomSheetDialogFragment() {
     lateinit var sheetViewModelFactory: SheetViewModel.SheetViewModelFactory
 
     private val viewModel: SheetViewModel by viewModels {
-        SheetViewModel.provideFactory(sheetViewModelFactory, this, arguments, packageName)
+        SheetViewModel.provideFactory(sheetViewModelFactory, packageName)
     }
     private val mainViewModel by activityViewModels<MainViewModel>()
 
@@ -143,19 +141,24 @@ class SheetDialog() : BottomSheetDialogFragment() {
             dismiss()
         }
         binding.btnShare.setOnClickListener {
-            val file = File(sheetItem.sourceDir)
-            val uri: Uri? = FileUtils.getFileUri(requireContext(), ShareContentType.FILE, file)
-            val shareIntent = Intent()
-            shareIntent.action = Intent.ACTION_SEND
-            shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
-            shareIntent.type = "*/*"
-            startActivity(
-                Intent.createChooser(
-                    shareIntent,
-                    requireContext().getString(R.string.share_apk)
-                )
-            )
-            dismiss()
+            lifecycleScope.launch {
+                try {
+                    val context = requireContext()
+                    val uri = withContext(Dispatchers.IO) {
+                        FileUtils.getApkShareUri(context, sheetItem.id, sheetItem.sourceDir)
+                    }
+                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "application/vnd.android.package-archive"
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                    startActivity(Intent.createChooser(shareIntent, getString(R.string.share_apk)))
+                    dismiss()
+                } catch (exception: Exception) {
+                    log("APK share failed: ${exception.message}")
+                    requireContext().toast(getString(R.string.fail))
+                }
+            }
         }
         binding.btnDetail.setOnClickListener {
             val intent = Intent()
@@ -173,9 +176,11 @@ class SheetDialog() : BottomSheetDialogFragment() {
         }
         binding.btnFreeze.setOnClickListener {
             lifecycleScope.launch {
-                if (hasRoot()) {
+                if (withContext(Dispatchers.IO) { hasRoot() }) {
                     val cmd = (if (sheetItem.isEnable) PM_DISABLE else PM_ENABLE) + sheetItem.id
-                    val result = Runner.runCommand(Runner.rootInstance(), cmd)
+                    val result = withContext(Dispatchers.IO) {
+                        Runner.runCommand(Runner.rootInstance(), cmd)
+                    }
                     if (result.isSuccessful) {
                         appItemDao.updateEnable(sheetItem.id, !sheetItem.isEnable)
                     }
@@ -190,16 +195,15 @@ class SheetDialog() : BottomSheetDialogFragment() {
                 } else {
                     mainViewModel.showDialog.emit(true)
                 }
+                dismiss()
             }
-            dismiss()
         }
         binding.btnRunning.setOnClickListener {
             lifecycleScope.launch {
-                if (hasRoot()) {
-                    val result = Runner.runCommand(
-                        Runner.rootInstance(),
-                        FORCE_STOP + sheetItem.id
-                    )
+                if (withContext(Dispatchers.IO) { hasRoot() }) {
+                    val result = withContext(Dispatchers.IO) {
+                        Runner.runCommand(Runner.rootInstance(), FORCE_STOP + sheetItem.id)
+                    }
                     if (result.isSuccessful) {
                         appItemDao.updateRunning(sheetItem.id, false)
                     }
@@ -213,8 +217,8 @@ class SheetDialog() : BottomSheetDialogFragment() {
                 } else {
                     mainViewModel.showDialog.emit(true)
                 }
+                dismiss()
             }
-            dismiss()
         }
     }
 

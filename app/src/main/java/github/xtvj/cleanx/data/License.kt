@@ -1,8 +1,8 @@
 package github.xtvj.cleanx.data
 
-import com.squareup.moshi.JsonClass
+import androidx.annotation.Keep
 
-@JsonClass(generateAdapter = true)
+@Keep
 data class License(
     val about: String,
     val address: String,

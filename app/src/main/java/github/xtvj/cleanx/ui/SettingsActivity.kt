@@ -3,6 +3,7 @@ package github.xtvj.cleanx.ui
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -23,6 +24,7 @@ import github.xtvj.cleanx.data.SortOrder
 import github.xtvj.cleanx.databinding.SettingsActivityBinding
 import github.xtvj.cleanx.databinding.ToolbarBinding
 import github.xtvj.cleanx.utils.ThemeHelper
+import github.xtvj.cleanx.utils.applySystemBarPadding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -40,8 +42,10 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = SettingsActivityBinding.inflate(layoutInflater)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         toolbarBinding = binding.includeToolbar
         setContentView(binding.root)
+        binding.root.applySystemBarPadding()
         setSupportActionBar(toolbarBinding.tbCustom)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         initNavController()
@@ -57,7 +61,7 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         if (!(navController.navigateUp() || super.onSupportNavigateUp())) {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         return true
     }

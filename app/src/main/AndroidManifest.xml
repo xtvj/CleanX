@@ -44,8 +44,17 @@
             android:exported="false"
             tools:node="merge">
             <meta-data
-                android:name="${applicationId}.initializer.StartInitializer"
+                android:name="github.xtvj.cleanx.initializer.StartInitializer"
                 android:value="androidx.startup" />
+        </provider>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/share_paths" />
         </provider>
     </application>
 

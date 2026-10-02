@@ -7,37 +7,47 @@ import android.content.pm.PackageManager
 import github.xtvj.cleanx.data.AppDatabase
 import github.xtvj.cleanx.data.GetApps
 import github.xtvj.cleanx.utils.log
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import java.util.Locale
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class InstallReceiver @Inject constructor(
     private val appDatabase: AppDatabase,
     private val packageManager: PackageManager
-) :
-    BroadcastReceiver() {
+) : BroadcastReceiver() {
+
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent?.action == Intent.ACTION_PACKAGE_REMOVED || intent?.action == Intent.ACTION_PACKAGE_FULLY_REMOVED) {
-            //卸载应用监听
-            val packageName = intent.dataString?.substring(8)?.lowercase(Locale.getDefault())
-            log("packageName remove: $packageName")
-            if (!packageName.isNullOrBlank()) {
-                runBlocking(Dispatchers.IO) {
-                    appDatabase.appItemDao().deleteByID(packageName)
-                }
-            }
-        } else if (intent?.action == Intent.ACTION_PACKAGE_ADDED) {
-            //安装应用监听
-            val packageName = intent.dataString?.substring(8)?.lowercase(Locale.getDefault())
-            log("packageName install: $packageName")
-            runBlocking(Dispatchers.IO) {
-                val item = packageName?.let { GetApps.getItem(packageManager, it) }
-                item?.let { appDatabase.appItemDao().insertAll(it) }
-            }
+        val packageName = intent?.data?.schemeSpecificPart ?: return
+        val action = intent.action ?: return
+        if (action != Intent.ACTION_PACKAGE_REMOVED &&
+            action != Intent.ACTION_PACKAGE_FULLY_REMOVED &&
+            action != Intent.ACTION_PACKAGE_ADDED
+        ) return
 
+        val pendingResult = goAsync()
+        scope.launch {
+            try {
+                when (action) {
+                    Intent.ACTION_PACKAGE_REMOVED, Intent.ACTION_PACKAGE_FULLY_REMOVED -> {
+                        if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
+                            appDatabase.appItemDao().deleteByID(packageName)
+                        }
+                    }
+                    Intent.ACTION_PACKAGE_ADDED -> {
+                        GetApps.getItem(packageManager, packageName)?.let {
+                            appDatabase.appItemDao().insertAll(it)
+                        }
+                    }
+                }
+            } catch (exception: Exception) {
+                log("Package update failed for $packageName: ${exception.message}")
+            } finally {
+                pendingResult.finish()
+            }
         }
     }
-
 }

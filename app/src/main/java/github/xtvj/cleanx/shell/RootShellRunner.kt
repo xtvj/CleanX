@@ -8,7 +8,11 @@ internal class RootShellRunner : Runner() {
     @WorkerThread
     @Synchronized
     override fun runCommand(): Result {
-        val shell: Shell.Job = Shell.su(*commands.toTypedArray())
+        val rootShell = Shell.getShell()
+        if (!rootShell.isRoot) {
+            return Result(emptyList(), listOf("Root access is unavailable"), 1)
+        }
+        val shell: Shell.Job = rootShell.newJob().add(*commands.toTypedArray())
         for (input in inputStreams) {
             shell.add(input)
         }
